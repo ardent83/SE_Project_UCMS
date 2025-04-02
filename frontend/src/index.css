@@ -1,0 +1,35 @@
+:root{
+    --white: #fff;
+    --lightBulue: #1177aa;
+    --bg-blue: #0C1E33;
+    --blue-link:#2F80ED;
+    --blue-shadow: rgba(47,128,237, 0.1);
+    --label: #495D72;
+    --error: #D32F2F;
+    --color-big-stone-50: #f2f7fd;
+    --color-big-stone-100: #e3eefb;
+    --color-big-stone-200: #c2ddf5;
+    --color-big-stone-300: #8cc1ed;
+    --color-big-stone-400: #4ea1e2;
+    --color-big-stone-500: #2785d0;
+    --color-big-stone-600: #1968b0;
+    --color-big-stone-700: #15538f;
+    --color-big-stone-800: #154777;
+    --color-big-stone-900: #173c63;
+    --color-big-stone-950: #0c1e33;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'IRANYekanXVF', sans-serif;
+    border: var(--bg-blue);
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
