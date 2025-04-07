@@ -187,17 +187,12 @@ form .errorInput {
     transition-delay: calc(.1s * var(--j));
 }
 
-
 .wrapper.active .form-box.login .animation{
     transform: translateX(-120%);
     opacity: 0;
     filter: blur(10px);
     transition-delay: calc(.1s * var(--i));
 }
-
-
-
-
 
 
 .wrapper .info-text{
@@ -229,7 +224,6 @@ form .errorInput {
     color: var(--white);
 }
 
-
 .wrapper .info-text.login .animation{
     transform: translateX(0);
     opacity: 1;
@@ -244,10 +238,6 @@ form .errorInput {
     transition: 0.7s ease;
     transition-delay: calc(.1s * var(--i));
 }
-
-
-
-
 
 .wrapper .rotate-bg{
     position: absolute;
@@ -266,16 +256,6 @@ form .errorInput {
     transform: rotate(0) skewY(0);
     transition-delay: 0.5s;
 }
-
-
-
-
-
-
-
-
-
-
 
 .wrapper .form-box.register{
     padding: 0 40px 0 60px;
@@ -358,4 +338,5 @@ form .errorInput {
     bottom: -1rem;
     color: var(--error);
     font-size: 0.75rem;
+    text-wrap-mode: nowrap;
 }
