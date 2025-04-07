@@ -1,7 +1,7 @@
-const apiBaseUrl = "";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const login = async (username, password) => {
-    const response = await fetch(`${apiBaseUrl}/api/login`, {
+    const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -12,7 +12,7 @@ export const login = async (username, password) => {
 };
 
 export const register = async (username, email, password, confirmPassword) => {
-    const response = await fetch(`${apiBaseUrl}/api/register`, {
+    const response = await fetch(`${apiBaseUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export const register = async (username, email, password, confirmPassword) => {
 };
 
 export const logout = async () => {
-    const response = await fetch(`${apiBaseUrl}/api/logout`, {
+    const response = await fetch(`${apiBaseUrl}/api/auth/logout`, {
         method: 'GET',
     });
     return response;
