@@ -11,20 +11,21 @@ export const login = async (username, password) => {
     return response;
 };
 
-export const register = async (username, email, password, confirmPassword) => {
+export const register = async (username, email, password, confirmPassword, roleId) => {
+    console.log(username, email, password, confirmPassword, roleId)
     const response = await fetch(`${apiBaseUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password, confirmPassword }),
+        body: JSON.stringify({ username, email, password, confirmPassword, roleId }),
     });
     return response;
 };
 
 export const logout = async () => {
     const response = await fetch(`${apiBaseUrl}/api/auth/logout`, {
-        method: 'GET',
+        method: 'POST',
     });
     return response;
 };

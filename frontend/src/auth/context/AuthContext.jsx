@@ -48,9 +48,9 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const handleRegister = async (username, email, password, confirmPassword) => {
+    const handleRegister = async (username, email, password, confirmPassword, roleId) => {
         try {
-            const response = await register(username, email, password, confirmPassword);
+            const response = await register(username, email, password, confirmPassword, roleId);
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);

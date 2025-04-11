@@ -41,4 +41,5 @@ export const authValidationSchema = (formType) => Yup.object({
             .required('تکرار گذرواژه الزامی است')
             .oneOf([Yup.ref('password'), null], 'تکرار گذرواژه با گذرواژه مطابقت ندارد'),
     }),
+    roleId: Yup.number().oneOf([1, 2], 'نقش نامعتبر است').required('انتخاب نقش الزامی است')
 });
