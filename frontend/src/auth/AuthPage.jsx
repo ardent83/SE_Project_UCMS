@@ -47,7 +47,7 @@ export default function AuthPage() {
             <AuthForm type="login">
                 <h2 className="title animation" style={{ "--i": 0, "--j": 21 }}>ورود</h2>
                 <form onSubmit={formik.handleSubmit}>
-                    <InputBox type="text" label="نام کاربری" icon="bxs-user" i={1} j={22} field={formik.getFieldProps('username')} form={formik} />
+                    <InputBox type="email" label="پست الکترونیک" icon="bxs-envelope" i={1} j={22} field={formik.getFieldProps('email')} form={formik} />
                     <InputBox type="password" label="گذرواژه" icon="bxs-lock-alt" i={2} j={23} field={formik.getFieldProps('password')} form={formik} />
                     <button type="submit" className="btn animation" style={{ "--i": 3, "--j": 24 }} disabled={formik.isSubmitting}>ورود</button>
                     <div className="linkTxt animation" style={{ "--i": 5, "--j": 25 }}>

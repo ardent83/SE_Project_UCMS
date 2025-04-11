@@ -22,10 +22,9 @@ const useAuthForm = () => {
         onSubmit: async (values, { setSubmitting }) => {
             setApiError(null);
             setSubmitting(true);
-
             try {
                 if (formType === 'login') {
-                    await login(values.username, values.password);
+                    await login(values.email, values.password);
                 } else {
                     await register(values.username, values.email, values.password, values.confirmPassword, values.roleId);
                 }

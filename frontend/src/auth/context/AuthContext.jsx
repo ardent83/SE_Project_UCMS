@@ -31,9 +31,9 @@ export const AuthProvider = ({ children }) => {
         checkAuth();
     }, []);
 
-    const handleLogin = async (username, password) => {
+    const handleLogin = async (email, password) => {
         try {
-            const response = await login(username, password);
+            const response = await login(email, password);
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);
