@@ -1,12 +1,21 @@
 @import "tailwindcss";
+@plugin 'tailwind-scrollbar';
 
 @layer components {
   .all-\[unset\] {
     all: unset;
   }
 
-  .product-img {
+  .profile-img {
     background: var(--bg) lightgray 50% / cover no-repeat;
+  }
+
+  .rmdp-container { 
+    width: 100% !important;
+    max-width: var(--max-w-rmdp) !important;
+  }
+  .rmdp-container * {
+    box-sizing: border-box;
   }
 }
 
@@ -85,6 +94,47 @@
     align-items: center;
     min-height: 100vh;
   }
+  html, body {
+    overflow: hidden;
+    height: 100%;
+  }
+  #root {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    min-height: 100vh;
+    width: 100vw;
+  }
+  main::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  main::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+  }
+
+  main::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+
+  main::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  main {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  main {
+    scroll-behavior: smooth;
+  }
 }
 
 @theme {
@@ -98,6 +148,24 @@
   --color-neutralgray-8: rgba(101, 101, 101, 1);
   --color-neutralgray-9: rgba(67, 67, 67, 1);
   --color-neutralgray-10: rgba(36, 36, 36, 1);
+
+  --color-primaryshade-1black: rgba(0, 0, 0, 1);
+  --color-primaryshade-2: rgba(10, 15, 20, 1);
+  --color-primaryshade-3: rgba(20, 30, 40, 1);
+  --color-primaryshade-4: rgba(30, 45, 60, 1);
+  --color-primaryshade-5: rgba(40, 60, 80, 1);
+  --color-primaryshade-6: rgba(50, 75, 100, 1);
+  --color-primaryshade-7: rgba(60, 90, 120, 1);
+
+  --color-primarytint-1white: rgba(255, 255, 255, 1);
+  --color-primarytint-2: rgba(230, 240, 250, 1);
+  --color-primarytint-3: rgba(200, 220, 240, 1);
+  --color-primarytint-4: rgba(170, 200, 230, 1);
+  --color-primarytint-5: rgba(140, 180, 220, 1);
+  --color-primarytint-6: rgba(110, 160, 210, 1);
+  --color-primarytint-7: rgba(80, 140, 200, 1);
+
+  --color-redp: #0c1e33;
 
   --color-stateerror: rgba(195, 0, 0, 1);
   --color-stateerror-bg: rgba(255, 242, 242, 1);
@@ -126,6 +194,11 @@
   --color-big-stone-800: #154777;
   --color-big-stone-900: #173c63;
   --color-big-stone-950: #0c1e33;
+
+  --color-light-lavender: #E1D2FF;
+  --color-pale-yellow: #FDE1AC;
+  --color-sky-blue: #BAE5F5;
+  --color-light-green: #CCEFBF;
 
   --default-font-family: IRANYekanX;
   --font-mono: IRANYekanX, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -215,37 +288,67 @@
   --text-caption-04--font-weight: 400;
   --text-caption-04--line-height: 1.125rem;
 
+  /* Caption/light */
+  --text-caption-light: 0.5rem;
+  --text-caption-light--font-weight: 400;
+  --text-caption-light--line-height: normal;
+
+
   /* Overline Styles */
   /* Overline/01 */
   --text-overline-01: 1rem;
   --text-overline-01--font-weight: 400;
   --text-overline-01--line-height: 1.8rem;
-  /*Overline/01 doesn't need a dedicated variable for strikethrough, Tailwind handles this directly*/
 
   /* Overline/02 */
   --text-overline-02: 0.75rem;
   --text-overline-02--font-weight: 700;
   --text-overline-02--line-height: 1.35rem;
-  /*Overline/02 doesn't need a dedicated variable for strikethrough, Tailwind handles this directly*/
 
   /* Underline Styles */
   /* Underline/01 */
   --text-underline-01: 1rem;
   --text-underline-01--font-weight: 400;
   --text-underline-01--line-height: 1.8rem;
-  /*Underline/01 doesn't need a dedicated variable for underline, Tailwind handles this directly*/
 
   /* Underline/02 */
   --text-underline-02: 0.75rem;
   --text-underline-02--font-weight: 700;
   --text-underline-02--line-height: 1.35rem;
-  /*Underline/02 doesn't need a dedicated variable for underline, Tailwind handles this directly*/
 
   /* Underline/03 */
   --text-underline-03: 0.625rem;
   --text-underline-03--font-weight: 300;
   --text-underline-03--line-height: 1.125rem;
-  /*Underline/03 doesn't need a dedicated variable for underline, Tailwind handles this directly*/
+
+  --breakpoint-editinfo: 784px;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+
+  --animate-fadeIn: animation: fadeIn 0.5s forwards;
+
+  --animate-fadeOut: animation: fadeOut 0.5s forwards;
+  
 }
 
 @font-face {

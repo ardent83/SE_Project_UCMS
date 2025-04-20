@@ -12,10 +12,17 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.3",
     "boxicons": "^2.1.4",
+    "classnames": "^2.5.1",
     "formik": "^2.4.6",
+    "framer-motion": "^12.6.5",
+    "iconsax-react": "^0.0.8",
+    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
+    "react-multi-date-picker": "^4.5.2",
     "react-router-dom": "^7.4.0",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.3",
     "yup": "^1.6.1"
   },
