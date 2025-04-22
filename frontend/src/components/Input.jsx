@@ -26,7 +26,7 @@ const Input = forwardRef(({
     form,
     ...props
 }, ref) => {
-    const hasError = form.touched[field.name] && form.errors[field.name];
+    const hasError = (form ? form.touched[field.name] && form.errors[field.name] : false);
 
     const [isFocused, setIsFocused] = useState(false);
     const [placeholder, setPlaceholder] = useState(text);
