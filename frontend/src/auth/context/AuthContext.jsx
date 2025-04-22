@@ -1,3 +1,6 @@
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, register, logout } from '../utils/authApi';
@@ -14,7 +17,10 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await fetch('/api/user/me');
+                const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+                    method: 'GET',
+                    credentials: 'include',
+                });
                 if (response.ok) {
                     const userData = await response.json();
                     setUser(userData);
@@ -22,9 +28,7 @@ export const AuthProvider = ({ children }) => {
             } catch (error) {
                 console.error("Error checking authentication:", error);
             } finally {
-                setTimeout(() => {
-                    setLoading(false); // Set loading to false after 3 seconds
-                }, 3000);
+                setLoading(false);
             }
         };
 
@@ -70,13 +74,13 @@ export const AuthProvider = ({ children }) => {
             const response = await logout();
             if (response.ok) {
                 setUser(null);
-                navigate('/login');
+                navigate('/auth');
             } else {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Logout failed');
             }
         } catch (error) {
-            console.error("Logout error:", error);
+            throw error;
         }
     };
 
