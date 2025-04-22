@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import filterIcon from "../assets/filter.png";
+import { Filter } from "iconsax-react";
 
 const filterOptions = ["همه", "فعال", "غیرفعال"];
 
@@ -18,7 +18,7 @@ export default function FilterBox({ selected, onChange }) {
         className="flex items-center justify-between w-full h-10 px-4 gap-2.5 rounded-md border border-gray-200 bg-gray-100 text-sm text-slate-800"
       >
         <span>{selected}</span>
-        <img src={filterIcon} alt="filter" className="w-4 h-4" />
+        <Filter size="20" color="#495d72" variant="Bold"/>
       </button>
 
       {isOpen && (

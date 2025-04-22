@@ -4,56 +4,34 @@ html, body, #root {
   padding: 0;
 }
 
-.main-content {
-  height: 100vh; 
-  overflow-y: auto;
+.main-content { 
   display: flex;
   flex-direction: column;
-  padding: 1rem; 
-}
-
-.page-title {
-  position: absolute;
-  top: 8.5625rem;  /* 137px */
-  left: 53.125rem; /* 850px */
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;   /* 10px */
-  margin-bottom: 1.25rem; /* 20px */
+  padding: 1rem;
+  justify-content: flex-start;
+  align-items: end;
 }
 
 .page-title h2 {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'IRANYekanXVF', sans-serif;
   font-weight: 600;
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.25rem; 
   color: #0C1E33;
 }
 
 .page-title img {
-  width: 1.875rem;  /* 30px */
+  width: 1.875rem; 
   height: 1.875rem;
-}
-
-.class-list {
-  position: absolute;
-  top: 16rem;        /* 256px */
-  left: 11.1875rem;  /* 179px */
-  width: 53.875rem;  /* 862px */
-  height: 39.1875rem;/* 627px */
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16.875rem, 1fr)); /* 270px */
-  gap: 1.5rem; /* 24px */
-  padding: 0;
 }
 
 .sidebar {
   position: fixed;
   top: 0;
   right: 0;
-  width: 15.6875rem;  /* 251px */
+  width: 15.6875rem; 
   height: 100%;
-  padding-top: 1.25rem; /* 20px */
+  padding-top: 1.25rem; 
   background: #0C1E33;
   color: #fff;
   z-index: 10;
@@ -62,24 +40,38 @@ html, body, #root {
   align-items: center;
 }
 
-.search-filter-addbtn-div {
-  position: absolute;
-  top: 12.44rem;   
-  left: 11.19rem;
-  width: 52.72rem;
-  height: 2.59rem;
-  padding-right: 1.14rem;
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  padding: 0;
-  gap: 11rem;
-}
-
 .filter-addbtn-div {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
+}
+
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;  
+  margin-bottom: 1.25rem; 
+}
+
+.search-filter-addbtn-div {
+  width: 52.72rem; 
+  height: 2.59rem; 
+  padding-right: 1.14rem; 
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding: 0; 
+  gap: 11rem;
+  margin-bottom: 1.5rem; 
+}
+
+.class-list {
+  width: 53.875rem; 
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16.875rem, 1fr)); 
+  gap: 1.5rem; 
+  padding: 0; 
 }

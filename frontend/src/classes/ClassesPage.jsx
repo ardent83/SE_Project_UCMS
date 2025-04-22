@@ -1,4 +1,3 @@
-// src/classes/ClassesPage.jsx
 import React from "react";
 import { useState } from "react";
 import ProductCard from "./components/ProductCard.jsx";
@@ -7,7 +6,6 @@ import classesIcon from "./assets/classes.svg";
 import SearchBox from "./components/SearchBox.jsx";
 import Button from "../components/Button.jsx";
 import { Add } from "iconsax-react";
-import filterIcon from "./assets/filter.svg";
 import FilterBox from "./components/FilterBox.jsx";
 
 const ClassesPage = () => {
@@ -71,7 +69,7 @@ const ClassesPage = () => {
               textShow={true}
               leftIcon={false}
               className="w-27"
-              rightIconComponent={<Add variant="Outline" />}
+              rightIconComponent={<Add size="20" variant="bold" />}
               onClick={() => {
                 setAlertMessage({ alertMessage });
                 setShowAlert(true);
