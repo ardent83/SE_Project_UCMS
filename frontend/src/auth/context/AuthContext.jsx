@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
                 }
             } catch (error) {
                 console.error("Error checking authentication:", error);
+                navigate('/auth');
             } finally {
                 setLoading(false);
             }
