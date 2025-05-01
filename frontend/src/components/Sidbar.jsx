@@ -51,7 +51,6 @@ function Sidebar() {
         try {
             await logout();
         } catch (error) {
-            console.error("Logout failed:", error);
             setApiError(error.message || '!خطا در خروج از حساب کاربری');
         }
     };
