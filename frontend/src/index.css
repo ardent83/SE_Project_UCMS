@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar';
 
+
+@keyframes orbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @layer components {
   .all-\[unset\] {
     all: unset;
