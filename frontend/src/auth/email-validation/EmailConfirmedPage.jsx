@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Lottie from 'lottie-react';
 
 const EmailConfirmedPage = () => {
     const [animationData, setAnimationData] = useState(null);
@@ -12,6 +13,14 @@ const EmailConfirmedPage = () => {
 
     return (
         <div className="w-screen h-screen bg-[#e3ebf5] font-[IRANYekanXVF] flex justify-center items-center relative overflow-hidden" dir="rtl">
+            {animationData && (
+                <Lottie
+                    animationData={animationData}
+                    loop={true}
+                    className="absolute top-0 left-0 w-full h-full pointer-events-none z-20"
+                />
+            )}
+
             <div className="bg-white w-[750px] h-[550px] rounded-xl shadow-xl text-center z-10">
                 <div className="h-full flex flex-col justify-center items-center px-8">
                     <img
