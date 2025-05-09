@@ -16,7 +16,7 @@ export default function SearchBox({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="bg-transparent flex-1 focus:outline-none text-sm text-slate-800 placeholder:text-slate-500"
+        className="bg-transparent flex-1 focus:outline-none text-sm text-slate-800 placeholder:text-slate-500 text-body-03" 
       />
     </div>
   );

@@ -12,17 +12,17 @@ export default function FilterBox({ selected, onChange }) {
   };
 
   return (
-    <div className="relative w-30" dir="rtl">
+    <div className="relative w-[120px]" dir="rtl">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full h-10 px-4 gap-2.5 rounded-md border border-gray-200 bg-gray-100 text-sm text-slate-800"
+        className="flex items-center justify-between w-full h-10 px-4 gap-2.5 rounded-md border border-gray-200 bg-gray-100 text-body-04 font-medium text-[var(--color-label)]"
       >
         <span>{selected}</span>
-        <Filter size="20" color="#495d72" variant="Bold"/>
+        <Filter size="20" color="var(--label)" variant="Bold" />
       </button>
 
       {isOpen && (
-        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-md shadow-md z-10 w-full text-sm">
+        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-md shadow-md z-10 w-full text-body-04 font-medium">
           {filterOptions.map((option) => (
             <div
               key={option}
@@ -38,4 +38,4 @@ export default function FilterBox({ selected, onChange }) {
       )}
     </div>
   );
-}
+};
