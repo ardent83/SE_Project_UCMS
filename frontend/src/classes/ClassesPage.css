@@ -28,7 +28,7 @@ html, body, #root {
   font-family: IRANYekanX, sans-serif;
   font-weight: 600;
   font-size: 1.25rem; 
-  color: #0C1E33;
+  color: var(--color-big-stone-950);
 }
 
 .page-title img {
@@ -36,20 +36,6 @@ html, body, #root {
   height: 1.875rem;
 }
 
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 15.6875rem; 
-  height: 100%;
-  padding-top: 1.25rem; 
-  background: #0C1E33;
-  color: #fff;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 .filter-addbtn-div {
   display: flex;
@@ -77,6 +63,7 @@ html, body, #root {
   grid-template-columns: repeat(auto-fill, minmax(16.875rem, 1fr)); 
   gap: 1.5rem; 
   padding: 0; 
+  direction: rtl;
 }
 
 .pagination {
@@ -90,7 +77,7 @@ html, body, #root {
 .pagination-btn {
   padding: 0.5rem 1rem; 
   border-radius: 8px;
-  background-color:  --color-big-stone-950;
+  background-color:  var(--color-big-stone-950);
   color: --white; 
   border: none; 
   transition: background-color 0.3s ease, transform 0.1s ease; 
@@ -108,6 +95,6 @@ html, body, #root {
 
 .page-indicator {
   font-size: 1rem;
-  color: --bg-blue;
+  color: var(--bg-blue);
   margin: 0 0.5rem; 
 }

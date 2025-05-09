@@ -8,7 +8,6 @@ import { Add, ArrowRight2, ArrowLeft2 } from "iconsax-react";
 import FilterBox from "./components/FilterBox.jsx";
 import JoinClass from "./components/JoinClassPop.jsx";
 import { useAuth } from "../auth/context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -24,67 +23,103 @@ const ClassesPage = () => {
   const [pageSize] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
   const [showJoinClassPopup, setShowJoinClassPopup] = useState(false);
+  const [ShowInfoPupup, setShowInfoPupup] = useState(false);
+
+  const fetchClasses = async () => {
+    try {
+      const params = new URLSearchParams({
+        ...(searchQuery && { Title: searchQuery }),
+        ...(selectedFilter !== "همه" && {
+          isActive: selectedFilter === "فعال" ? "true" : "false",
+        }),
+        Page: page,
+        PageSize: pageSize,
+      });
+
+      console.log(user);
+      console.log(userRole);
+      let apiEndpoint;
+      if (userRole === "Instructor") {
+        apiEndpoint = `${apiBaseUrl}/api/Classes/instructor?${params.toString()}`;
+      } else if (userRole === "Student") {
+        apiEndpoint = `${apiBaseUrl}/api/studentclass/student?${params.toString()}`;
+      } else {
+        throw new Error("نقش کاربر پشتیبانی نمی‌شود!");
+      }
+
+      console.log("Fetching from:", apiEndpoint);
+      const response = await fetch(apiEndpoint, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("API response:", data);
+      setClasses(data.items || []);
+      setTotalPages(data.totalPages || 1);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching classes:", err);
+      setError("خطایی در دریافت لیست کلاس‌ها رخ داد!");
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchClasses = async () => {
-      try {
-        const params = new URLSearchParams({
-          ...(searchQuery && { Title: searchQuery }),
-          ...(selectedFilter !== "همه" && {
-            isActive: selectedFilter === "فعال" ? "true" : "false",
-          }),
-          Page: page,
-          PageSize: pageSize,
-        });
-
-        console.log(user)
-        console.log(userRole)
-        let apiEndpoint;
-        if (userRole === "Instructor") {
-          apiEndpoint = `${apiBaseUrl}/api/Classes/instructor?${params.toString()}`;
-        } else if (userRole === "Student") {
-          apiEndpoint = `${apiBaseUrl}/student?${params.toString()}`;
-        } else {
-          throw new Error("نقش کاربر پشتیبانی نمی‌شود!");
-        }
-
-        console.log("Fetching from:", apiEndpoint);
-        const response = await fetch(apiEndpoint, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("API response:", data);
-        setClasses(data.items || []);
-        setTotalPages(data.totalPages || 1);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching classes:", err);
-        setError("خطایی در دریافت لیست کلاس‌ها رخ داد!");
-        setLoading(false);
-      }
-    };
-
     fetchClasses();
   }, [searchQuery, selectedFilter, page, pageSize, userRole]);
 
-  const handleJoinClassSubmit = (formData) => {
-    console.log("داده‌های فرم دریافت‌شده:", formData);
-    setShowJoinClassPopup(false);
-    // fetchClasses();
+  const handleJoinClassSubmit = async (formData) => {
+    try {
+      const requestBody = {
+        classCode: formData.classCode,
+        password: formData.classPassword,
+      };
+
+      const response = await fetch(`${apiBaseUrl}/api/StudentClass/join`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Join class response:", result);
+
+      if (result.success) {
+        setShowJoinClassPopup(false);
+        setError(null);
+        await fetchClasses();
+      } else {
+        throw new Error(result.message || "خطایی در ورود به کلاس رخ داد!");
+      }
+    } catch (err) {
+      console.error("Error joining class:", err);
+      setError(err.message || "خطایی در ورود به کلاس رخ داد!");
+      setShowJoinClassPopup(false);
+    }
   };
 
   const handleNewClassClick = () => {
     if (userRole === "Instructor") {
        // create class form
     } else if (userRole === "Student") {
-      setShowJoinClassPopup(true); 
+      setShowJoinClassPopup(true);
     }
+  };
+
+  const formatNumber = (number) => {
+    return Number(number).toLocaleString("fa-IR");
   };
 
   return (
@@ -113,7 +148,7 @@ const ClassesPage = () => {
             buttonText={"کلاس جدید"}
             textShow={true}
             leftIcon={false}
-            className="w-27"
+            className="w-30"
             rightIconComponent={<Add size="20" variant="bold" />}
             onClick={handleNewClassClick}
           />
@@ -123,7 +158,7 @@ const ClassesPage = () => {
       {loading ? (
         <div>در حال بارگذاری...</div>
       ) : error ? (
-        <div>{error}</div>
+        <div className="text-center text-red-500 mt-4">{error}</div>
       ) : classes.length > 0 ? (
         <>
           <div className="class-list">
@@ -134,7 +169,7 @@ const ClassesPage = () => {
                 studentCount={classItem.studentCount}
                 instructorName={classItem.instructorName || "نام استاد نامشخص"}
                 imageUrl={classItem.profileImageUrl || ""}
-                userRole={userRole} // پاس دادن نقش کاربر به ProductCard
+                userRole={userRole}
               />
             ))}
           </div>
@@ -146,7 +181,9 @@ const ClassesPage = () => {
               leftIcon={false}
               rightIconComponent={<ArrowLeft2 size="20" variant="bold" />}
             />
-            <span className="page-indicator">{`صفحه ${page} از ${totalPages}`}</span>
+            <span className="page-indicator">{`صفحه ${formatNumber(
+              page
+            )} از ${formatNumber(totalPages)}`}</span>
             <Button
               onClick={() => setPage(page - 1)}
               disabled={page === 1}
@@ -157,7 +194,7 @@ const ClassesPage = () => {
           </div>
         </>
       ) : (
-        <div className="text-center text-gray-500 mt-4">کلاسی یافت نشد</div>
+        <div className="text-center text-gray-500 mt-8">!کلاسی یافت نشد</div>
       )}
 
       {showJoinClassPopup && (
@@ -166,7 +203,6 @@ const ClassesPage = () => {
           onSubmit={handleJoinClassSubmit}
         />
       )}
-
     </div>
   );
 };
