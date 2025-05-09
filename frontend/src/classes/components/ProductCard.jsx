@@ -11,6 +11,10 @@ const ProductCard = ({
   onEdit,
   userRole,
 }) => {
+  const formatStudentCount = (count) => {
+    return Number(count ?? 0).toLocaleString("fa-IR");
+  };
+
   return (
     <div className="product-card">
       <div
@@ -26,8 +30,8 @@ const ProductCard = ({
       <div className="card-footer">
         <div className="students-number">
           <div className="students-text">
-            <span>دانشجو</span>
-            <span>{studentCount ?? 0}</span>
+            <span className="count">{formatStudentCount(studentCount)}</span>
+            <span className="label">دانشجو</span>
           </div>
           <img
             src={usersIcon}
