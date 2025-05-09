@@ -23,7 +23,7 @@ const ClassesPage = () => {
   const [pageSize] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
   const [showJoinClassPopup, setShowJoinClassPopup] = useState(false);
-  const [ShowInfoPupup, setShowInfoPupup] = useState(false);
+  const [showInfoPopup, setShowInfoPopup] = useState(false);
 
   const fetchClasses = async () => {
     try {
@@ -36,8 +36,6 @@ const ClassesPage = () => {
         PageSize: pageSize,
       });
 
-      console.log(user);
-      console.log(userRole);
       let apiEndpoint;
       if (userRole === "Instructor") {
         apiEndpoint = `${apiBaseUrl}/api/Classes/instructor?${params.toString()}`;
@@ -112,7 +110,7 @@ const ClassesPage = () => {
 
   const handleNewClassClick = () => {
     if (userRole === "Instructor") {
-       // create class form
+      // create class form
     } else if (userRole === "Student") {
       setShowJoinClassPopup(true);
     }
@@ -162,16 +160,26 @@ const ClassesPage = () => {
       ) : classes.length > 0 ? (
         <>
           <div className="class-list">
-            {classes.map((classItem) => (
-              <ProductCard
-                key={classItem.id}
-                title={classItem.title}
-                studentCount={classItem.studentCount}
-                instructorName={classItem.instructorName || "نام استاد نامشخص"}
-                imageUrl={classItem.profileImageUrl || ""}
-                userRole={userRole}
-              />
-            ))}
+            {classes.map((classItem) => {
+              const imageUrl = classItem.profileImageUrl
+                ? `${apiBaseUrl}${
+                    classItem.profileImageUrl.startsWith("/") ? "" : "/"
+                  }${classItem.profileImageUrl}`
+                : "./assets/download.png";
+              console.log("Image URL for", classItem.title, ":", imageUrl);
+              return (
+                <ProductCard
+                  key={classItem.id}
+                  title={classItem.title}
+                  studentCount={classItem.studentCount}
+                  instructorName={
+                    classItem.instructorName || "نام استاد نامشخص"
+                  }
+                  imageUrl={imageUrl}
+                  userRole={userRole}
+                />
+              );
+            })}
           </div>
           <div className="pagination">
             <Button
