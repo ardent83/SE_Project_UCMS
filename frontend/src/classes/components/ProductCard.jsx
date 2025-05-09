@@ -1,6 +1,6 @@
 import React from "react";
 import "./ProductCard.css";
-import usersIcon from "../assets/users.svg"; 
+import usersIcon from "../assets/users.svg";
 import editIcon from "../assets/edit.svg";
 
 const ProductCard = ({
@@ -9,6 +9,7 @@ const ProductCard = ({
   studentCount,
   imageUrl,
   onEdit,
+  userRole,
 }) => {
   return (
     <div className="product-card">
@@ -17,8 +18,10 @@ const ProductCard = ({
         style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : "none" }}
       ></div>
       <div className="card-content">
-        <h3>{title}</h3>
-        <h4>{instructorName}</h4>
+        <h3 className={userRole === "Instructor" ? "title-no-instructor" : ""}>
+          {title}
+        </h3>
+        {userRole === "Student" && <h4>{instructorName}</h4>}
       </div>
       <div className="card-footer">
         <div className="students-number">
@@ -32,13 +35,15 @@ const ProductCard = ({
             className="member-icon"
           />
         </div>
-        <button
-          onClick={onEdit ? onEdit : () => {}}
-          className="edit-button"
-          aria-label="ویرایش"
-        >
-          <img src={editIcon} alt="آیکون ویرایش" />
-        </button>
+        {userRole === "Instructor" && (
+          <button
+            onClick={onEdit ? onEdit : () => {}}
+            className="edit-button"
+            aria-label="ویرایش"
+          >
+            <img src={editIcon} alt="آیکون ویرایش" />
+          </button>
+        )}
       </div>
     </div>
   );
