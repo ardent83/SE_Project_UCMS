@@ -5,10 +5,10 @@ import Input from "../../components/Input.jsx";
 const validationSchema = Yup.object({
   classCode: Yup.string()
     .required("کد کلاس الزامی است")
-    .matches(/^[0-9]{6}$/, "کد کلاس باید ۶ رقم باشد"),
+    .matches(/^[A-Za-z0-9]{6}$/, "کد کلاس باید ۶ کاراکتر باشد"),
   classPassword: Yup.string()
     .required("رمز ورود الزامی است")
-    .min(6, "حداقل ۶ کاراکتر"),
+    .min(6, "حداقل ۶ کاراکتر باشد"),
 });
 
 function JoinClass({ onSubmit, onClose }) {
@@ -23,7 +23,7 @@ function JoinClass({ onSubmit, onClose }) {
           className="absolute top-4 right-4 bg-[var(--color-neutralgray-3)] w-6 h-6 rounded-full flex items-center justify-center"
           aria-label="بستن فرم"
         >
-          <span className="text-[var(--color-big-stone-900)] text-lg font-bold">
+          <span className="text-[var(--color-big-stone-900)] text-lg font-bold mt-1">
             ×
           </span>
         </button>
@@ -47,8 +47,7 @@ function JoinClass({ onSubmit, onClose }) {
             lineHeight: "var(--text-body-04--line-height)",
           }}
         >
-            .
-          اطلاعات زیر را جهت ورود به کلاس وارد کنید
+          . اطلاعات زیر را جهت ورود به کلاس وارد کنید
         </p>
 
         <Formik
@@ -59,7 +58,7 @@ function JoinClass({ onSubmit, onClose }) {
           }}
         >
           {({ values, setFieldValue, handleBlur, touched, errors }) => (
-            <Form className="space-y-4">
+            <Form className="space-y-1">
               <div className="flex gap-4">
                 <div className="flex-1">
                   <Input
@@ -77,7 +76,7 @@ function JoinClass({ onSubmit, onClose }) {
                       onBlur: handleBlur,
                     }}
                     form={{ touched, errors }}
-                    className={`rounded-lg p-2 w-full placeholder-[var(--label)] text-right transition-all duration-200 focus:ring-2 focus:ring-[var(--lightBulue)] focus:border-[var(--lightBulue)] ${
+                    className={`rounded-lg p--1 w-full placeholder-[var(--label)] text-left transition-all duration-200 focus:ring-2 focus:ring-[var(--lightBulue)] focus:border-[var(--lightBulue)] ${
                       touched.classPassword && errors.classPassword
                         ? "border-[var(--error)]"
                         : "border-[var(--color-big-stone-200)]"
@@ -85,6 +84,7 @@ function JoinClass({ onSubmit, onClose }) {
                     labelClassName="text-[var(--color-big-stone-900)] text-[var(--text-body-04)] mb-1 block"
                     errorClassName="text-[var(--error)] text-[var(--text-caption-02)] mt-1 text-right"
                     type="text"
+                    dir="ltr"
                   />
                 </div>
                 <div className="flex-1">
@@ -103,21 +103,22 @@ function JoinClass({ onSubmit, onClose }) {
                       onBlur: handleBlur,
                     }}
                     form={{ touched, errors }}
-                    className={`rounded-lg p-2 w-full placeholder-[var(--label)] text-right transition-all duration-200 focus:ring-2 focus:ring-[var(--lightBulue)] focus:border-[var(--lightBulue)] ${
+                    className={`rounded-lg p--1 w-full placeholder-[var(--label)] text-left transition-all duration-200 focus:ring-2 focus:ring-[var(--lightBulue)] focus:border-[var(--lightBulue)] ${
                       touched.classCode && errors.classCode
                         ? "border-[var(--error)]"
                         : "border-[var(--color-big-stone-200)]"
                     }`}
-                    labelClassName="text-[var(--color-big-stone-900)] text-[var(--text-body-04)] mb-5 block"
+                    labelClassName="text-[var(--color-big-stone-900)] text-[var(--text-body-04)] mb-1 block"
                     errorClassName="text-[var(--error)] text-[var(--text-caption-02)] mt-1 text-right"
                     type="text"
+                    dir="ltr"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2 mt-4 bg-[var(--color-big-stone-950)] text-[var(--white)] rounded-lg hover:bg-[var(--color-big-stone-800)] transition-all duration-200"
+                className="w-full py-2 mt-1 bg-[var(--color-big-stone-950)] text-[var(--white)] rounded-lg hover:bg-[var(--color-big-stone-800)] transition-all duration-200"
                 style={{
                   fontSize: "var(--text-button-01)",
                   fontWeight: "var(--text-button-01--font-weight)",
