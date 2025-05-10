@@ -29,6 +29,7 @@ const ClassesPage = () => {
     try {
       const params = new URLSearchParams({
         ...(searchQuery && { Title: searchQuery }),
+        ...(userRole === "Student" && searchQuery && { InstructorName: searchQuery }),   // test
         ...(selectedFilter !== "همه" && {
           isActive: selectedFilter === "فعال" ? "true" : "false",
         }),
@@ -111,9 +112,9 @@ const ClassesPage = () => {
   const handleNewClassClick = () => {
     if (userRole === "Instructor") {
       // create class form
-    } else if (userRole === "Student") {
-      setShowJoinClassPopup(true);
-    }
+   } else if (userRole === "Student") {
+     setShowJoinClassPopup(true);
+   }
   };
 
   const formatNumber = (number) => {
@@ -154,7 +155,7 @@ const ClassesPage = () => {
       </div>
 
       {loading ? (
-        <div>در حال بارگذاری...</div>
+        <div>...در حال بارگذاری</div>
       ) : error ? (
         <div className="text-center text-red-500 mt-4">{error}</div>
       ) : classes.length > 0 ? (
@@ -162,9 +163,7 @@ const ClassesPage = () => {
           <div className="class-list">
             {classes.map((classItem) => {
               const imageUrl = classItem.profileImageUrl
-                ? `${apiBaseUrl}${
-                    classItem.profileImageUrl.startsWith("/") ? "" : "/"
-                  }${classItem.profileImageUrl}`
+                ? `${apiBaseUrl}${classItem.profileImageUrl.startsWith('/') ? '' : '/'}${classItem.profileImageUrl}`
                 : "./assets/download.png";
               console.log("Image URL for", classItem.title, ":", imageUrl);
               return (
@@ -172,9 +171,7 @@ const ClassesPage = () => {
                   key={classItem.id}
                   title={classItem.title}
                   studentCount={classItem.studentCount}
-                  instructorName={
-                    classItem.instructorName || "نام استاد نامشخص"
-                  }
+                  instructorName={classItem.instructorFullName || "نام استاد نامشخص"}
                   imageUrl={imageUrl}
                   userRole={userRole}
                 />
@@ -189,9 +186,7 @@ const ClassesPage = () => {
               leftIcon={false}
               rightIconComponent={<ArrowLeft2 size="20" variant="bold" />}
             />
-            <span className="page-indicator">{`صفحه ${formatNumber(
-              page
-            )} از ${formatNumber(totalPages)}`}</span>
+            <span className="page-indicator">{`صفحه ${formatNumber(page)} از ${formatNumber(totalPages)}`}</span>
             <Button
               onClick={() => setPage(page - 1)}
               disabled={page === 1}
