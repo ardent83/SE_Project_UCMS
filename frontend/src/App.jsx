@@ -5,6 +5,7 @@ import AuthPage from './auth/AuthPage';
 import ClassForm from './class-form/ClassForm';
 import AccountSettings from './account-settings/AccountSettings';
 import Dashboard from './Dashboard';
+import ProjectManagementPage from './project-management-page/ProjectManagementPage';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import MainLayout from './main/MainLayout';
@@ -23,12 +24,12 @@ function App() {
             <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
+            <Route path="/project-management" element={<ProjectManagementPage />} />
           </Route>
 
           <Route path='/' element={<Navigate to={'/auth'} replace />} />
 
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
-
         </Routes>
       </AuthProvider>
     </BrowserRouter>
