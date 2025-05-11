@@ -1,0 +1,77 @@
+.project-header-top {
+  border-radius: 1.25rem;
+  width: 100%;
+  max-width: 1100px;
+  padding: 2rem;
+  margin: 4rem auto;
+  direction: rtl;
+  font-family: IRANYekanX, sans-serif;
+}
+
+.title-and-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-big-stone-950);
+  margin: 0;
+}
+
+.project-icons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.project-icons svg {
+  fill: #5a7184;
+  cursor: pointer;
+}
+
+.project-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.project-type,
+.project-date,
+.project-description {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  color: #1a2e45;
+  font-size: 1rem;
+}
+
+.project-description span {
+  flex: 1;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.status-badge {
+  background-color: var(--color-big-stone-50);
+  color: var(--color-big-stone-400);
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: default;
+  align-self: flex-end;
+  margin-top: 0.5rem;
+}
+
+.separator {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin: 1rem 0;
+}
