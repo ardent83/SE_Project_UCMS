@@ -15,9 +15,11 @@ const Members = ({ members }) => {
                     <Profile2User color={"#292D32"} variant="Bold" size={"16"} />
                 </div>
             </div>
-            {members.map((member, index) => (
-                <MemberItem key={index} firstLastName={member.name} image={member.image} />
-            ))}
+            <div className="w-full max-h-100 overflow-y-auto flex flex-col">
+                {members.map((member, index) => (
+                    <MemberItem key={index} firstLastName={member.name} image={member.image} />
+                ))}
+            </div>
         </section>
     );
 };
