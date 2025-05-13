@@ -24,7 +24,7 @@ function App() {
             <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
-            <Route path="/project-management" element={<ProjectManagementPage />} />
+            <Route path="/project-management/:projectId" element={<ProjectManagementPage />} />
           </Route>
 
           <Route path='/' element={<Navigate to={'/auth'} replace />} />

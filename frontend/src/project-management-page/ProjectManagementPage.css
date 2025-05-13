@@ -28,7 +28,7 @@
 }
 
 .project-icons svg {
-  fill: #5a7184;
+  fill: #5a7184;  /* color */
   cursor: pointer;
 }
 
@@ -48,6 +48,10 @@
   gap: 0.5rem;
   color: #1a2e45;
   font-size: 1rem;
+}
+
+.project-date span {
+  direction: ltr;
 }
 
 .project-description span {
