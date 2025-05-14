@@ -5,7 +5,7 @@ import {
     getClassInfoForStudent,
     getStudentOfClassForInstructor,
     getStudentOfClassForStudent
-} from './classPageApi.js';
+} from './utils/classPageApi.js';
 import { useParams } from "react-router-dom";
 import Exams from "./components/exam/Exams.jsx";
 import AboutCard from "./components/AboutCard.jsx";
