@@ -28,9 +28,15 @@ function ChangePasswordSection({
   }, [apiError]);
 
   const handleCloseAlert = () => {
-    setShowAlert(false);
-    setAlertMessage('');
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertMessage('');
+      if (apiError) {
+        formik.setStatus({ apiError: null });
+      }
+    }, 0);
   };
+
 
 
   const handleCancelClick = () => {
@@ -88,12 +94,6 @@ function ChangePasswordSection({
             value={formik.values.confirmNewPassword}
             disabled={!isEditing}
           />
-
-
-          {apiError && (
-            <div className="w-full text-red-500 text-sm mt-2">{apiError}</div>
-          )}
-
 
           {isEditing && (
             <div className="w-full flex justify-start items-center self-start gap-4">

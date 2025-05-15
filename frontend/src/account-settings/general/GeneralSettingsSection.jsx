@@ -35,9 +35,15 @@ function GeneralSettingsSection({
   }, [apiError]);
 
   const handleCloseAlert = () => {
-    setShowAlert(false);
-    setAlertMessage('');
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertMessage('');
+      if (apiError) {
+        formik.setStatus({ apiError: null });
+      }
+    }, 0);
   };
+
 
   const handleCancelClick = () => {
     formik.resetForm({ values: formik.initialValues });

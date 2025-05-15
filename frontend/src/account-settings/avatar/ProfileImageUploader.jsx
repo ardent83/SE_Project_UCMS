@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Camera, GalleryTick, CloseCircle, Trash } from "iconsax-react";
 import Alert from "../../components/Alert";
 import { uploadProfileImage, deleteProfileImage } from "./utils/profileApi";
@@ -48,6 +48,14 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
   const [isHovered, setIsHovered] = useState(false);
   const fileInputRef = useRef(null);
 
+  useEffect(() => {
+  if (!initialImagePath) {
+    setCurrentImageUrl(gender === 0 ? '/man.jpg' : '/woman.png');
+  } else {
+    setCurrentImageUrl(initialImagePath);
+  }
+}, [gender, initialImagePath]);
+
   const handleIconClick = () => {
     if (isPendingConfirmation || isUploading || isDeleting) return;
     fileInputRef.current.click();
@@ -88,7 +96,7 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
     setIsConfirmingDelete(false);
     if (selectedFile) {
         setSelectedFile(null);
-        setCurrentImageUrl(initialImagePath || defaultImageUrl);
+        setCurrentImageUrl(initialImagePath || (gender === 0 ? '/man.jpg' : '/woman.png'));
     }
   };
 
@@ -248,7 +256,7 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
 
       {error && (
         <div className="absolute top-[13.5rem] right-0 left-0 text-center w-full">
-          <Alert type="error" message={error} onClose={() => setError(null)} />
+          <Alert type="error" message={error} onClose={() => setTimeout(() => {setError(null)}, 0)} />
         </div>
       )}
     </div>

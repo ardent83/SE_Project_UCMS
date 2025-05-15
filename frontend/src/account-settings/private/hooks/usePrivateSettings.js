@@ -11,15 +11,15 @@ const usePrivateSettings = ({ initialUserData, onSaveSuccess }) => {
       ? {
           studentNumber: initialUserData?.studentNumber || "",
           major: initialUserData?.major || "",
-          enrollmentYear: initialUserData?.enrollmentYear || "",
-          university: initialUserData?.university || "",
-          educationLevel: initialUserData?.educationLevel || "",
+          enrollmentYear: initialUserData?.enrollmentYear || 0,
+          university: initialUserData?.university || 0,
+          educationLevel: initialUserData?.educationLevel || 0,
         }
       : {
           employeeCode: initialUserData?.employeeCode || "",
           department: initialUserData?.department || "",
-          university: initialUserData?.university || "",
-          rank: initialUserData?.rank || "",
+          university: initialUserData?.university || 0,
+          rank: initialUserData?.rank || 0,
         };
 
   const formik = useFormik({
@@ -45,14 +45,14 @@ const usePrivateSettings = ({ initialUserData, onSaveSuccess }) => {
                     studentId: values.studentNumber,
                     major: values.major,
                     entryYear: values.enrollmentYear,
-                    university: values.university,
-                    degree: values.educationLevel,
+                    university: Number(values.university),
+                    degree: Number(values.educationLevel),
                   }
                 : {
                     personnelCode: values.employeeCode,
                     faculty: values.department,
-                    university: values.university,
-                    rank: values.rank,
+                    university: Number(values.university),
+                    rank: Number(values.rank),
                   };
             onSaveSuccess(updatedUserData);
           }
