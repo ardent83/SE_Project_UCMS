@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar';
 
+
+@keyframes orbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @layer components {
   .all-\[unset\] {
     all: unset;
@@ -84,7 +90,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "IRANYekanXVF", sans-serif;
+    font-family: IRANYekanX, sans-serif;
     border: var(--bg-blue);
   }
 
