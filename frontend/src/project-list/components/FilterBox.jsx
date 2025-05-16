@@ -1,0 +1,41 @@
+import React, { useState } from "react";
+import { Filter } from "iconsax-react";
+
+const filterOptions = ["همه", "تکمیل", "در حال انجام", "شروع نشده"];
+
+export default function FilterBox({ selected, onChange }) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleSelect = (value) => {
+        onChange(value);
+        setIsOpen(false);
+    };
+
+    return (
+        <div className="relative w-[150px]" dir="rtl">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center justify-between w-full h-10 px-4 gap-2.5 rounded-md border border-gray-200 bg-gray-100 text-body-04 font-medium text-[var(--color-label)]"
+            >
+                <span>{selected}</span>
+                <Filter size="20" color="var(--label)" variant="Bold" />
+            </button>
+
+            {isOpen && (
+                <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-md shadow-md z-10 w-full text-body-04 font-medium">
+                    {filterOptions.map((option) => (
+                        <div
+                            key={option}
+                            onClick={() => handleSelect(option)}
+                            className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                                selected === option ? "bg-gray-100 font-bold" : ""
+                            }`}
+                        >
+                            {option}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
