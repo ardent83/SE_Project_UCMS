@@ -228,7 +228,7 @@
 
   --text-body-05: 0.75rem;
   --text-body-05--font-weight: 400;
-  --text-body-05--line-height: 180٪;
+  --text-body-05--line-height: 180%;
 
   --text-body-light: 0.75rem;
   --text-body-light--font-weight: 300;
@@ -358,7 +358,7 @@
 }
 
 @font-face {
-  font-family: IRANYekanXVF;
+  font-family: IRANYekanX;
   src: url("/IRANYekanXVF.ttf") format("truetype");
   font-style: normal;
   font-weight: 300 400 500 700;
