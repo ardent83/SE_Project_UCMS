@@ -36,7 +36,7 @@ const VerificationPage = () => {
 
                     <div className="h-full flex flex-col justify-center items-center px-8">
                         <img
-                            src="emailVerification.jpg"
+                            src="/emailVerification.jpg"
                             alt="email"
                             className="w-[300px] h-[220px] mb-4"
                         />
