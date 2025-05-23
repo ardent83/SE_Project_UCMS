@@ -39,11 +39,7 @@ export default function ProjectsPage() {
     });
 
     const handleNewClassClick = () => {
-        if (userRole === "Instructor") {
-            // c????????????????
-        } else if (userRole === "Student") {
-
-        }
+      // صفحه فرم رو صدا بزن
     };
 
     return (
@@ -57,14 +53,16 @@ export default function ProjectsPage() {
 
             <div className="flex flex-wrap justify-between items-center mb-15 gap-4 relative z-20">
                 <div className="flex gap-3 relative z-20">
-                    <Button
-                        buttonText={"پروژه جدید"}
-                        textShow={true}
-                        leftIcon={false}
-                        className="w-30"
-                        rightIconComponent={<Add size="20" variant="bold" />}
-                        onClick={handleNewClassClick}
-                    />
+                    {userRole === "Instructor" && (
+                        <Button
+                            buttonText={"پروژه جدید"}
+                            textShow={true}
+                            leftIcon={false}
+                            className="w-30"
+                            rightIconComponent={<Add size="20" variant="bold" />}
+                            onClick={handleNewClassClick}
+                        />
+                    )}
                     <FilterBox selected={filter} onChange={setFilter} />
                 </div>
                 <SearchBox
