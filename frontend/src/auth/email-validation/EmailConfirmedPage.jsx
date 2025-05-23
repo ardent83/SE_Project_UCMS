@@ -29,10 +29,10 @@ const EmailConfirmedPage = () => {
                         className="w-[250px] h-[220px] mb-4 mr-10"
                     />
                     <h1 className="text-xl text-[#021257] font-bold mt-0 mb-2">
-                        سلام مهسا محمدی عزیز!
+                        سلام😃
                     </h1>
                     <p className="text-sm text-gray-700 leading-loose">
-                        به سامانه‌ی ...... خوش اومدی
+                        به سامانه‌ی UCMS خوش اومدی
                     </p>
                     <p className="text-sm text-gray-700 leading-loose mt-1">
                         ثبت‌نام شما با موفقیت انجام شد!
