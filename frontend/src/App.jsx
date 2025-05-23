@@ -1,14 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './auth/AuthPage';
-// import ClassForm from './class-form/ClassForm';
-import AccountSettings from './account-settings/AccountSettings';
 import Dashboard from './Dashboard';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import ClassesPage from './classes/ClassesPage';
 import MainLayout from './main/MainLayout';
-import VerificationPage from "./auth/email-validation/emailVerificationPage.jsx";
-// import ClassPage from './class-page/ClassPage';
+import AccountSettings from './account-settings/AccountSettings';
+import ClassForm from './class-form/ClassForm'
 
 function App() {
   return (
@@ -16,34 +15,16 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/verification" element={<VerificationPage />} />
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <MainLayout>
-                <Dashboard />
-              </MainLayout>
-            </PrivateRoute>
-          } />
 
-          {/*<Route path="/test" element={*/}
-          {/*  <MainLayout>*/}
-          {/*    <ClassForm formType={"create"} />*/}
-          {/*  </MainLayout>*/}
-          {/*} />*/}
-
-          <Route path="/ue" element={
-            <MainLayout>
-              <AccountSettings />
-            </MainLayout>
-          } />
-
-          {/*<Route path="/class" element={*/}
-          {/*  <MainLayout>*/}
-          {/*    <ClassPage />*/}
-          {/*  </MainLayout>*/}
-          {/*} />*/}
-
-          <Route path='/' element={<Navigate to={'/class'} replace />} />
+          <Route path='/' element={<Navigate to={'/auth'} replace/>} />
+          <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/account-settings" element={<AccountSettings />} />
+            <Route path="/classes" element={<div><ClassesPage /></div>} />
+            <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
+            <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
+            <Route path="/class/create/" element={<ClassForm />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

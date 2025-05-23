@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useEffect } from "react";
+import React, { useState, forwardRef } from "react";
 import classNames from "classnames";
 import { Eye, EyeSlash, Calendar1 } from "iconsax-react";
 import {
@@ -22,6 +22,7 @@ const Input = forwardRef(({
     openCalendar,
     mustFill=false,
     handleValueChange,
+    onChangeFile,
     field,
     form,
     ...props
@@ -66,6 +67,7 @@ const Input = forwardRef(({
                     onChange={(e) => {
                         field.onChange(e);
                         handleValueChange?.(e, e.target.value);
+                        onChangeFile?.(e);
                     }}
                     onMouseEnter={() => {}}
                     placeholder={textShow ? placeholder : ""}
@@ -74,7 +76,7 @@ const Input = forwardRef(({
                 />
                 {type === "password" && (
                     <span
-                        className="flex justify-center items-center w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                        className="flex justify-center items-center w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
                         onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                     >
                         {isPasswordVisible ?
