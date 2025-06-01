@@ -1,9 +1,9 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, register, logout } from '../utils/authApi';
+import { resetAuthRedirectFlag } from '../../utils/setupAuthInterceptor';
 
 const AuthContext = createContext(null);
 
@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
                     setUser(userData);
                 }
             } catch (error) {
-                console.error("Error checking authentication:", error);
                 navigate('/auth');
             } finally {
                 setLoading(false);
@@ -42,6 +41,7 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);
+                resetAuthRedirectFlag();
                 navigate('/dashboard');
                 return true;
             } else {
