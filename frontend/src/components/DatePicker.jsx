@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import DatePicker, { DateObject } from "react-multi-date-picker";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import gregorian from "react-date-object/calendars/gregorian";
@@ -16,6 +17,7 @@ export default function MyDatePicker({
     disabled,
     storageFormat = "isoString",
     displayFormat = "YYYY/MM/DD",
+    showTime=false,
     ...props
 }) {
     const [dateValue, setDateValue] = useState(null);
@@ -95,6 +97,10 @@ export default function MyDatePicker({
     return (
         <DatePicker
             value={dateValue}
+            format={showTime ? "YYYY/MM/DD HH:mm:ss" : displayFormat}
+            plugins={showTime ? [
+                <TimePicker position="bottom" />
+            ] : []}
             onChange={handlePickerChange}
             render={
                 <Input
