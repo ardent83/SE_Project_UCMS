@@ -9,6 +9,8 @@ import MainLayout from './main/MainLayout';
 import ProjectForm from './project-form/ProjectForm';
 import AccountSettings from './account-settings/AccountSettings';
 import ClassForm from './class-form/ClassForm'
+import PhaseForm from './phase-form/PhaseForm';
+import ProfilePage from './profile-page/Profile';
 
 function App() {
   return (
@@ -21,12 +23,15 @@ function App() {
           <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account-settings" element={<AccountSettings />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/classes" element={<div><ClassesPage /></div>} />
             <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
             <Route path="class/:classId/project/edit/:projectId" element={<ProjectForm formType='edit' />} />
             <Route path="class/:classId/project/create/" element={<ProjectForm />} />
+            <Route path="project/:projectId/phase/edit/:phaseId" element={<PhaseForm formType='edit' />} />
+            <Route path="project/:projectId/phase/create/" element={<PhaseForm />} />
           </Route>
           
           <Route path='/' element={<Navigate to={'/auth'} replace />} />
