@@ -19,17 +19,21 @@ export const projectFormValidationSchema = (formType) =>
       .required("نوع پروژه الزامی است")
       .oneOf([0, 1], "نوع پروژه نامعتبر است"),
 
-    groupSize: Yup.number()
-      .required("تعداد اعضا کل الزامی است")
-      .typeError("تعداد اعضا باید یک عدد باشد")
-      .max(1000, "تعداد اعضا نمی‌تواند بیشتر از ۱۰۰۰ باشد")
-      .when("projectType", {
-        is: 1,
-        then: (schema) =>
-          schema.min(2, "تعداد اعضا برای پروژه گروهی باید بیشتر از ۱ باشد"),
-        otherwise: (schema) =>
-          schema.oneOf([1], "تعداد اعضا برای پروژه تکی باید ۱ باشد"),
-      }),
+    groupSize: Yup.number().when([], {
+      is: () => formType === "create",
+      then: () =>
+        Yup.number()
+          .required("تعداد اعضا کل الزامی است")
+          .typeError("تعداد اعضا باید یک عدد باشد")
+          .max(1000, "تعداد اعضا نمی‌تواند بیشتر از ۱۰۰۰ باشد")
+          .when("projectType", {
+            is: 1,
+            then: (schema) =>
+              schema.min(2, "تعداد اعضا برای پروژه گروهی باید بیشتر از ۱ باشد"),
+            otherwise: (schema) =>
+              schema.oneOf([1], "تعداد اعضا برای پروژه تکی باید ۱ باشد"),
+          }),
+    }),
 
     startDate: Yup.string()
       .required("تاریخ و زمان شروع پروژه الزامی است")

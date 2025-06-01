@@ -10,7 +10,6 @@ import ProjectForm from './project-form/ProjectForm';
 import AccountSettings from './account-settings/AccountSettings';
 import ClassForm from './class-form/ClassForm'
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -29,11 +28,11 @@ function App() {
             <Route path="class/:classId/project/edit/:projectId" element={<ProjectForm formType='edit' />} />
             <Route path="class/:classId/project/create/" element={<ProjectForm />} />
           </Route>
-          {/* <Route path="/project/create/" element={<ProjectForm />} /> */}
-
+          
           <Route path='/' element={<Navigate to={'/auth'} replace />} />
 
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>
