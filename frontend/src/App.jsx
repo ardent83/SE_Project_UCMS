@@ -8,6 +8,7 @@ import ClassesPage from './classes/ClassesPage';
 import MainLayout from './main/MainLayout';
 import AccountSettings from './account-settings/AccountSettings';
 import ClassForm from './class-form/ClassForm'
+import ScoresPage from './scores-list-page/ScoresListPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
+            <Route path="/scores" element={<ScoresPage />} />
           </Route>
         </Routes>
       </AuthProvider>
