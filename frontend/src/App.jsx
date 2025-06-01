@@ -8,6 +8,7 @@ import Dashboard from './Dashboard';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import MainLayout from './main/MainLayout';
+import ProjectForm from './project-form/ProjectForm';
 
 function App() {
   return (
@@ -23,7 +24,10 @@ function App() {
             <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
+            <Route path="class/:classId/project/edit/:projectId" element={<ProjectForm formType='edit' />} />
+            <Route path="class/:classId/project/create/" element={<ProjectForm />} />
           </Route>
+          {/* <Route path="/project/create/" element={<ProjectForm />} /> */}
 
           <Route path='/' element={<Navigate to={'/auth'} replace />} />
 
