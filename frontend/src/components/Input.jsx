@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useEffect } from "react";
+import React, { useState, forwardRef } from "react";
 import classNames from "classnames";
 import { Eye, EyeSlash, Calendar1 } from "iconsax-react";
 import {
