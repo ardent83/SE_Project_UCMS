@@ -9,8 +9,10 @@ import MainLayout from './main/MainLayout';
 import ProjectForm from './project-form/ProjectForm';
 import AccountSettings from './account-settings/AccountSettings';
 import ClassForm from './class-form/ClassForm'
+import GroupForm from './group-form/GroupForm';
 import PhaseForm from './phase-form/PhaseForm';
 import ProfilePage from './profile-page/Profile';
+import VerificationPage from './auth/email-validation/emailVerificationPage';
 
 function App() {
   return (
@@ -18,8 +20,9 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
-
+          <Route path="/verification" element={<VerificationPage />} />
           <Route path='/' element={<Navigate to={'/auth'} replace/>} />
+
           <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account-settings" element={<AccountSettings />} />
@@ -28,13 +31,13 @@ function App() {
             <Route path="/test" element={<div>صفحه تست (محتوای این مسیر)</div>} />
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
+            <Route path="/group/edit/:groupId" element={<GroupForm formType='edit' />} />
+            <Route path="project/:projectId/group/create/" element={<GroupForm />} />
             <Route path="class/:classId/project/edit/:projectId" element={<ProjectForm formType='edit' />} />
             <Route path="class/:classId/project/create/" element={<ProjectForm />} />
             <Route path="project/:projectId/phase/edit/:phaseId" element={<PhaseForm formType='edit' />} />
             <Route path="project/:projectId/phase/create/" element={<PhaseForm />} />
           </Route>
-          
-          <Route path='/' element={<Navigate to={'/auth'} replace />} />
 
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
 
