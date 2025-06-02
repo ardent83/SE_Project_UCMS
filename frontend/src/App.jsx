@@ -11,6 +11,7 @@ import AccountSettings from './account-settings/AccountSettings';
 import ClassForm from './class-form/ClassForm'
 import GroupForm from './group-form/GroupForm';
 import PhaseForm from './phase-form/PhaseForm';
+import ExerciseForm from './exercise-form/ExerciseForm';
 import ProfilePage from './profile-page/Profile';
 import VerificationPage from './auth/email-validation/emailVerificationPage';
 
@@ -37,6 +38,8 @@ function App() {
             <Route path="class/:classId/project/create/" element={<ProjectForm />} />
             <Route path="project/:projectId/phase/edit/:phaseId" element={<PhaseForm formType='edit' />} />
             <Route path="project/:projectId/phase/create/" element={<PhaseForm />} />
+            <Route path="class/:classId/exercise/edit/:exerciseId" element={<ExerciseForm formType='edit' />} />
+            <Route path="class/:classId/exercise/create/" element={<ExerciseForm />} />
           </Route>
 
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}

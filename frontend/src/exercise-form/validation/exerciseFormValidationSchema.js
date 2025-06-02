@@ -4,15 +4,15 @@ const dateFormatRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
 
 export const allowedFormats = ["pdf", "zip", "rar", "txt"];
 
-export const phaseFormValidationSchema = (formType) =>
+export const exerciseFormValidationSchema = (formType) =>
   Yup.object().shape({
     title: Yup.string()
-      .required("عنوان فاز الزامی است")
-      .min(1, "عنوان فاز حداقل باید ۱ کاراکتر باشد")
-      .max(200, "عنوان فاز حداکثر می‌تواند ۲۰۰ کاراکتر باشد"),
+      .required("عنوان تکلیف الزامی است")
+      .min(1, "عنوان تکلیف حداقل باید ۱ کاراکتر باشد")
+      .max(200, "عنوان تکلیف حداکثر می‌تواند ۲۰۰ کاراکتر باشد"),
 
     startDate: Yup.string()
-      .required("تاریخ و زمان شروع فاز الزامی است")
+      .required("تاریخ و زمان شروع تکلیف الزامی است")
       .test(
         "dateFormat",
         "فرمت تاریخ و زمان شروع نامعتبر است (مثال: YYYY/MM/DD HH:mm:ss)",
@@ -23,7 +23,7 @@ export const phaseFormValidationSchema = (formType) =>
       ),
 
     endDate: Yup.string()
-      .required("تاریخ و زمان پایان فاز الزامی است")
+      .required("تاریخ و زمان پایان تکلیف الزامی است")
       .test(
         "dateFormat",
         "فرمت تاریخ و زمان پایان نامعتبر است (مثال: YYYY/MM/DD HH:mm:ss)",
@@ -52,13 +52,13 @@ export const phaseFormValidationSchema = (formType) =>
       "توضیحات حداکثر می‌تواند ۱۰۰۰ کاراکتر باشد"
     ),
 
-    phaseScore: Yup.number()
-      .required("نمره فاز الزامی است")
-      .min(0, "نمره فاز نمی‌تواند کمتر از ۰ باشد")
-      .max(1000, "نمره فاز نمی‌تواند بیشتر از ۱۰۰۰ باشد")
-      .typeError("نمره فاز باید یک عدد باشد"),
+    exerciseScore: Yup.number()
+      .required("نمره تکلیف الزامی است")
+      .min(0, "نمره تکلیف نمی‌تواند کمتر از ۰ باشد")
+      .max(1000, "نمره تکلیف نمی‌تواند بیشتر از ۱۰۰۰ باشد")
+      .typeError("نمره تکلیف باید یک عدد باشد"),
 
-    phaseFile: Yup.mixed()
+    exerciseFile: Yup.mixed()
       .nullable()
       .test(
         "fileSize",
@@ -83,6 +83,7 @@ export const phaseFormValidationSchema = (formType) =>
         if (value.type && allowedMimeTypes.includes(value.type)) {
           return true;
         }
+
         const fileName =
           typeof value === "string"
             ? value.toLowerCase()
