@@ -9,7 +9,6 @@ const useAuthForm = () => {
     const { login, register } = useAuth();
     const [formType, setFormType] = useState('login');
     const [apiError, setApiError] = useState(null);
-    const navigate = useNavigate();
 
     const initialValues = {
         username: '',
@@ -30,9 +29,7 @@ const useAuthForm = () => {
                     await login(values.email, values.password);
                 } else {
                     await register(values.username, values.email, values.password, values.confirmPassword, values.roleId);
-                    navigate('/verification');
                 }
-                //if (!success) { handled in AuthContext }
             } catch (err) {
                 setApiError(err.message || (formType === 'login' ? 'ورود ناموفق' : 'ثبت‌نام ناموفق'));
             } finally {
