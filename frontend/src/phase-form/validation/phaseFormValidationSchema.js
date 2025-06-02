@@ -83,8 +83,13 @@ export const phaseFormValidationSchema = (formType) =>
         if (value.type && allowedMimeTypes.includes(value.type)) {
           return true;
         }
-        const fileName = value.name.toLowerCase();
-        return allowedExtensions.some((ext) => fileName.endsWith(ext));
+        const fileName =
+          typeof value === "string"
+            ? value.toLowerCase()
+            : typeof value.name === "string"
+            ? value.name.toLowerCase()
+            : "";
+        return allowedExtensions.some((ext) => fileName.endsWith(`.${ext}`));
       }),
 
     fileFormats: Yup.array()
