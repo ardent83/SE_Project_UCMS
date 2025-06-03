@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Notepad2, Add } from "iconsax-react";
+import { Notepad2 } from "iconsax-react";
 import FilterBox from "./components/FilterBox";
 import SearchBox from "./components/SearchBox";
-import Button from "../components/Button.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
 import { fetchProjects } from "./utils/ProjectListApi.js";
 
@@ -35,10 +34,6 @@ export default function ProjectsPage() {
         const matchesFilter = filter === "همه" || p.status === filter;
         return matchesSearch && matchesFilter;
     });
-
-    const handleNewClassClick = () => {
-        // صفحه فرم رو صدا بزن
-    };
 
     return (
         <div dir="lrt" className="w-full max-w-[90rem] mx-auto my-10 px-10 text-bg-blue">
