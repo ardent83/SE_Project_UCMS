@@ -13,7 +13,7 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ClassesPage = () => {
   const { user } = useAuth();
-  const userRole = user?.data?.role?.name || "guest";
+  const userRole = user?.role?.name || "guest";
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
