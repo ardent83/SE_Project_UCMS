@@ -62,13 +62,20 @@ const Alert = ({ message, type = 'info', duration = 3000, onClose }) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.5 }}
-                    className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 ${bg} ${border} ${text} px-6 py-4 rounded-xl shadow-lg flex items-center justify-between max-w-md w-full`}
+                    className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 ${bg} ${border} ${text} px-6 py-4 rounded-xl shadow-lg flex items-center justify-between`}
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >
                     <div className="flex items-center">
                         <span className="mr-2">{/* Optional icon based on type */}</span>
-                        <p className="text-sm font-medium">{message}</p>
+                        <div className="text-body-04 text-neutralgray-10 text-wrap">
+                            {message.split('\n').map((line, index) => (
+                                <span className="text-wrap" key={index}>
+                                    {line}
+                                    <br />
+                                </span>
+                            ))}
+                        </div>
                     </div>
                     <button
                         onClick={closeAlert}

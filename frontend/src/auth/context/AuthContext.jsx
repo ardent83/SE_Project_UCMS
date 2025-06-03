@@ -1,9 +1,9 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { login, register, logout } from '../utils/authApi';
+import { resetAuthRedirectFlag } from '../../utils/setupAuthInterceptor';
 
 const AuthContext = createContext(null);
 
@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -26,7 +27,8 @@ export const AuthProvider = ({ children }) => {
                     setUser(userData);
                 }
             } catch (error) {
-                console.error("Error checking authentication:", error);
+                if (location.pathname === "/verification")
+                    return
                 navigate('/auth');
             } finally {
                 setLoading(false);
@@ -39,9 +41,10 @@ export const AuthProvider = ({ children }) => {
     const handleLogin = async (email, password) => {
         try {
             const response = await login(email, password);
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
+                if (response.ok) {
+                    const userData = await response.json();
+                    setUser(userData);
+                resetAuthRedirectFlag();
                 navigate('/dashboard');
                 return true;
             } else {
@@ -57,9 +60,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await register(username, email, password, confirmPassword, roleId);
             if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
-                navigate('/dashboard');
+                navigate('/verification');
                 return true;
             } else {
                 const errorData = await response.json();
