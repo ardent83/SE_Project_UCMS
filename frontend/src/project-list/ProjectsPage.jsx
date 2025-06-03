@@ -1,21 +1,10 @@
-import React, { useState } from "react";
-import {Notepad2, Add} from "iconsax-react";
+import React, { useState, useEffect } from "react";
+import { Notepad2, Add } from "iconsax-react";
 import FilterBox from "./components/FilterBox";
 import SearchBox from "./components/SearchBox";
 import Button from "../components/Button.jsx";
-import {useAuth} from "../auth/context/AuthContext.jsx";
-
-const projectsData = [
-    { id: 1, name: "پروژه۱", lesson: "مونرم", time: "۱۰:۰۰", deliveryDate: "۲۰ اسفند ۱۴۰۳", status: "تکمیل" },
-    { id: 2, name: "پروژه۲", lesson: "داده کاوی", time: "۱۴:۰۰", deliveryDate: "۲۰ اردیبهشت ۱۴۰۴", status: "در حال انجام" },
-    { id: 3, name: "پروژه۳", lesson: "ریزپردازنده", time: "۱۲:۰۰", deliveryDate: "۳۰ اردیبهشت ۱۴۰۴", status: "شروع نشده" },
-    { id: 4, name: "پروژه۱", lesson: "مونرم", time: "۱۰:۰۰", deliveryDate: "۲۰ اسفند ۱۴۰۳", status: "تکمیل" },
-    { id: 5, name: "پروژه۲", lesson: "داده کاوی", time: "۱۴:۰۰", deliveryDate: "۲۰ اردیبهشت ۱۴۰۴", status: "در حال انجام" },
-    { id: 6, name: "پروژه۳", lesson: "مونرم", time: "۱۲:۰۰", deliveryDate: "۳۰ اردیبهشت ۱۴۰۴", status: "شروع نشده" },
-    { id: 7, name: "پروژه۱", lesson: "ریزپردازنده", time: "۱۰:۰۰", deliveryDate: "۲۰ اسفند ۱۴۰۳", status: "تکمیل" },
-    { id: 8, name: "پروژه۲", lesson: "داده کاوی", time: "۱۴:۰۰", deliveryDate: "۲۰ اردیبهشت ۱۴۰۴", status: "در حال انجام" },
-    { id: 9, name: "پروژه۳", lesson: "مونرم", time: "۱۲:۰۰", deliveryDate: "۳۰ اردیبهشت ۱۴۰۴", status: "شروع نشده" },
-];
+import { useAuth } from "../auth/context/AuthContext.jsx";
+import { fetchProjects } from "./utils/ProjectListApi.js";
 
 const statusColors = {
     "تکمیل": "bg-green-200 text-green-800",
@@ -26,8 +15,17 @@ const statusColors = {
 export default function ProjectsPage() {
     const { user } = useAuth();
     const userRole = user?.data?.role?.name || "guest";
+    const [projectsData, setProjectsData] = useState([]);
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("همه");
+
+    useEffect(() => {
+        const loadProjects = async () => {
+            const data = await fetchProjects();
+            setProjectsData(data);
+        };
+        loadProjects();
+    }, []);
 
     const filteredProjects = projectsData.filter((p) => {
         const lowerSearch = search.trim().toLowerCase();
@@ -39,7 +37,7 @@ export default function ProjectsPage() {
     });
 
     const handleNewClassClick = () => {
-      // صفحه فرم رو صدا بزن
+        // صفحه فرم رو صدا بزن
     };
 
     return (
@@ -52,19 +50,7 @@ export default function ProjectsPage() {
             </h2>
 
             <div className="flex flex-wrap justify-between items-center mb-15 gap-4 relative z-20">
-                <div className="flex gap-3 relative z-20">
-                    {userRole === "Instructor" && (
-                        <Button
-                            buttonText={"پروژه جدید"}
-                            textShow={true}
-                            leftIcon={false}
-                            className="w-30"
-                            rightIconComponent={<Add size="20" variant="bold" />}
-                            onClick={handleNewClassClick}
-                        />
-                    )}
-                    <FilterBox selected={filter} onChange={setFilter} />
-                </div>
+                <FilterBox selected={filter} onChange={setFilter} />
                 <SearchBox
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -89,9 +75,11 @@ export default function ProjectsPage() {
                             filteredProjects.map((project) => (
                                 <tr key={project.id} className="border-b border-gray-100 hover:bg-gray-100 transition">
                                     <td className="py-3 px-4">
-                                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusColors[project.status]}`}>
-                                                {project.status}
-                                            </span>
+                      <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusColors[project.status]}`}
+                      >
+                        {project.status}
+                      </span>
                                     </td>
                                     <td className="py-3 px-4">{project.deliveryDate}</td>
                                     <td className="py-3 px-4">{project.time}</td>

@@ -12,7 +12,7 @@ export default function FilterBox({ selected, onChange }) {
     };
 
     return (
-        <div className="relative w-[150px]" dir="rtl">
+        <div className="relative ml-15 w-[150px]" dir="rtl">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center justify-between w-full h-10 px-4 gap-2.5 rounded-md border border-gray-200 bg-gray-100 text-body-04 font-medium text-[var(--color-label)]"
