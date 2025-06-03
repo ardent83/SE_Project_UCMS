@@ -4,7 +4,7 @@ import { useAuth } from "../auth/context/AuthContext.jsx";
 
 function ProfilePage() {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
     const [profile, setProfile] = useState(null);
     const [error, setError] = useState(null);
 
