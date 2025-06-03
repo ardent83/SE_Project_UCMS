@@ -5,7 +5,7 @@ const EmailConfirmedPage = () => {
     const [animationData, setAnimationData] = useState(null);
 
     useEffect(() => {
-        fetch('/confirmed-animation.json') // چون فایل داخل public هست، نیازی به import نیست
+        fetch('/confirmed-animation.json')
             .then((res) => res.json())
             .then(setAnimationData)
             .catch((err) => console.error("خطا در لود انیمیشن:", err));
