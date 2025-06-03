@@ -8,7 +8,7 @@ import ChangePasswordSection from "./password/ChangePasswordSection";
 import Alert from "../components/Alert";
 import { fetchUserProfile, fetchInstructorSpecializedInfo, fetchStudentSpecializedInfo } from './utils/accountSettingsApi';
 
-const API_BASE_URL = 'https://localhost:7269/api/enums';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function AccountSettings() {
   const [editingSection, setEditingSection] = useState(null);
@@ -46,9 +46,9 @@ export default function AccountSettings() {
           educationLevelRes,
           instructorRankRes,
         ] = await Promise.all([
-          axios.get(`${API_BASE_URL}/university`, { withCredentials: true }),
-          axios.get(`${API_BASE_URL}/educationLevel`, { withCredentials: true }),
-          axios.get(`${API_BASE_URL}/instructorRank`, { withCredentials: true }),
+          axios.get(`${API_BASE_URL}/api/enums/university`, { withCredentials: true }),
+          axios.get(`${API_BASE_URL}/api/enums/educationLevel`, { withCredentials: true }),
+          axios.get(`${API_BASE_URL}/api/enums/instructorRank`, { withCredentials: true }),
         ]);
 
         setUniversities(universityRes.data);
@@ -102,7 +102,6 @@ export default function AccountSettings() {
 
   const handleSectionSaveSuccess = (section, updatedData = null) => {
     if (updatedData) {
-      console.log(updatedData);
       setUserData(prevUserData => ({ ...prevUserData, ...updatedData }));
     }
 
