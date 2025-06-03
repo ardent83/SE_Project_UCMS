@@ -1,8 +1,6 @@
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { login, register, logout } from '../utils/authApi';
+import { login, register, logout, profile, authStatus } from '../utils/authApi';
 import { resetAuthRedirectFlag } from '../../utils/setupAuthInterceptor';
 
 const AuthContext = createContext(null);
@@ -10,25 +8,24 @@ const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem("user");
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-                if (response.ok) {
-                    const userData = await response.json();
-                    setUser(userData);
-                }
+                const res = await authStatus();
+                if (res.ok)
+                    return;
+                navigate('/auth');
             } catch (error) {
-                if (location.pathname === "/verification")
-                    return
+                if (location.pathname === "/verification") return;
                 navigate('/auth');
             } finally {
                 setLoading(false);
@@ -40,15 +37,19 @@ export const AuthProvider = ({ children }) => {
 
     const handleLogin = async (email, password) => {
         try {
-            const response = await login(email, password);
-                if (response.ok) {
-                    const userData = await response.json();
-                    setUser(userData);
+            const loginResponse = await login(email, password);
+            if (loginResponse.ok) {
+                const profileResponse = await profile();
+                if (profileResponse.ok) {
+                    const responseJson = await profileResponse.json();
+                    setUser(responseJson.data);
+                    localStorage.setItem("user", JSON.stringify(responseJson.data));
+                }
                 resetAuthRedirectFlag();
                 navigate('/dashboard');
                 return true;
             } else {
-                const errorData = await response.json();
+                const errorData = await loginResponse.json();
                 throw new Error(errorData.message || 'Login failed');
             }
         } catch (error) {
@@ -76,6 +77,7 @@ export const AuthProvider = ({ children }) => {
             const response = await logout();
             if (response.ok) {
                 setUser(null);
+                localStorage.removeItem("user");
                 navigate('/auth');
             } else {
                 const errorData = await response.json();

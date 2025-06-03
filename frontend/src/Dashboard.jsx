@@ -10,7 +10,7 @@ const Dashboard = () => {
 
     return (
         <div>
-            <h1>Welcome, {user ? JSON.stringify(user) : 'Guest'}</h1>
+            <h1>{user ? JSON.stringify(user) : 'Guest'}</h1>
             <button className='border border-solid border-pink-700 cursor-pointer' onClick={handleLogout}>Logout</button>
         </div>
     );
