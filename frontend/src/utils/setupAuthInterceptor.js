@@ -11,7 +11,8 @@ export const setupAuthInterceptor = () => {
       response.status === 401 &&
       !hasRedirectedToLogin &&
       window.location.pathname !== '/auth' &&
-      window.location.pathname !== '/verification'
+      window.location.pathname !== '/verification' &&
+      window.location.pathname !== '/confirmation'
     ) {
       hasRedirectedToLogin = true;
       window.location.href = '/auth';
@@ -26,7 +27,8 @@ export const setupAuthInterceptor = () => {
         err.response?.status === 401 &&
         !hasRedirectedToLogin &&
         window.location.pathname !== '/auth' &&
-        window.location.pathname !== '/verification'
+        window.location.pathname !== '/verification' &&
+        window.location.pathname !== '/confirmation'
       ) {
         hasRedirectedToLogin = true;
         window.location.href = '/auth';
