@@ -3,7 +3,7 @@ import { HeadSection } from '../../components/HeadSection';
 import { Notepad2 } from "iconsax-react";
 import { useProjectList } from "./hooks/useProjectList";
 
-export default function ProjectList({ userRoleId }) {
+export const ProjectList = ({ userRoleId }) => {
     const { projects, loading, error } = useProjectList({ userRoleId });
 
     const renderTableBody = () => {
@@ -45,9 +45,7 @@ export default function ProjectList({ userRoleId }) {
                     </span>
                 </td>
 
-                <td className="p-2" >
-                    {project.dueDateFormatted}
-                </td>
+                <td className="p-2" >{project.dueDateFormatted}</td>
                 <td className="p-2">{project.dueTimeFormatted}</td>
                 <td className="p-2">{project.classTitle}</td>
                 <td className="p-2" >{project.title}</td>
