@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './auth/AuthPage';
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import ClassesPage from './classes/ClassesPage';
