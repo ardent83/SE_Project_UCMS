@@ -13,7 +13,7 @@ const statusColors = {
 
 export default function ProjectsPage() {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
     const [projectsData, setProjectsData] = useState([]);
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("همه");
