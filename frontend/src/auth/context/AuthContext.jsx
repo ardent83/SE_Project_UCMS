@@ -23,9 +23,12 @@ export const AuthProvider = ({ children }) => {
                 const res = await authStatus();
                 if (res.ok)
                     return;
-                navigate('/auth');
+                throw new Error();
             } catch (error) {
-                if (location.pathname === "/verification") return;
+                if (
+                    location.pathname === "/verification" ||
+                    location.pathname === "/confirmation"
+                ) return;
                 navigate('/auth');
             } finally {
                 setLoading(false);
