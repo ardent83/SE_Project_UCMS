@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './auth/AuthPage';
-import ClassForm from './class-form/ClassForm';
 import AccountSettings from './account-settings/AccountSettings';
 import ProjectManagementPage from './project-management-page/ProjectManagementPage';
 import Dashboard from './dashboard/Dashboard';
@@ -10,7 +9,6 @@ import PrivateRoute from './components/PrivateRoute';
 import ClassesPage from './classes/ClassesPage';
 import MainLayout from './main/MainLayout';
 import ProjectForm from './project-form/ProjectForm';
-import AccountSettings from './account-settings/AccountSettings';
 import ClassForm from './class-form/ClassForm'
 import GroupForm from './group-form/GroupForm';
 import PhaseForm from './phase-form/PhaseForm';

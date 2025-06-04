@@ -18,8 +18,8 @@ import { useProjectData } from "./hooks/useProjectData";
 
 const ProjectManagementPage = () => {
   const { user } = useAuth();
-  const userRole = user?.data?.role?.name || "guest";
-  const currentUserId = user?.data?.id;
+  const userRole = user?.role?.name || "guest";
+  const currentUserId = user?.id;
 
   const { projectId } = useParams();
   const navigate = useNavigate();

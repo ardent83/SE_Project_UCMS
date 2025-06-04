@@ -14,7 +14,7 @@ import { useClassesData } from "./hooks/useClassesData";
 
 const ClassesPage = () => {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
 
     const {
         classes,
