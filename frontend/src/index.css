@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar';
 
+
+@keyframes orbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @layer components {
   .all-\[unset\] {
     all: unset;
@@ -10,7 +16,7 @@
     background: var(--bg) lightgray 50% / cover no-repeat;
   }
 
-  .rmdp-container { 
+  .rmdp-container {
     width: 100% !important;
     max-width: var(--max-w-rmdp) !important;
   }
@@ -85,6 +91,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "IRANYekanX", sans-serif;
+    font-family: IRANYekanX, sans-serif;
     border: var(--bg-blue);
   }
 
@@ -202,7 +209,7 @@
 
   --default-font-family: IRANYekanX;
   --font-mono: IRANYekanX, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  "Liberation Mono", "Courier New", monospace;
 
   --text-body-01: 1.25rem;
   --text-body-01--font-weight: 400;
@@ -222,7 +229,7 @@
 
   --text-body-05: 0.75rem;
   --text-body-05--font-weight: 400;
-  --text-body-05--line-height: 180٪;
+  --text-body-05--line-height: 180%;
 
   --text-body-light: 0.75rem;
   --text-body-light--font-weight: 300;
@@ -345,10 +352,10 @@
     }
   }
 
-  --animate-fadeIn: animation: fadeIn 0.5s forwards;
+  --animate-fadeIn: animation fadeIn 0.5s forwards;
 
-  --animate-fadeOut: animation: fadeOut 0.5s forwards;
-  
+  --animate-fadeOut: animation fadeOut 0.5s forwards;
+
 }
 
 @font-face {

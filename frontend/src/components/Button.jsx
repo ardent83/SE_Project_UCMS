@@ -17,9 +17,10 @@ export default function Button({
     rightIconComponent = <ArrowRight2 variant="Outline" />,
     leftIconComponent = <ArrowLeft2 variant="Outline" />,
     onClick,
+    ...otherProps
 }) {
     const baseButtonStyles = "inline-flex justify-center items-center text-center gap-1 flex-shrink-0 rounded-lg cursor-pointer disabled:cursor-not-allowed";
-    
+
     const sizeClasses = {
         forty: "text-button-02 h-10 py-2 px-6",
         fortyEight: "text-button-02 h-12 py-2 px-6",
@@ -43,15 +44,15 @@ export default function Button({
     const hoverFillRegex = /\bhover:fill-\S+\b/g;
     const disabledFillRegex = /\bdisabled:fill-\S+\b/g;
 
-    const fillMatche = colorClasses[color]?.[style].match(fillRegex)?.[0] || "black";
-    const hoverFillMatche = colorClasses[color]?.[style].match(hoverFillRegex)?.[0] || `hover:${fillMatche}`;
-    const disabledFillMatche = colorClasses[color]?.[style].match(disabledFillRegex)?.[0] || `disabled:${fillMatche}`;
+    const fillMatch = colorClasses[color]?.[style]?.match(fillRegex)?.[0] || "";
+    const hoverFillMatch = colorClasses[color]?.[style]?.match(hoverFillRegex)?.[0] || `hover:${fillMatch}`;
+    const disabledFillMatch = colorClasses[color]?.[style]?.match(disabledFillRegex)?.[0] || `disabled:${fillMatch}`;
 
     const iconColors = useMemo(() => ({
-        normal: fillMatche.replace(/^fill-/, "--color-"),
-        hovered: hoverFillMatche.replace(/^hover:fill-/, "--color-"),
-        disabled: disabledFillMatche.replace(/^disabled:fill-/, "--color-"),
-    }), [color, style]);
+        normal: fillMatch.replace(/^fill-/, "--color-"),
+        hovered: hoverFillMatch.replace(/^hover:fill-/, "--color-"),
+        disabled: disabledFillMatch.replace(/^disabled:fill-/, "--color-"),
+    }), [color, style, fillMatch, hoverFillMatch, disabledFillMatch]);
 
     const [iconColor, setIconColor] = useState(iconColors.normal);
 
@@ -71,6 +72,7 @@ export default function Button({
             onMouseEnter={() => setIconColor(iconColors.hovered)}
             onMouseLeave={() => setIconColor(disabled ? iconColors.disabled : iconColors.normal)}
             disabled={disabled}
+            {...otherProps}
         >
             {leftIcon && (
                 <div className={`${size === "thirtyTwo" ? "h-4 w-4" : "h-6 w-6"} flex justify-center items-center flex-shrink-0`}>
@@ -91,6 +93,7 @@ Button.propTypes = {
     textShow: PropTypes.bool,
     rightIcon: PropTypes.bool,
     leftIcon: PropTypes.bool,
+    disabled: PropTypes.bool,
     buttonText: PropTypes.string,
     color: PropTypes.oneOf(["grey", "primary"]),
     style: PropTypes.oneOf(["none", "fill", "stroke"]),
@@ -99,13 +102,18 @@ Button.propTypes = {
     rightIconComponent: PropTypes.node,
     leftIconComponent: PropTypes.node,
     onClick: PropTypes.func,
+    type: PropTypes.oneOf(["button", "submit", "reset"]),
+    id: PropTypes.string,
+    'aria-label': PropTypes.string,
 };
 
 Button.defaultProps = {
     textShow: true,
     rightIcon: true,
     leftIcon: true,
+    disabled: false,
     rightIconComponent: <ArrowRight2 variant="Outline" />,
     leftIconComponent: <ArrowLeft2 variant="Outline" />,
     onClick: () => {},
+    type: "button",
 };
