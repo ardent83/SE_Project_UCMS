@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { fetchTeamMembersApi } from '../utils/TeamAPI.js';
-import { formatTeamMembersArrayForDisplay } from '../utils/TeamFormatters.js';
+import { fetchTeamMembersApi } from '../utils/teamAPI.js';
+import { formatTeamMembersArrayForDisplay } from '../utils/teamFormatters.js';
 
 export const useTeamMembers = (teamId, userRole) => {
     const [members, setMembers] = useState([]);

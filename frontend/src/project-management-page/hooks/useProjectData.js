@@ -4,11 +4,11 @@ import {
     fetchPhasesApi,
     downloadProjectFileApi,
     deleteProjectApi
-} from "../utils/ProjectAPI";
+} from "../utils/projectAPI";
 
-import { fetchTeamsApi } from "../utils/TeamAPI"; 
+import { fetchTeamsApi } from "../utils/teamAPI"; 
 
-import { formatProjectData } from "../utils/ProjectFormatters";
+import { formatProjectData } from "../utils/projectFormatters";
 
 export const useProjectData = (projectId, userRole, navigate) => {
     const [project, setProject] = useState(null);
