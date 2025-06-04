@@ -1,3 +1,5 @@
+import classNames from "classnames";
+
 export const theme = {
     colors: {
         label: {
@@ -11,7 +13,7 @@ export const theme = {
             default: "text-stateerror",
             disabled: "text-neutralgray-4",
         },
-        select: { 
+        select: {
             default: "border-neutralgray-5 text-neutralgray-9",
             focused: "border-black text-black",
             hover: "border-neutralgray-9 text-neutralgray-9",
@@ -27,7 +29,7 @@ export const theme = {
         },
         icon: {
             default: "fill-neutralgray-9",
-            focused: "fill-black", 
+            focused: "fill-black",
             hover: "fill-neutralgray-1",
             disabled: "fill-neutralgray-4",
             error: "fill-black",
@@ -41,7 +43,7 @@ export const theme = {
             "group flex flex-col w-full max-w-92 h-17 justify-start items-end gap-1 flex-shrink-0 relative",
         labelWrapper: "text-body-04 flex h-6 justify-center items-end gap-1 flex-shrink-0",
         asterisk: "w-[0.4375rem] h-6 text-right text-body-03",
-        selectContainer: "relative w-full", 
+        selectContainer: "relative w-full",
         select:
             "peer flex h-10 w-full py-[0.375rem] px-2 justify-center items-center gap-2 flex-shrink-0 self-stretch rounded-lg border border-solid text-right text-body-05 placeholder-neutralgray-9 focus:outline-none appearance-none",
         input:
@@ -85,7 +87,7 @@ export const getIconClasses = (theme, isFocused, disabled, error) => {
     if (disabled) return theme.colors.icon.disabled;
     if (error) return theme.colors.icon.error;
     if (isFocused) return theme.colors.icon.focused;
-    return theme.colors.icon.default +  theme.colors.icon.hover.split(" ").map((cls) => ` group-hover:${cls}`).join("");
+    return theme.colors.icon.default + theme.colors.icon.hover.split(" ").map((cls) => ` group-hover:${cls}`).join("");
 };
 
 export const getErrorMessageClasses = (theme) => {
@@ -93,3 +95,11 @@ export const getErrorMessageClasses = (theme) => {
 };
 
 
+export const checkboxClasses = (touched, hasError) => {
+    return classNames(
+        "peer cursor-pointer disabled:cursor-not-allowed w-4 h-4 rounded border border-big-stone-900 checked:bg-redp checked:border-big-stone-950 focus:outline-none focus:ring-2 focus:ring-big-stone-50",
+        {
+            "border-error-1": touched && !!hasError
+        }
+    );
+}
