@@ -45,7 +45,8 @@ function App() {
             <Route path="class/:classId/exam/edit/:examId" element={<ExamForm formType='edit' />} />
             <Route path="class/:classId/exam/create/" element={<ExamForm />} />
           </Route>
-
+          <Route path="/confirmation" element={<EmailConfirmedPage />} />
+          <Route path="/verification" element={<EmailVerificationPage />} />
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
 
         </Routes>
