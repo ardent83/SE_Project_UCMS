@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './auth/AuthPage';
+import ClassForm from './class-form/ClassForm';
+import AccountSettings from './account-settings/AccountSettings';
+import ProjectManagementPage from './project-management-page/ProjectManagementPage';
 import Dashboard from './dashboard/Dashboard';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -36,7 +39,8 @@ function App() {
             <Route path="/test" element={<TestPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/projects" element={<ProjectsPage />} />
-
+            <Route path="/project-management/:projectId" element={<ProjectManagementPage />} />
+            
             {/* Forms */}
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
@@ -53,7 +57,6 @@ function App() {
           </Route>
           
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
-
         </Routes>
       </AuthProvider>
     </BrowserRouter>
