@@ -76,7 +76,7 @@ function Sidebar() {
                     <Frame to="/profile" label={"پروفایل"} icon={<ProfileCircle variant='Bold' color='var(--color-white)' size={24} />} />
                 </li>
                 <li>
-                    <Frame to="/projectsPage" label={"پروژه‌ها"} icon={<Notepad2 variant='Bold' color='var(--color-white)' size={24} />} />
+                    <Frame to="/projects" label={"پروژه‌ها"} icon={<Notepad2 variant='Bold' color='var(--color-white)' size={24} />} />
                 </li>
                 <li>
                     <div
