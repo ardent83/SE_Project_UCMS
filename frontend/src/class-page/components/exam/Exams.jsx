@@ -13,7 +13,7 @@ const Exams = ({ exams }) => {
     }, []);
 
     return (
-        <div className="w-full flex flex-col items-center gap-2">
+        <div className="w-full flex flex-col items-center gap-2 ">
             <HeadSection title={"امتحانات"} />
             <div ref={scrollRef} className="w-full overflow-x-auto">
                 <div className="flex flex-row gap-4 w-fit pr-2 p-4 text-right">

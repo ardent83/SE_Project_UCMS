@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../../auth/context/AuthContext.jsx";
+import { Trash } from "iconsax-react";
 
-const MemberItem = ({ firstLastName, image }) => {
+const MemberItem = ({ firstLastName, image, onDelete }) => {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
+
+    const [isHovered, setIsHovered] = useState(false);
 
     let displayName = firstLastName;
     let firstChar;
@@ -16,7 +19,11 @@ const MemberItem = ({ firstLastName, image }) => {
     }
 
     return (
-        <div className="w-full max-w-88 p-4 flex justify-end items-center gap-2 border-b last:border-none border-b-neutralgray-2 cursor-pointer">
+        <div
+            className="w-full max-w-88 p-4 flex justify-end items-center gap-2 border-b last:border-none border-b-neutralgray-2 cursor-pointer relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <label className="flex justify-end items-center text-body-05 text-right text-redp self-stretch cursor-pointer">
                 {displayName}
             </label>
@@ -30,6 +37,18 @@ const MemberItem = ({ firstLastName, image }) => {
                 <div className="w-8 h-8 rounded-full bg-neutralgray-2 flex items-center justify-center text-xs text-redp font-bold">
                     {firstChar}
                 </div>
+            )}
+
+            {userRole === "Instructor" && isHovered && (
+                <Trash
+                    size={20}
+                    color="#FF4D4F"
+                    className="absolute left-2 cursor-pointer"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete && onDelete();
+                    }}
+                />
             )}
         </div>
     );
