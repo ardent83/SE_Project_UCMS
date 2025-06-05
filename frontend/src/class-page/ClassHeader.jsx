@@ -68,20 +68,6 @@ export default function ClassHeader({
         <>
             <div className="relative w-full h-48 p-4 pr-6 flex flex-col justify-between items-center self-stretch">
                 <div className="flex items-center gap-[0.625rem] self-stretch z-10 relative">
-                    <Edit
-                        color="#495D72"
-                        size={24}
-                        variant="Outline"
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/class/edit/${id}`)}
-                    />
-                    <More
-                        color="#495D72"
-                        size={24}
-                        variant="Bold"
-                        className="cursor-pointer"
-                        onClick={() => setShowClassInfo(true)}
-                    />
                     <Trash
                         color="#495D72"
                         size={24}
@@ -99,6 +85,21 @@ export default function ClassHeader({
                             />
                         </Modal>
                     )}
+                    <Edit
+                        color="#495D72"
+                        size={24}
+                        variant="Outline"
+                        className="cursor-pointer"
+                        onClick={() => navigate(`/class/edit/${id}`)}
+                    />
+                    <More
+                        color="#495D72"
+                        size={24}
+                        variant="Bold"
+                        className="cursor-pointer"
+                        onClick={() => setShowClassInfo(true)}
+                    />
+
                 </div>
 
                 <div className="w-full h-fit flex justify-between items-center self-stretch z-10 relative">
