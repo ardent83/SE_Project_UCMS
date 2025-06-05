@@ -13,20 +13,7 @@ import Members from "./components/member/Members.jsx";
 import Assignment from "./components/assignment-project/Assignment.jsx";
 import AssignmentProject from "./components/assignment-project/AssignmentProject.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-
-// داده‌های ثابت جدا از کامپوننت
-const assignmentsData = [
-    { name: "تمرین 1", number: 5, endDate: new Date("2025-04-20") },
-    { name: "تمرین 2", number: 3, endDate: new Date("2025-04-25") },
-    { name: "تمرین 3", number: 10, endDate: new Date("2025-04-18") },
-    { name: "تمرین 4", number: 8, endDate: new Date("2025-04-30") },
-];
-
-const assignmentProjectsData = [
-    { name: "پروژه 1", endDate: new Date("2025-05-10") },
-    { name: "پروژه 2", endDate: new Date("2025-05-15") },
-    { name: "پروژه 3", endDate: new Date("2025-05-20") },
-];
+import { getProjects,getAssignments } from './utils/classPageApi.js';
 
 const examsData = [
     { color: "var(--color-light-lavender)", title: "کوییز کلاسی 1", date: "شنبه ۱۸ اسفند", time: "۱۰:۰۰-۱۱:۰۰", location: "دانشکده فنی مهندس، کلاس ۱۶" },
@@ -61,26 +48,49 @@ export default function ClassPage() {
     const { classId } = useParams();
     const [classInfo, setClassInfo] = useState(null);
     const [classStudents, setClassStudents] = useState(null);
+    const [assignmentProjects, setAssignmentProjects] = useState([]);
+    const [assignmentsData, setAssignments] = useState([]);
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let info, students;
+                let info, students, projects, assignments;
 
                 if (userRole === "Instructor") {
-                    [info, students] = await Promise.all([
+                    [info, students, projects, assignments] = await Promise.all([
                         getClassInfoForInstructor(classId),
-                        getStudentOfClassForInstructor(classId)
+                        getStudentOfClassForInstructor(classId),
+                        getProjects(),
+                        getAssignments(classId)
                     ]);
                 } else if (userRole === "Student") {
-                    [info, students] = await Promise.all([
+                    [info, students, projects, assignments] = await Promise.all([
                         getClassInfoForStudent(classId),
-                        getStudentOfClassForStudent(classId)
+                        getStudentOfClassForStudent(classId),
+                        getProjects(),
+                        getAssignments(classId)
                     ]);
                 }
 
+                const assignmentProjects = projects.map(project => ({
+                    name: project.title,
+                    endDate: new Date(project.dueDate),
+                }));
+
+
+
+                const assignmentsData = assignments.map(item => ({
+                    name: item.title,
+                    endDate: new Date(item.endDate),
+                }));
+
+                console.log(assignmentsData);
+
                 setClassInfo(info);
                 setClassStudents(students);
+                setAssignmentProjects(assignmentProjects);
+                setAssignments(assignmentsData);
             } catch (error) {
                 console.error("خطا در دریافت اطلاعات کلاس:", error);
             }
@@ -89,6 +99,9 @@ export default function ClassPage() {
         fetchData();
     }, [classId, userRole]);
 
+
+
+
     if (!classInfo) return <div>is loading ...</div>;
 
     const { days, times } = formatSchedule(classInfo.schedules);
@@ -96,12 +109,14 @@ export default function ClassPage() {
     return (
         <div className="flex w-full max-w-277.5 py-4 h-fit flex-col justify-start items-center gap-4">
             <ClassHeader
+                id={classInfo.id}
                 title={classInfo.title}
                 instructor={userRole === "Student" ? classInfo.instructorFullName : null}
                 startDate={classInfo.startDate}
                 endDate={classInfo.endDate}
                 days={days}
                 times={times}
+                classCode={classInfo.classCode}
             />
 
             <div className="w-full flex h-full justify-between gap-2 items-start shrink-0 pl-[0.84706rem]">
@@ -109,7 +124,7 @@ export default function ClassPage() {
                     <Exams exams={examsData} />
                     <div className="w-full flex justify-between gap-2 items-start flex-[1_0_0]">
                         <Assignment assignments={assignmentsData} />
-                        <AssignmentProject assignments={assignmentProjectsData} />
+                        <AssignmentProject projects={assignmentProjects} />
                     </div>
                 </div>
                 <div className="w-full max-w-88 flex flex-col items-start gap-3">

@@ -1,16 +1,28 @@
 import React from "react";
 
 const MemberItem = ({ firstLastName, image }) => {
+    const hasImage = Boolean(image);
+    const namePart = firstLastName?.split("|")[1]?.trim() || "";
+    const firstChar = namePart.charAt(0).toUpperCase() || "?";
+
     return (
         <div className="w-full max-w-88 p-4 flex justify-end items-center gap-2 border-b last:border-none border-b-neutralgray-2 cursor-pointer">
-            <label className="flex justify-end items-center text-body-05 text-right text-redp self-stretch">
+            <label className="flex justify-end items-center text-body-05 text-right text-redp self-stretch cursor-pointer">
                 {firstLastName}
             </label>
-            <div
-                className="profile-img w-8 h-8 rounded-full"
-                style={{ "--bg": `url(${image})` }}
-            />
+
+            {hasImage ? (
+                <div
+                    className="w-8 h-8 rounded-full bg-cover bg-center"
+                    style={{ backgroundImage: `url(${image})` }}
+                />
+            ) : (
+                <div className="w-8 h-8 rounded-full bg-neutralgray-2 flex items-center justify-center text-xs text-redp font-bold">
+                    {firstChar}
+                </div>
+            )}
         </div>
-    )
-}
+    );
+};
+
 export default MemberItem;
