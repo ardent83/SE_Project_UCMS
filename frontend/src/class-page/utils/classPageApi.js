@@ -96,4 +96,27 @@ export const getAssignments = async (classId) => {
     return response.json();
 };
 
+export const deleteClassById = async (id) => {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/Classes/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                // "Authorization": `Bearer ${token}` اگر نیاز هست
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete class");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Error deleting class:", error);
+        return false;
+    }
+};
+
 
