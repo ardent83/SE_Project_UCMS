@@ -51,10 +51,18 @@ export default function ClassHeader({
     };
 
     const formatTimeRange = (rangeStr) => {
-        if (typeof rangeStr !== "string" || !rangeStr.includes("-")) return "؟";
-        const [start, end] = rangeStr.trim().split("-");
-        return `${formatPersianTime(start)} - ${formatPersianTime(end)}`;
+        if (typeof rangeStr !== "string") return "؟";
+
+        return rangeStr
+            .split("و")
+            .map(range => {
+                const [start, end] = range.trim().split("-");
+                if (!start || !end) return "؟";
+                return `${formatPersianTime(end)} - ${formatPersianTime(start)}`;
+            })
+            .join(" , ");
     };
+
 
 
     const handleDeleteClass = async () => {
@@ -72,9 +80,9 @@ export default function ClassHeader({
                     {userRole === "Instructor" ? (
                         <>
                             <Trash
-                                color="#495D72"
+                                color="#082c85"
                                 size={24}
-                                variant="Bold"
+                                variant="Bulk"
                                 className="cursor-pointer"
                                 onClick={() => setShowDeleteModal(true)}
                             />
@@ -88,16 +96,16 @@ export default function ClassHeader({
                                 </Modal>
                             )}
                             <Edit
-                                color="#495D72"
+                                color="#082c85"
                                 size={24}
-                                variant="Outline"
+                                variant="Bulk"
                                 className="cursor-pointer"
                                 onClick={() => navigate(`/class/edit/${id}`)}
                             />
                             <More
-                                color="#495D72"
+                                color="#082c85"
                                 size={24}
-                                variant="Bold"
+                                variant="Bulk"
                                 className="cursor-pointer"
                                 onClick={() => setShowClassInfo(true)}
                             />
@@ -109,19 +117,19 @@ export default function ClassHeader({
 
 
                 <div className="w-full h-fit flex justify-between items-center self-stretch z-10 relative">
-                    <div className="text-body-03 text-redp flex w-46 flex-col gap-2">
+                    <div className="text-body-03 text-redp flex w-60 flex-col gap-2">
             <span className="flex justify-end items-center gap-2 self-stretch">
               <span className="flex justify-end items-center">{days}</span>
-              <Calendar2 color="#495D72" size={24} variant="Bold"/>
+              <Calendar2 color="#082c85" size={24} variant="Bulk"/>
             </span>
                         <span className="flex justify-end items-center gap-2 self-stretch">
               <span className="flex justify-end items-center">{formatTimeRange(times)}</span>
-              <Clock color="#495D72" size={24} variant="Bold"/>
+              <Clock color="#082c85" size={24} variant="Bulk"/>
             </span>
                     </div>
 
                     <div className="w-fit h-[3.64rem] flex flex-col items-end gap-1">
-                        <span className="text-heading-h5 text-white text-right">{title}</span>
+                        <span className="text-heading-h5 text-white text-3xl text-right">{title}</span>
                         <div className="flex justify-end items-center gap-1 self-stretch">
                             {instructor && (
                                 <>
