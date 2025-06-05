@@ -96,12 +96,14 @@ export default function ClassPage() {
     return (
         <div className="flex w-full max-w-277.5 py-4 h-fit flex-col justify-start items-center gap-4">
             <ClassHeader
+                id={classInfo.id}
                 title={classInfo.title}
                 instructor={userRole === "Student" ? classInfo.instructorFullName : null}
                 startDate={classInfo.startDate}
                 endDate={classInfo.endDate}
                 days={days}
                 times={times}
+                classCode={classInfo.classCode}
             />
 
             <div className="w-full flex h-full justify-between gap-2 items-start shrink-0 pl-[0.84706rem]">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Copy, CopySuccess } from "iconsax-react";
 
-function ClassInfo({ classCode, classPassword, onClose }) {
+function ClassInfo({ classCode, onClose }) {
     const [copied, setCopied] = useState({ code: false, password: false });
 
     const copyToClipboard = (text, field) => {
@@ -64,26 +64,6 @@ function ClassInfo({ classCode, classPassword, onClose }) {
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-[var(--color-big-stone-900)] font-bold mb-1">
-                            رمز ورود:
-                        </label>
-                        <div className="bg-[var(--color-neutralgray-1)] p-2 rounded-lg flex items-center justify-between text-left">
-                            <code dir="ltr" className="select-all">{classPassword}</code>
-                            <button
-                                type="button"
-                                onClick={() => copyToClipboard(classPassword, "password")}
-                                className="text-[var(--lightBulue)] hover:text-[var(--color-big-stone-800)] cursor-pointer mr-2"
-                                aria-label="کپی رمز ورود"
-                            >
-                                {copied.password ? (
-                                    <CopySuccess size={20} color="var(--lightBulue)" variant="Bold" />
-                                ) : (
-                                    <Copy size={20} color="var(--lightBulue)" variant="Outline" />
-                                )}
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
