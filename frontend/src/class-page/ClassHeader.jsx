@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {deleteClassById} from "./utils/classPageApi.js";
 import Modal from "../components/Modal.jsx";
 import DeleteConfirmModalContent from "../components/DeleteConfirmPopover.jsx";
+import {useAuth} from "../auth/context/AuthContext.jsx";
 
 
 export default function ClassHeader({
@@ -16,11 +17,12 @@ export default function ClassHeader({
                                         days,
                                         times,
                                         classCode,
-                                        classPassword,
                                     }) {
     const [showClassInfo, setShowClassInfo] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const navigate = useNavigate();
+    const {user} = useAuth();
+    const userRole = user?.role?.name || "guest";
 
     const formatter = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
         day: "numeric",
@@ -63,44 +65,48 @@ export default function ClassHeader({
     };
 
 
-
     return (
         <>
             <div className="relative w-full h-48 p-4 pr-6 flex flex-col justify-between items-center self-stretch">
-                <div className="flex items-center gap-[0.625rem] self-stretch z-10 relative">
-                    <Trash
-                        color="#495D72"
-                        size={24}
-                        variant="Bold"
-                        className="cursor-pointer"
-                        onClick={() => setShowDeleteModal(true)}
-                    />
-
-                    {showDeleteModal && (
-                        <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-                            <DeleteConfirmModalContent
-                                message="آیا از حذف این کلاس مطمئن هستید؟"
-                                onConfirm={handleDeleteClass}
-                                onCancel={() => setShowDeleteModal(false)}
+                <div className="flex items-center gap-[0.625rem] self-stretch z-10 relative min-h-[24px]">
+                    {userRole === "Instructor" ? (
+                        <>
+                            <Trash
+                                color="#495D72"
+                                size={24}
+                                variant="Bold"
+                                className="cursor-pointer"
+                                onClick={() => setShowDeleteModal(true)}
                             />
-                        </Modal>
+                            {showDeleteModal && (
+                                <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                                    <DeleteConfirmModalContent
+                                        message="آیا از حذف این کلاس مطمئن هستید؟"
+                                        onConfirm={handleDeleteClass}
+                                        onCancel={() => setShowDeleteModal(false)}
+                                    />
+                                </Modal>
+                            )}
+                            <Edit
+                                color="#495D72"
+                                size={24}
+                                variant="Outline"
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/class/edit/${id}`)}
+                            />
+                            <More
+                                color="#495D72"
+                                size={24}
+                                variant="Bold"
+                                className="cursor-pointer"
+                                onClick={() => setShowClassInfo(true)}
+                            />
+                        </>
+                    ) : (
+                        <div style={{height: "24px"}}/>
                     )}
-                    <Edit
-                        color="#495D72"
-                        size={24}
-                        variant="Outline"
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/class/edit/${id}`)}
-                    />
-                    <More
-                        color="#495D72"
-                        size={24}
-                        variant="Bold"
-                        className="cursor-pointer"
-                        onClick={() => setShowClassInfo(true)}
-                    />
-
                 </div>
+
 
                 <div className="w-full h-fit flex justify-between items-center self-stretch z-10 relative">
                     <div className="text-body-03 text-redp flex w-46 flex-col gap-2">

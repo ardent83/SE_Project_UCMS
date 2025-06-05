@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ClassHeader from "./ClassHeader";
 import {
+    getAssignmentsForStudent,
     getClassInfoForInstructor,
-    getClassInfoForStudent,
+    getClassInfoForStudent, getProjectsForStudent,
     getStudentOfClassForInstructor,
     getStudentOfClassForStudent
 } from './utils/classPageApi.js';
@@ -13,7 +14,7 @@ import Members from "./components/member/Members.jsx";
 import Assignment from "./components/assignment-project/Assignment.jsx";
 import AssignmentProject from "./components/assignment-project/AssignmentProject.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-import { getProjects,getAssignments } from './utils/classPageApi.js';
+import { getProjectsForInstructor,getAssignmentsForInstructor } from './utils/classPageApi.js';
 
 const examsData = [
     { color: "var(--color-light-lavender)", title: "کوییز کلاسی 1", date: "شنبه ۱۸ اسفند", time: "۱۰:۰۰-۱۱:۰۰", location: "دانشکده فنی مهندس، کلاس ۱۶" },
@@ -61,15 +62,15 @@ export default function ClassPage() {
                     [info, students, projects, assignments] = await Promise.all([
                         getClassInfoForInstructor(classId),
                         getStudentOfClassForInstructor(classId),
-                        getProjects(),
-                        getAssignments(classId)
+                        getProjectsForInstructor(),
+                        getAssignmentsForInstructor(classId)
                     ]);
                 } else if (userRole === "Student") {
                     [info, students, projects, assignments] = await Promise.all([
                         getClassInfoForStudent(classId),
                         getStudentOfClassForStudent(classId),
-                        getProjects(),
-                        getAssignments(classId)
+                        getProjectsForStudent(),
+                        getAssignmentsForStudent(classId)
                     ]);
                 }
 
