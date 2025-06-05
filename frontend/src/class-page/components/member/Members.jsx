@@ -6,9 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const Members = ({ members }) => {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const userRole = user?.data?.role?.name || "guest";
-
+    const userRole = user?.role?.name || "guest";
     const getDisplayName = (member) => {
         if (userRole === "Instructor") {
             return `${member.studentNumber} | ${member.firstName}\t${member.lastName}`;

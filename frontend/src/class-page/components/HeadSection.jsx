@@ -4,7 +4,7 @@ import { useAuth } from "../../auth/context/AuthContext.jsx";
 
 const HeadSection = ({ title, onClick }) => {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
     const isInstructor = userRole === "Instructor";
 
     return (

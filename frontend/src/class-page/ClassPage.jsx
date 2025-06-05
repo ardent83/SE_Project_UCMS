@@ -44,7 +44,7 @@ const formatSchedule = (schedules) => {
 
 export default function ClassPage() {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
     const { classId } = useParams();
     const [classInfo, setClassInfo] = useState(null);
     const [classStudents, setClassStudents] = useState(null);
