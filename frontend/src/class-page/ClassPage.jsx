@@ -124,8 +124,8 @@ export default function ClassPage() {
                 <div className="w-full max-w-[45.8rem] gap-5 flex flex-col items-start">
                     <Exams exams={examsData} />
                     <div className="w-full flex justify-between gap-2 items-start flex-[1_0_0]">
-                        <Assignment assignments={assignmentsData} />
-                        <AssignmentProject projects={assignmentProjects} />
+                        <Assignment assignments={assignmentsData} classId={classId} />
+                        <AssignmentProject projects={assignmentProjects} classId={classId} />
                     </div>
                 </div>
                 <div className="w-full max-w-88 flex flex-col items-start gap-3">
