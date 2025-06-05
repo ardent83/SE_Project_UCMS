@@ -1,9 +1,12 @@
 import { Calendar2, Edit, More, Clock } from "iconsax-react";
 import React, { useState } from "react";
 import ClassInfoPop from "./components/ClassInfoPop.jsx";
+import { useNavigate } from "react-router-dom";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 export default function ClassHeader({
+                                        id,
                                         title,
                                         instructor,
                                         startDate,
@@ -46,12 +49,20 @@ export default function ClassHeader({
         const [start, end] = rangeStr.trim().split("-");
         return `${formatPersianTime(start)} - ${formatPersianTime(end)}`;
     };
+    const navigate = useNavigate();
+
 
     return (
         <>
             <div className="relative w-full h-48 p-4 pr-6 flex flex-col justify-between items-center self-stretch">
                 <div className="flex items-center gap-[0.625rem] self-stretch z-10 relative">
-                    <Edit color="#495D72" size={24} variant="Outline" className="cursor-pointer" />
+                    <Edit
+                        color="#495D72"
+                        size={24}
+                        variant="Outline"
+                        className="cursor-pointer"
+                        onClick={() => navigate(`/class/edit/${id}`)}
+                    />
                     <More
                         color="#495D72"
                         size={24}

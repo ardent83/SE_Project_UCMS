@@ -46,7 +46,7 @@ const Members = ({ members }) => {
                         <img
                             src="/student.png"
                             alt="No members"
-                            className="w-18 h-18 mb-5"
+                            className="w-18 h-18 mb-5 opacity-70"
                         />
                         <span className="text-caption-03 text-xs text-neutral-400">عضوی وجود ندارد</span>
                     </div>
