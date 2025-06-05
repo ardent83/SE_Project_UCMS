@@ -18,10 +18,6 @@ const AssignmentItem = ({ assignment }) => {
                 {assignment.number !== undefined && typeof assignment.number === 'number' ? (
                     <>
                         <span className="w-px h-80/100 border-l border-l-neutralgray-5" aria-hidden="true">&#8203;</span>
-                        <div className="flex gap-1">
-                            <span>سوال</span>
-                            <span>{assignment.number.toLocaleString("fa-IR")}</span>
-                        </div>
                     </>
                 ) : null}
             </div>
