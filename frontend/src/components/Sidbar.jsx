@@ -67,7 +67,7 @@ function Sidebar() {
                     <Frame to="/account-settings" label={"تنظیمات حساب کاربری"} icon={<Setting2 variant='Bold' color='var(--color-white)' size={24} />} />
                 </li>
                 <li>
-                    <Frame to="/class" label={"کلاس‌ها"} icon={<Book1 variant='Bold' color='var(--color-white)' size={24} />} />
+                    <Frame to="/classes" label={"کلاس‌ها"} icon={<Book1 variant='Bold' color='var(--color-white)' size={24} />} />
                 </li>
                 <li>
                     <Frame to="/test" label={"تست"} />

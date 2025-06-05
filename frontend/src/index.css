@@ -90,6 +90,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "IRANYekanX", sans-serif;
     font-family: IRANYekanX, sans-serif;
     border: var(--bg-blue);
   }
@@ -228,7 +229,7 @@
 
   --text-body-05: 0.75rem;
   --text-body-05--font-weight: 400;
-  --text-body-05--line-height: 180٪;
+  --text-body-05--line-height: 180%;
 
   --text-body-light: 0.75rem;
   --text-body-light--font-weight: 300;

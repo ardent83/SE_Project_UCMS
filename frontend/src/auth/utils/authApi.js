@@ -31,3 +31,19 @@ export const logout = async () => {
     });
     return response;
 };
+
+export const profile = async () => { 
+    const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+        method: 'GET',
+        credentials: 'include',
+    });
+    return response;
+};
+
+export const authStatus = async () => { 
+    const response = await fetch(`${apiBaseUrl}/api/auth/status`, {
+        method: 'GET',
+        credentials: 'include',
+    });
+    return response;
+};
