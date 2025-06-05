@@ -8,7 +8,7 @@ const ProductCard = ({
   instructorName,
   studentCount,
   imageUrl,
-  onEdit,
+  onEditClick,
   userRole,
 }) => {
   const formatStudentCount = (count) => {
@@ -41,7 +41,7 @@ const ProductCard = ({
         </div>
         {userRole === "Instructor" && (
           <button
-            onClick={onEdit ? onEdit : () => {}}
+            onClick={onEditClick ? onEditClick : () => {}}
             className="edit-button"
             aria-label="ویرایش"
           >

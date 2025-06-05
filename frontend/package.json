@@ -23,6 +23,7 @@
     "formik": "^2.4.6",
     "framer-motion": "^12.6.5",
     "iconsax-react": "^0.0.8",
+    "lottie-react": "^2.4.1",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {Setting2, Element4, Book1, LogoutCurve, ProfileCircle} from "iconsax-react";
+import {Setting2, Element4, Book1, LogoutCurve, ProfileCircle, Notepad2} from "iconsax-react";
 import { useAuth } from '../auth/context/AuthContext';
 import Alert from './Alert';
 
@@ -74,6 +74,9 @@ function Sidebar() {
                 </li>
                 <li>
                     <Frame to="/profile" label={"پروفایل"} icon={<ProfileCircle variant='Bold' color='var(--color-white)' size={24} />} />
+                </li>
+                <li>
+                    <Frame to="/projects" label={"پروژه‌ها"} icon={<Notepad2 variant='Bold' color='var(--color-white)' size={24} />} />
                 </li>
                 <li>
                     <div
