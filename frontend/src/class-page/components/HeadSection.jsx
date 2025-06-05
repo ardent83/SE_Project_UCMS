@@ -12,7 +12,8 @@ const HeadSection = ({ title, onClick }) => {
             {isInstructor && (
                 <div
                     onClick={onClick}
-                    className="flex h-[1.69613rem] justify-center items-center p-[0.33925rem] rounded-[0.25444rem] bg-[#ECF9FD] cursor-pointer"
+                    className="flex h-[1.69613rem] justify-center items-center p-[0.33925rem] rounded-[0.25444rem] bg-[#ECF9FD] cursor-pointer
+               transition-all duration-300 ease-out hover:scale-110 hover:rotate-3 hover:shadow-md"
                 >
                     <Add color="var(--color-redp)" size={24} />
                 </div>
