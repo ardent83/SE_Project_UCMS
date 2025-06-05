@@ -68,7 +68,7 @@ export default function ClassHeader({
                         size={24}
                         variant="Bold"
                         className="cursor-pointer"
-                        onClick={() => setShowPopup(true)} // باز کردن پاپ‌آپ با کلیک
+                        onClick={() => setShowPopup(true)}
                     />
                 </div>
 

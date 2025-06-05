@@ -1,10 +1,22 @@
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar';
 
-
 @keyframes orbit {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @layer components {
@@ -14,6 +26,10 @@
 
   .profile-img {
     background: var(--bg) lightgray 50% / cover no-repeat;
+  }
+
+  .dashboard-img {
+    background: var(--bg) 50% / cover no-repeat;
   }
 
   .rmdp-container {
@@ -90,7 +106,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: IRANYekanX, sans-serif;
+    font-family: "IRANYekanX", sans-serif;
     border: var(--bg-blue);
   }
 
@@ -100,7 +116,8 @@
     align-items: center;
     min-height: 100vh;
   }
-  html, body {
+  html,
+  body {
     overflow: hidden;
     height: 100%;
   }
@@ -201,10 +218,10 @@
   --color-big-stone-900: #173c63;
   --color-big-stone-950: #0c1e33;
 
-  --color-light-lavender: #E1D2FF;
-  --color-pale-yellow: #FDE1AC;
-  --color-sky-blue: #BAE5F5;
-  --color-light-green: #CCEFBF;
+  --color-light-lavender: #e1d2ff;
+  --color-pale-yellow: #fde1ac;
+  --color-sky-blue: #bae5f5;
+  --color-light-green: #ccefbf;
 
   --default-font-family: IRANYekanX;
   --font-mono: IRANYekanX, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -228,7 +245,7 @@
 
   --text-body-05: 0.75rem;
   --text-body-05--font-weight: 400;
-  --text-body-05--line-height: 180٪;
+  --text-body-05--line-height: 180%;
 
   --text-body-light: 0.75rem;
   --text-body-light--font-weight: 300;
@@ -299,7 +316,6 @@
   --text-caption-light--font-weight: 400;
   --text-caption-light--line-height: normal;
 
-
   /* Overline Styles */
   /* Overline/01 */
   --text-overline-01: 1rem;
@@ -354,11 +370,10 @@
   --animate-fadeIn: animation fadeIn 0.5s forwards;
 
   --animate-fadeOut: animation fadeOut 0.5s forwards;
-
 }
 
 @font-face {
-  font-family: IRANYekanXVF;
+  font-family: IRANYekanX;
   src: url("/IRANYekanXVF.ttf") format("truetype");
   font-style: normal;
   font-weight: 300 400 500 700;
