@@ -54,8 +54,8 @@ export const fetchClassesApi = async (params, userRole) => {
  */
 export const joinClassApi = async (formData) => {
     const requestBody = {
-        classCode: formData.classCode,
-        password: formData.password,
+        ClassCode: formData.ClassCode,
+        Password: formData.Password,   
     };
 
     const response = await fetch(`${API_BASE_URL}/api/StudentClass/join`, {
