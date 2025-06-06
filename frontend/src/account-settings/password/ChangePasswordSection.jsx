@@ -28,9 +28,15 @@ function ChangePasswordSection({
   }, [apiError]);
 
   const handleCloseAlert = () => {
-    setShowAlert(false);
-    setAlertMessage('');
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertMessage('');
+      if (apiError) {
+        formik.setStatus({ apiError: null });
+      }
+    }, 0);
   };
+
 
 
   const handleCancelClick = () => {
@@ -58,8 +64,7 @@ function ChangePasswordSection({
             />
           )}
         </div>
-        <div className="w-full flex flex-row-reverse flex-wrap-reverse justify-between max-[1192px]:justify-center items-start gap-y-4">
-
+        <div className="w-full flex flex-row flex-wrap justify-between max-[1192px]:justify-center items-end gap-y-4">
           <Input
             form={formik}
             field={formik.getFieldProps("newPassword")}
@@ -67,16 +72,6 @@ function ChangePasswordSection({
             dir="ltr"
             label="رمز عبور جدید"
             value={formik.values.newPassword}
-            disabled={!isEditing}
-          />
-
-          <Input
-            form={formik}
-            field={formik.getFieldProps("confirmNewPassword")}
-            label="تکرار رمز جدید"
-            type="password"
-            dir="ltr"
-            value={formik.values.confirmNewPassword}
             disabled={!isEditing}
           />
 
@@ -90,10 +85,15 @@ function ChangePasswordSection({
             disabled={!isEditing}
           />
 
-          {apiError && (
-            <div className="w-full text-red-500 text-sm mt-2">{apiError}</div>
-          )}
-
+          <Input
+            form={formik}
+            field={formik.getFieldProps("confirmNewPassword")}
+            label="تکرار رمز جدید"
+            type="password"
+            dir="ltr"
+            value={formik.values.confirmNewPassword}
+            disabled={!isEditing}
+          />
 
           {isEditing && (
             <div className="w-full flex justify-start items-center self-start gap-4">
