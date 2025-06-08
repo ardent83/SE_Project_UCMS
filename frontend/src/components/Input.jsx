@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useId } from "react";
 import classNames from "classnames";
 import { Eye, EyeSlash, Calendar1 } from "iconsax-react";
 import {
@@ -20,7 +20,7 @@ const Input = forwardRef(({
     dir = "rtl",
     value,
     openCalendar,
-    mustFill=false,
+    mustFill = false,
     handleValueChange,
     onChangeFile,
     field,
@@ -33,22 +33,25 @@ const Input = forwardRef(({
     const [placeholder, setPlaceholder] = useState(text);
     const [isPasswordVisible, setIsPasswordVisible] = useState(type !== "password");
     
+    const id = useId();
 
     return (
-        <label className={classNames(theme.baseClasses.labelContainer, className)}>
+        <div className={classNames(theme.baseClasses.labelContainer, className)}> 
             <div className={classNames(theme.baseClasses.labelWrapper,
                 {
                     [getLabelClasses(theme, isFocused, disabled, hasError)]: true,
                 }
             )}
             >
-                {mustFill &&<div className={classNames(theme.baseClasses.asterisk, getAsteriskColor(theme, disabled, hasError))}>*</div>}
-                <span className={getLabelClasses(theme, isFocused, disabled, hasError)}>
+                {mustFill && <div className={classNames(theme.baseClasses.asterisk, getAsteriskColor(theme, disabled, hasError))}>*</div>}
+                
+                <label htmlFor={id} className={getLabelClasses(theme, isFocused, disabled, hasError)}>
                     {label}
-                </span>
+                </label>
             </div>
             <div className={theme.baseClasses.selectContainer}>
                 <input
+                    id={id}
                     ref={ref}
                     {...field}
                     {...props}
@@ -60,12 +63,12 @@ const Input = forwardRef(({
                         setPlaceholder("");
                     }}
                     onBlur={(e) => {
-                        field.onBlur(e);
+                        field?.onBlur?.(e); 
                         setIsFocused(false);
                         setPlaceholder(text);
                     }}
                     onChange={(e) => {
-                        field.onChange(e);
+                        field?.onChange?.(e);
                         handleValueChange?.(e, e.target.value);
                         onChangeFile?.(e);
                     }}
@@ -105,7 +108,7 @@ const Input = forwardRef(({
                     {form.errors[field.name]}
                 </span>
             )}
-        </label>
+        </div>
     );
 });
 
