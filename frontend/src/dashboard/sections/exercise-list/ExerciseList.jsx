@@ -21,7 +21,7 @@ export const ExerciseList = ({ userRoleId }) => {
         }
 
         return (
-            <div className="w-full flex justify-center items-start flex-wrap gap-4">
+            <div data-testid="exercise-list-section" className="w-full flex justify-center items-start flex-wrap gap-4">
                 {exercises.map((exercise) => (
                     <ExerciseCard key={exercise.id} exercise={exercise} />
                 ))}

@@ -15,7 +15,7 @@ export const ClassList = ({ userRoleId, userFullName }) => {
             {error && <div className="text-body-04 text-stateerror mt-4">{error}</div>}
 
             {!loading && !error && (
-                <div className="w-full flex justify-between flex-row-reverse items-start flex-wrap">
+                <div data-testid="class-list-section" className="w-full flex justify-between flex-row-reverse items-start flex-wrap">
                     {classes.map((detail) => (
                         <ClassCard
                             key={detail.id}
