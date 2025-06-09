@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import InputBox from "./components/InputBox";
 import InfoText from "./components/InfoText";
 import RoleSelector from "./components/RoleSelector";
-import Alert from '../components/Alert'
+import Alert from '../components/Alert';
 import AuthForm from "./components/AuthForm";
 import useAuthForm from "./hooks/useAuthForm";
 import "./auth-page.css";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
     const {
@@ -20,9 +21,9 @@ export default function AuthPage() {
         isResendEnabled,
         handleResendCode,
         formatTime,
-        resetTempPasswordFlow
     } = useAuthForm();
 
+    const navigate = useNavigate();
     const wrapperRef = useRef(null);
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
@@ -34,7 +35,7 @@ export default function AuthPage() {
             if (wrapperRef.current) {
                 setTimeout(() => {
                     wrapperRef.current.classList.add("active");
-                }, 0);
+                }, 100);
             }
         } else {
             if (wrapperRef.current) {
@@ -53,12 +54,7 @@ export default function AuthPage() {
                 setAlertMessage('');
             }, 0);
         }
-        
-        if (formType !== 'tempPassword' && previousFormType === 'tempPassword') {
-            resetTempPasswordFlow();
-        }
-
-    }, [formType, apiError, previousFormType, resetTempPasswordFlow]);
+    }, [formType, apiError]);
 
     const handleCloseAlert = () => {
         setShowAlert(false);
@@ -67,13 +63,14 @@ export default function AuthPage() {
 
     const handleTempPasswordSubmit = async (e) => {
         e.preventDefault();
-
         formik.validateForm().then(async (errors) => {
             if (Object.keys(errors).length === 0) {
                 if (tempPasswordStage === 'emailInput') {
                     await handleSendTempPasswordEmail(formik.values.email);
                 } else if (tempPasswordStage === 'codeVerification') {
-                    await handleVerifyTempPasswordCode(formik.values.email, formik.values.tempCode);
+                    const verified = await handleVerifyTempPasswordCode(formik.values.email, formik.values.tempCode);
+                    if (verified)
+                        navigate('/dashboard');
                 }
             } else {
                 formik.setErrors(errors);
@@ -130,11 +127,10 @@ export default function AuthPage() {
                                     </button>
                                 </>
                             )}
-
                             {tempPasswordStage === 'codeVerification' && (
                                 <>
                                     <div className="code-input-wrapper animation" style={{ "--i": 18, "--j": 1 }}>
-                                        <div className="timer-display"> 
+                                        <div className="timer-display">
                                             <span className="timer-countdown">{formatTime(resendCodeTimer)}</span>
                                         </div>
                                         <InputBox
@@ -146,7 +142,6 @@ export default function AuthPage() {
                                             className="temp-code-input-box"
                                         />
                                     </div>
-
                                     <button
                                         type="submit"
                                         className="btn animation"
@@ -167,7 +162,6 @@ export default function AuthPage() {
                                     )}
                                 </>
                             )}
-
                             <div className="linkTxt animation" style={{ "--i": 20, "--j": 3 }}>
                                 <p>حساب کاربری دارید؟ <a href="#" className="login-link" onClick={() => {
                                     handleToggleForm('login');
@@ -177,7 +171,7 @@ export default function AuthPage() {
                     </AuthForm>
                     <InfoText type="tempPassword" i={17} j={0} />
                 </>
-            ) : ( 
+            ) : (
                 <>
                     <AuthForm type="register">
                         <h2 className="title animation" style={{ "--i": 17, "--j": 0 }}>ثبت‌نام</h2>
