@@ -1,74 +1,83 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import { ArrowDown2 } from 'iconsax-react';
-import {theme, getAsteriskColor, getIconClasses, getLabelClasses, getSelectClasses} from './Theme'
+import {
+    theme,
+    getAsteriskColor,
+    getIconClasses,
+    getLabelClasses,
+    getSelectClasses,
+    getErrorMessageClasses,
+} from './Theme';
 
-export default function Dropdown({
+const Dropdown = React.forwardRef(({
     label,
     options = [],
     className,
-    onChange,
     disabled = false,
-    mustFill=false,
-    errorMessage = "اطلاعات به درستی وارد نشده است",
-}) {
-    const [isFocused, setIsFocused] = useState(false);
-    const [error, setError] = useState(false);
-    const [value, setValue] = useState("");
+    mustFill = false,
+    field,
+    form,
+    ...props
+}, ref) => {
+    const hasError = form.touched[field.name] && form.errors[field.name];
 
-    const validateInput = (inputValue) => {
-        setError(inputValue.trim() === "");
-    };
+    const [isFocused, setIsFocused] = useState(false);
+
+    const currentValue = field.value === null || field.value === undefined ? '' : field.value;
 
     return (
         <label
             className={classNames(theme.baseClasses.labelContainer, className)}
         >
             <div className={classNames(theme.baseClasses.labelWrapper,
-                getAsteriskColor(theme, disabled, error)
+                getAsteriskColor(theme, disabled, hasError)
                 )}>
-                {mustFill && <div className={classNames(theme.baseClasses.asterisk, getAsteriskColor(theme, disabled, error))}>*</div>}
-                <span className={classNames(getLabelClasses(theme, isFocused, disabled, error))}>
+                {mustFill && <div className={classNames(theme.baseClasses.asterisk, getAsteriskColor(theme, disabled, hasError))}>*</div>}
+                <span className={classNames(getLabelClasses(theme, isFocused, disabled, hasError))}>
                     {label}
                 </span>
             </div>
 
             <div className={theme.baseClasses.selectContainer}>
                 <select
-                    className={classNames(theme.baseClasses.select, getSelectClasses(theme, isFocused, disabled, error))}
-                    value={value}
+                    ref={ref}
+                    {...field}
+                    {...props}
+                    className={classNames(theme.baseClasses.select, getSelectClasses(theme, isFocused, disabled, hasError))}
+                    value={currentValue}
                     onChange={(e) => {
-                        setValue(e.target.value);
-                        onChange?.(e);
-                        validateInput(e.target.value);
+                        field.onChange(e);
                     }}
                     onFocus={() => setIsFocused(true)}
-                    onBlur={() => {
+                    onBlur={(e) => {
+                        field.onBlur(e);
                         setIsFocused(false);
-                        validateInput(value);
                     }}
                     disabled={disabled}
                 >
-                    <option value="" disabled hidden>
+                    <option value="" disabled>
                         انتخاب کنید
                     </option>
-                    {options.map((option, index) => (
-                        <option key={index} value={option}>
-                            {option}
+                    {options.map((option) => (
+                        <option key={option.id} value={option.id}>
+                            {option.name}
                         </option>
                     ))}
                 </select>
                 <ArrowDown2
-                    className={classNames(theme.baseClasses.icon, getIconClasses(theme, isFocused, disabled, error))}
+                    className={classNames(theme.baseClasses.icon, getIconClasses(theme, isFocused, disabled, hasError))}
                     size={16}
                 />
             </div>
 
-            {error && (
-                <span className={classNames(theme.baseClasses.errorMessage, theme.colors.errorMessage.error)}>
-                    {errorMessage}
+            {hasError && (
+                <span className={getErrorMessageClasses(theme)}>
+                    {form.errors[field.name]}
                 </span>
             )}
         </label>
     );
-}
+});
+
+export default Dropdown;
