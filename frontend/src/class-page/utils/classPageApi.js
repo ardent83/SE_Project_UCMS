@@ -18,7 +18,7 @@ export const getClassInfoForInstructor = async (classId) => {
 
 
 export const getStudentOfClassForInstructor = async (classId) => {
-    const response = await fetch(`${apiBaseUrl}/api/StudentClass/${classId}/students`, {
+    const response = await fetch(`${apiBaseUrl}/api/StudentClass/Instructor/${classId}/students`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export const getStudentOfClassForInstructor = async (classId) => {
 };
 
 export const getClassInfoForStudent = async (classId) => {
-    const response = await fetch(`${apiBaseUrl}/api/StudentClass/student/${classId}`, {
+    const response = await fetch(`${apiBaseUrl}/api/StudentClass/Student/${classId}/Students`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -150,5 +150,39 @@ export const deleteClassById = async (id) => {
         return false;
     }
 };
+
+
+export const getExamsForInstructor = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Exam/instructor?classId=${classId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch class assignments');
+    }
+
+    return response.json();
+};
+
+export const getExamsForStudent = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Exam/Student?classId=${classId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch class assignments');
+    }
+
+    return response.json();
+};
+
 
 
