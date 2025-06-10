@@ -64,7 +64,7 @@ export const getStudentOfClassForStudent = async (classId) => {
     return response.json();
 };
 
-export const getProjects = async () => {
+export const getProjectsForInstructor = async () => {
     const response = await fetch(`${apiBaseUrl}/api/Project/instructor`, {
         method: 'GET',
         headers: {
@@ -80,7 +80,23 @@ export const getProjects = async () => {
     return response.json();
 };
 
-export const getAssignments = async (classId) => {
+export const getProjectsForStudent = async () => {
+    const response = await fetch(`${apiBaseUrl}/api/Project/Student`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch class projects');
+    }
+
+    return response.json();
+};
+
+export const getAssignmentsForInstructor = async (classId) => {
     const response = await fetch(`${apiBaseUrl}/api/Exercise/instructor?classId=${classId}`, {
         method: 'GET',
         headers: {
@@ -95,5 +111,54 @@ export const getAssignments = async (classId) => {
 
     return response.json();
 };
+
+export const getAssignmentsForStudent = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Exercise/Student?classId=${classId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch class assignments');
+    }
+
+    return response.json();
+};
+
+export const getExamsForInstructor = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Exam/instructor?classId=${classId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch class assignments');
+    }
+
+    return response.json();
+};
+
+export const getExamsForStudent = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Exam/Student?classId=${classId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch class assignments');
+    }
+
+    return response.json();
+};
+
 
 

@@ -4,7 +4,13 @@ import {
     getClassInfoForInstructor,
     getClassInfoForStudent,
     getStudentOfClassForInstructor,
-    getStudentOfClassForStudent
+    getStudentOfClassForStudent,
+    getExamsForInstructor,
+    getExamsForStudent,
+    getAssignmentsForInstructor,
+    getAssignmentsForStudent,
+    getProjectsForStudent,
+    getProjectsForInstructor
 } from './utils/classPageApi.js';
 import { useParams } from "react-router-dom";
 import Exams from "./components/exam/Exams.jsx";
@@ -13,16 +19,6 @@ import Members from "./components/member/Members.jsx";
 import Assignment from "./components/assignment-project/Assignment.jsx";
 import AssignmentProject from "./components/assignment-project/AssignmentProject.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-import { getProjects,getAssignments } from './utils/classPageApi.js';
-
-const examsData = [
-    { color: "var(--color-light-lavender)", title: "کوییز کلاسی 1", date: "شنبه ۱۸ اسفند", time: "۱۰:۰۰-۱۱:۰۰", location: "دانشکده فنی مهندس، کلاس ۱۶" },
-    { color: "var(--color-pale-yellow)", title: "امتحان میان‌ترم", date: "یکشنبه ۲۶ فروردین", time: "۱۴:۰۰-۱۶:۰۰", location: "سالن امتحانات مرکزی" },
-    { color: "var(--color-sky-blue)", title: "کوییز کلاسی 2", date: "دوشنبه ۲۷ فروردین", time: "۱۰:۰۰-۱۱:۰۰", location: "دانشکده فنی مهندس، کلاس ۱۶" },
-    { color: "var(--color-light-green)", title: "امتحان پایان‌ترم", date: "شنبه ۱۰ خرداد", time: "۰۹:۰۰-۱۲:۰۰", location: "سالن امتحانات مرکزی" },
-    { color: "var(--color-light-lavender)", title: "کوییز کلاسی 1", date: "شنبه ۱۸ اسفند", time: "۱۰:۰۰-۱۱:۰۰", location: "دانشکده فنی مهندس، کلاس ۱۶" },
-    { color: "var(--color-pale-yellow)", title: "امتحان میان‌ترم", date: "یکشنبه ۲۶ فروردین", time: "۱۴:۰۰-۱۶:۰۰", location: "سالن امتحانات مرکزی" },
-];
 
 const dayOfWeekMap = {
     0: "شنبه", 1: "یکشنبه", 2: "دوشنبه",
@@ -42,6 +38,35 @@ const formatSchedule = (schedules) => {
     return { days, times };
 };
 
+const examColors = [
+    "var(--color-light-lavender)",
+    "var(--color-pale-yellow)",
+    "var(--color-sky-blue)",
+    "var(--color-light-green)"
+];
+
+const getColor = (index) => examColors[index % examColors.length];
+
+const convertToPersianDate = (isoDateStr) => {
+    const date = new Date(isoDateStr);
+    return date.toLocaleDateString("fa-IR", {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
+const convertToPersianTime = (isoDateStr) => {
+    const date = new Date(isoDateStr);
+    return date.toLocaleTimeString("fa-IR", {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    });
+};
+
+
 export default function ClassPage() {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
@@ -50,26 +75,28 @@ export default function ClassPage() {
     const [classStudents, setClassStudents] = useState(null);
     const [assignmentProjects, setAssignmentProjects] = useState([]);
     const [assignmentsData, setAssignments] = useState([]);
-
+    const [examsData, setExamsData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let info, students, projects, assignments;
+                let info, students, projects, assignments, exams;
 
                 if (userRole === "Instructor") {
-                    [info, students, projects, assignments] = await Promise.all([
+                    [info, students, projects, assignments, exams] = await Promise.all([
                         getClassInfoForInstructor(classId),
                         getStudentOfClassForInstructor(classId),
-                        getProjects(),
-                        getAssignments(classId)
+                        getProjectsForInstructor(),
+                        getAssignmentsForInstructor(classId),
+                        getExamsForInstructor(classId)
                     ]);
                 } else if (userRole === "Student") {
-                    [info, students, projects, assignments] = await Promise.all([
+                    [info, students, projects, assignments, exams] = await Promise.all([
                         getClassInfoForStudent(classId),
                         getStudentOfClassForStudent(classId),
-                        getProjects(),
-                        getAssignments(classId)
+                        getProjectsForStudent(),
+                        getAssignmentsForStudent(classId),
+                        getExamsForStudent(classId)
                     ]);
                 }
 
@@ -78,19 +105,24 @@ export default function ClassPage() {
                     endDate: new Date(project.dueDate),
                 }));
 
-
-
                 const assignmentsData = assignments.map(item => ({
                     name: item.title,
                     endDate: new Date(item.endDate),
                 }));
 
-                console.log(assignmentsData);
+                const examsData = exams.map((exam, index) => ({
+                    color: getColor(index),
+                    title: exam.title,
+                    date: convertToPersianDate(exam.date),
+                    time: convertToPersianTime(exam.date),
+                    location: exam.examLocation
+                }));
 
                 setClassInfo(info);
                 setClassStudents(students);
                 setAssignmentProjects(assignmentProjects);
                 setAssignments(assignmentsData);
+                setExamsData(examsData);
             } catch (error) {
                 console.error("خطا در دریافت اطلاعات کلاس:", error);
             }
@@ -99,10 +131,7 @@ export default function ClassPage() {
         fetchData();
     }, [classId, userRole]);
 
-
-
-
-    if (!classInfo) return <div>is loading ...</div>;
+    if (!classInfo) return <div>در حال بارگذاری ...</div>;
 
     const { days, times } = formatSchedule(classInfo.schedules);
 
@@ -121,7 +150,7 @@ export default function ClassPage() {
 
             <div className="w-full flex h-full justify-between gap-2 items-start shrink-0 pl-[0.84706rem]">
                 <div className="w-full max-w-[45.8rem] gap-5 flex flex-col items-start">
-                    <Exams exams={examsData} />
+                    <Exams exams={examsData} classId={classId}/>
                     <div className="w-full flex justify-between gap-2 items-start flex-[1_0_0]">
                         <Assignment assignments={assignmentsData} classId={classId} />
                         <AssignmentProject projects={assignmentProjects} classId={classId} />
