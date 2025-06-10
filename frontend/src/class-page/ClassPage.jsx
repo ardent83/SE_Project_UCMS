@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ClassHeader from "./ClassHeader";
 import {
+    getAssignmentsForStudent,
     getClassInfoForInstructor,
-    getClassInfoForStudent,
+    getClassInfoForStudent, getProjectsForStudent,
     getStudentOfClassForInstructor,
     getStudentOfClassForStudent,
     getExamsForInstructor,
@@ -19,6 +20,7 @@ import Members from "./components/member/Members.jsx";
 import Assignment from "./components/assignment-project/Assignment.jsx";
 import AssignmentProject from "./components/assignment-project/AssignmentProject.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
+import { getProjectsForInstructor,getAssignmentsForInstructor } from './utils/classPageApi.js';
 
 const dayOfWeekMap = {
     0: "شنبه", 1: "یکشنبه", 2: "دوشنبه",

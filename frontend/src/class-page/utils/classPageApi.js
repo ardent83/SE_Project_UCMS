@@ -80,6 +80,7 @@ export const getProjectsForInstructor = async () => {
     return response.json();
 };
 
+
 export const getProjectsForStudent = async () => {
     const response = await fetch(`${apiBaseUrl}/api/Project/Student`, {
         method: 'GET',
@@ -95,7 +96,6 @@ export const getProjectsForStudent = async () => {
 
     return response.json();
 };
-
 export const getAssignmentsForInstructor = async (classId) => {
     const response = await fetch(`${apiBaseUrl}/api/Exercise/instructor?classId=${classId}`, {
         method: 'GET',
@@ -128,6 +128,7 @@ export const getAssignmentsForStudent = async (classId) => {
     return response.json();
 };
 
+
 export const getExamsForInstructor = async (classId) => {
     const response = await fetch(`${apiBaseUrl}/api/Exam/instructor?classId=${classId}`, {
         method: 'GET',
@@ -144,6 +145,7 @@ export const getExamsForInstructor = async (classId) => {
     return response.json();
 };
 
+
 export const getExamsForStudent = async (classId) => {
     const response = await fetch(`${apiBaseUrl}/api/Exam/Student?classId=${classId}`, {
         method: 'GET',
@@ -158,6 +160,31 @@ export const getExamsForStudent = async (classId) => {
     }
 
     return response.json();
+};
+
+
+
+export const deleteClassById = async (id) => {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/Classes/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                // "Authorization": `Bearer ${token}` اگر نیاز هست
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete class");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Error deleting class:", error);
+        return false;
+    }
 };
 
 
