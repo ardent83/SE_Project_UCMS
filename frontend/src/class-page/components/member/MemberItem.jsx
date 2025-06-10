@@ -2,13 +2,16 @@ import React from "react";
 
 const MemberItem = ({ firstLastName, image }) => {
     const hasImage = Boolean(image);
-    const namePart = firstLastName?.split("|")[1]?.trim() || "";
-    const firstChar = namePart.charAt(0).toUpperCase() || "?";
+    const isInstructor = firstLastName?.includes("|");
+    const namePart = isInstructor
+        ? firstLastName.split("|")[1]?.trim()
+        : firstLastName.trim();
+    const firstChar = namePart?.charAt(0).toUpperCase() || "?";
 
     return (
         <div className="w-full max-w-88 p-4 flex justify-end items-center gap-2 border-b last:border-none border-b-neutralgray-2 cursor-pointer">
             <label className="flex justify-end items-center text-body-05 text-right text-redp self-stretch cursor-pointer">
-                {firstLastName}
+                {namePart}
             </label>
 
             {hasImage ? (

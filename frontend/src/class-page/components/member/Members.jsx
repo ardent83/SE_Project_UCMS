@@ -31,7 +31,7 @@ const Members = ({ members }) => {
                     <span>{members.length.toLocaleString("fa-IR")}</span>
                 </div>
                 <div className="w-fit flex justify-between items-center gap-1">
-                    <span className="text-caption-03 text-right text-[#292D32]">اعضای کلاس</span>
+                    <span className="text-caption-03 text-right text-[0.8rem] text-[#292D32]">اعضای کلاس</span>
                     <Profile2User color={"#292D32"} variant="Bold" size={"16"} />
                 </div>
             </div>
