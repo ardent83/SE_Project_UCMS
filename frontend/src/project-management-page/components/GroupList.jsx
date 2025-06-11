@@ -4,7 +4,7 @@ import GroupItem from "./GroupItem";
 import { Add } from "iconsax-react";
 import NoGroupsImage from '../assets/NoGroup.svg';
 
-const GroupList = ({ teams, userRole, currentUserId, onAddGroupClick }) => {
+const GroupList = ({ teams, userRole, currentUserId, onAddGroupClick, onDeleteTeamRequest }) => {
     return (
         <div className="w-full max-w-md p-4 rounded-xl shadow-sm bg-[#0c1e33]/40">
             <div className="flex items-center justify-between mb-4">
@@ -21,7 +21,7 @@ const GroupList = ({ teams, userRole, currentUserId, onAddGroupClick }) => {
             </div>
 
             <div className="teams-list-section">
-                {(teams && teams.length === 0) ? ( 
+                {(teams && teams.length === 0) ? (
                     <div className="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-800/10 rounded-xl mt-4">
                         <img src={NoGroupsImage} alt="گروهی یافت نشد" className="w-32 h-32 mb-4 opacity-70" />
                         <p className="text-gray-200 mb-4 font-bold text-lg">
@@ -32,12 +32,13 @@ const GroupList = ({ teams, userRole, currentUserId, onAddGroupClick }) => {
                         </p>
                     </div>
                 ) : (
-                    (teams || []).map((team) => ( 
+                    (teams || []).map((team) => (
                         <GroupItem
                             key={team.id}
                             team={team}
                             userRole={userRole}
                             currentUserId={currentUserId}
+                            onDeleteTeamRequest={onDeleteTeamRequest} 
                         />
                     ))
                 )}
