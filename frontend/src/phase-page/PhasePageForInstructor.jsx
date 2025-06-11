@@ -5,9 +5,7 @@ import {
     Trash,
     Information,
     PresentionChart,
-    DirectboxNotif,
-    TaskSquare,
-    DocumentDownload
+    DirectboxNotif
 } from "iconsax-react";
 import DropdownSection from "./components/DropdownSection.jsx";
 import GradeUpload from "./components/GradeDropdownSection.jsx";

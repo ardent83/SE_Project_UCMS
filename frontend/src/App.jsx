@@ -21,7 +21,6 @@ import EmailConfirmedPage from './auth/email-validation/EmailConfirmedPage';
 import ProjectsPage from './project-list/ProjectsPage';
 import ClassPage from "./class-page/ClassPage.jsx";
 import PhasePage from "./phase-page/PhasePage.jsx";
-import PhasePageForStudent from "./phase-page/PhasePageForStudent.jsx";
 
 function App() {
   return (
