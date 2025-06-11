@@ -17,7 +17,7 @@ export const getClassInfoForInstructor = async (classId) => {
 
 
 export const getClassInfoForStudent = async (classId) => {
-    const response = await fetch(`${apiBaseUrl}/api/StudentClass/Student/${classId}/Students`, {
+    const response = await fetch(`${apiBaseUrl}/api/StudentClass/student/${classId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
