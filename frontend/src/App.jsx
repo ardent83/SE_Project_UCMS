@@ -19,6 +19,9 @@ import TestPage from './Test';
 import EmailVerificationPage from './auth/email-validation/EmailVerificationPage';
 import EmailConfirmedPage from './auth/email-validation/EmailConfirmedPage';
 import ProjectsPage from './project-list/ProjectsPage';
+import ClassPage from "./class-page/ClassPage.jsx";
+import PhasePage from "./phase-page/PhasePage.jsx";
+import PhasePageForStudent from "./phase-page/PhasePageForStudent.jsx";
 
 function App() {
   return (
@@ -34,11 +37,14 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/classes" element={<ClassesPage />} />
+            <Route path="/class/:classId" element={<ClassPage />} />
             <Route path="/test" element={<TestPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/project-management/:projectId" element={<ProjectManagementPage />} />
-            
+            <Route path="/phase" element={<PhasePage />} />
+
+
             {/* Forms */}
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
             <Route path="/class/create/" element={<ClassForm />} />
