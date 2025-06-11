@@ -86,7 +86,7 @@ export default function ClassPage() {
                     [info, students, projects, assignments, exams] = await Promise.all([
                         getClassInfoForInstructor(classId),
                         getStudentOfClassForInstructor(classId),
-                        getProjectsForInstructor(),
+                        getProjectsForInstructor(classId),
                         getAssignmentsForInstructor(classId),
                         getExamsForInstructor(classId)
                     ]);
@@ -94,13 +94,14 @@ export default function ClassPage() {
                     [info, students, projects, assignments, exams] = await Promise.all([
                         getClassInfoForStudent(classId),
                         getStudentOfClassForStudent(classId),
-                        getProjectsForStudent(),
+                        getProjectsForStudent(classId),
                         getAssignmentsForStudent(classId),
                         getExamsForStudent(classId)
                     ]);
                 }
 
                 const assignmentProjects = projects.map(project => ({
+                    id:project.id,
                     name: project.title,
                     endDate: new Date(project.dueDate),
                 }));
