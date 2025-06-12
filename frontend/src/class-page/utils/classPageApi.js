@@ -1,3 +1,5 @@
+import {useAuth} from "../../auth/context/AuthContext.jsx";
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const getClassInfoForInstructor = async (classId) => {
@@ -17,7 +19,7 @@ export const getClassInfoForInstructor = async (classId) => {
 
 
 export const getClassInfoForStudent = async (classId) => {
-    const response = await fetch(`${apiBaseUrl}/api/StudentClass/Student/${classId}/Students`, {
+    const response = await fetch(`${apiBaseUrl}/api/StudentClass/student/${classId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -130,10 +132,7 @@ export const getProjectsForStudent = async (classId) => {
 };
 
 
-
 export const deleteClassById = async (id) => {
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
     try {
         const response = await fetch(`${apiBaseUrl}/api/Classes/${id}`, {
             method: "DELETE",
@@ -187,4 +186,51 @@ export const getExamsForStudent = async (classId) => {
 };
 
 
+export const leaveClassById = async (classId, token) => {
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/StudentClass/${classId}/Leave`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("API Error Response:", errorText);
+            throw new Error("Failed to leave class");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Error leaving class:", error);
+        return false;
+    }
+};
+
+
+export const removeStudentFromClass = async (classId, studentId, signal) => {
+    try {
+        const response = await fetch(
+            `${apiBaseUrl}/api/StudentClass/${classId}/Students/remove/${studentId}`,
+            {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                signal,
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Server response:", errorText);
+            throw new Error("Failed to remove student from class");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Error removing student from class:", error);
+        return false;
+    }
+};
 
