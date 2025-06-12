@@ -4,7 +4,7 @@ import { useAuth } from "../../auth/context/AuthContext.jsx";
 
 const HeadSection = ({ title, onClick }) => {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
     const isInstructor = userRole === "Instructor";
 
     return (
@@ -12,7 +12,8 @@ const HeadSection = ({ title, onClick }) => {
             {isInstructor && (
                 <div
                     onClick={onClick}
-                    className="flex h-[1.69613rem] justify-center items-center p-[0.33925rem] rounded-[0.25444rem] bg-[#ECF9FD] cursor-pointer"
+                    className="flex h-[1.69613rem] justify-center items-center p-[0.33925rem] rounded-[0.25444rem] bg-[#ECF9FD] cursor-pointer
+               transition-all duration-300 ease-out hover:scale-110 hover:rotate-3 hover:shadow-md"
                 >
                     <Add color="var(--color-redp)" size={24} />
                 </div>

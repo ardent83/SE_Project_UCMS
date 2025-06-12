@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-const VerificationPage = () => {
+const EmailVerificationPage = () => {
     const [timeLeft, setTimeLeft] = useState(60);
     const [resendEnabled, setResendEnabled] = useState(false);
 
@@ -72,4 +72,4 @@ const VerificationPage = () => {
         </div>);
 };
 
-export default VerificationPage;
+export default EmailVerificationPage;

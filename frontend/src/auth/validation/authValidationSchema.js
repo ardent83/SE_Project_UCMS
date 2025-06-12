@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const authValidationSchema = (formType) =>
+export const authValidationSchema = (formType, tempPasswordStage = 'emailInput') =>
   Yup.object({
     username: Yup.string().when([], {
       is: () => formType === "register",
@@ -14,7 +14,6 @@ export const authValidationSchema = (formType) =>
     }),
     email: Yup.string().required("ایمیل الزامی است").email("ایمیل نامعتبر است"),
     password: Yup.string()
-      .required("گذرواژه الزامی است")
       .when([], {
         is: () => formType === "register",
         then: () =>
@@ -30,8 +29,10 @@ export const authValidationSchema = (formType) =>
             )
             .matches(
               /^[a-zA-Z0-9@$!%*?&]+$/,
-              "گذرواژه شامل حروف انگلیسی می‌تواند باشد"
+              "گذرواژه شامل حروف انگلیسی، اعداد و کاراکترهای خاص (@$!%*?&) می‌تواند باشد"
             ),
+        otherwise: () =>
+          Yup.string().notRequired(), // Password is not required for tempPassword (email input)
       }),
     confirmPassword: Yup.string().when([], {
       is: () => formType === "register",
@@ -42,8 +43,26 @@ export const authValidationSchema = (formType) =>
             [Yup.ref("password"), null],
             "تکرار گذرواژه با گذرواژه مطابقت ندارد"
           ),
+      otherwise: () =>
+        Yup.string().notRequired(), // Not required for login or tempPassword
     }),
-    roleId: Yup.number()
-      .oneOf([1, 2], "نقش نامعتبر است")
-      .required("انتخاب نقش الزامی است"),
+    roleId: Yup.number().when([], {
+      is: () => formType === "register",
+      then: () =>
+        Yup.number()
+          .oneOf([1, 2], "نقش نامعتبر است")
+          .required("انتخاب نقش الزامی است"),
+      otherwise: () =>
+        Yup.number().notRequired(), // Not required for login or tempPassword
+    }),
+    // --- NEW: tempCode validation for tempPassword flow ---
+    tempCode: Yup.string().when([], {
+      is: () => formType === 'tempPassword' && tempPasswordStage === 'codeVerification',
+      then: () =>
+        Yup.string()
+          .required('کد تأیید الزامی است')
+          .length(6, 'کد تأیید 6 رقمی است'),
+      otherwise: () =>
+        Yup.string().notRequired(), // Not required in other stages/form types
+    }),
   });
