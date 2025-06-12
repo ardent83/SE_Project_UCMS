@@ -80,7 +80,7 @@ const useExerciseForm = ({ formType = "create", onSuccess = () => {} }) => {
           resetForm({ values: defaultInitialValues });
           onSuccess("create");
         } else if (formType === "edit") {
-          await updateExercise(formData, classId, exerciseId);
+          await updateExercise(formData, exerciseId);
           onSuccess("edit");
         }
       } catch (err) {

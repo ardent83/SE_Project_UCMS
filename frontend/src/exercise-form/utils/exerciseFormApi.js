@@ -24,8 +24,8 @@ export const createExercise = async (formData, classId) => {
   return handleApiResponse(response, "!خطا در ایجاد تکلیف");
 };
 
-export const updateExercise = async (formData, classId, exerciseId) => {
-  const response = await fetch(`${apiBaseUrl}/api/Exercise/${exerciseId}?classId=${classId}`, {
+export const updateExercise = async (formData, exerciseId) => {
+  const response = await fetch(`${apiBaseUrl}/api/Exercise/${exerciseId}`, {
       method: "PATCH",
       credentials: "include",
       body: formData,

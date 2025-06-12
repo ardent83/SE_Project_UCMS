@@ -48,7 +48,7 @@ export default function ExamForm({ formType = 'create', onSuccess = () => { }, o
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className="w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}

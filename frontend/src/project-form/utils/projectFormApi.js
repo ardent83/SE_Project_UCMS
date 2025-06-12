@@ -23,8 +23,8 @@ export const createProject = async (formData, classId) => {
   return handleApiResponse(response, "!خطا در ایجاد پروژه");
 };
 
-export const updateProject = async (formData, classId, projectId) => {
-  const response = await fetch(`${apiBaseUrl}/api/Project/${projectId}?classId=${classId}`, {
+export const updateProject = async (formData, projectId) => {
+  const response = await fetch(`${apiBaseUrl}/api/Project/${projectId}`, {
     method: "PATCH",
     credentials: "include",
     body: formData,

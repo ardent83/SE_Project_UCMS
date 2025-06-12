@@ -82,7 +82,7 @@ const useProjectForm = ({ formType = "create", onSuccess = () => {} }) => {
           resetForm({ values: defaultInitialValues });
           onSuccess("create");
         } else if (formType === "edit" && projectId !== undefined) {
-          await updateProject(formData, classId, projectId);
+          await updateProject(formData, projectId);
           onSuccess("edit");
         }
       } catch (err) {
