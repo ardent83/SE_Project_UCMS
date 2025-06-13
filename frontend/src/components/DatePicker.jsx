@@ -122,6 +122,7 @@ export default function MyDatePicker({
             calendar={persian}
             locale={persian_fa}
             calendarPosition="bottom-left"
+            portal
         />
     );
 }
