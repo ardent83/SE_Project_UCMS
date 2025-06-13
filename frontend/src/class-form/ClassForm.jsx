@@ -7,7 +7,7 @@ import Button from "../components/Button";
 import { Add, Edit2 } from 'iconsax-react';
 import TextArea from "../components/TextArea";
 import ScheduleFormSection from './components/ScheduleFormSection'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 export default function ClassForm({ formType = 'create'}) {
