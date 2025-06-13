@@ -1,16 +1,17 @@
 import React from "react"; 
 import { Calendar2, Profile, Clock } from 'iconsax-react';
+import { useNavigate } from "react-router-dom";
 
 export const ClassCard = ({ color, id, title, instructor, days, times }) => {
     const backgroundStyle = {
         backgroundColor: color,
         borderColor: color
     };
-
+    const navigate = useNavigate();
     const nowarpStyle = "text-body-04 text-redp flex-1 text-end overflow-hidden whitespace-nowrap";
 
     return (
-        <div onClick={() => {console.log(id)}} 
+        <div onClick={() => navigate(`/class/${id}`)} 
             className="w-full max-w-57 h-48 py-4 px-6 flex flex-col items-center gap-1 cursor-pointer relative">
             <div className="text-caption-01 flex justify-end items-center self-stretch relative z-10">
                 {title}
