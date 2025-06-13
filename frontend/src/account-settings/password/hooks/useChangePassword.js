@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { passwordValidationSchema } from "../validation/passwordValidationSchema";
 import { changePassword } from "../utils/changePasswordApi";
+import { handleApiResponse } from "../../../utils/handleApiResponse";
 
 const useChangePassword = ({ onSave }) => {
   const [apiError, setApiError] = useState(null);
@@ -31,7 +32,7 @@ const useChangePassword = ({ onSave }) => {
           }
           resetForm();
         } else {
-          const errorData = await response.json();
+          const errorData = handleApiResponse(response);
           throw new Error(
             errorData.message || "!خطایی در تغییر رمز عبور رخ داد"
           );

@@ -61,6 +61,7 @@ function ChangePasswordSection({
               style="none"
               onClick={onEditToggle}
               disabled={isEditing}
+              type="button"
             />
           )}
         </div>
