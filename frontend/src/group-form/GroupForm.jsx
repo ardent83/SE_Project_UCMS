@@ -7,11 +7,15 @@ import { Add, DocumentDownload, Edit2 } from 'iconsax-react';
 import FileUploadInput from "./components/FileUploadInput";
 import GroupMemberFormSection from './components/GroupMemberFormSection';
 import TabSwitcher from './components/TabSwitcher'
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-export default function GroupForm({ formType = 'create', onSuccess = () => { }, onClose = () => { } }) {
+export default function GroupForm({ formType = 'create' }) {
+    const navigate = useNavigate();
+    const { projectId } = useParams();
+    const onClose = () => navigate(`/project/${projectId}`);
+
     const {
         formik,
         apiError,
@@ -26,11 +30,9 @@ export default function GroupForm({ formType = 'create', onSuccess = () => { }, 
             const successMessage = type === 'create' ? "!گروه با موفقیت ایجاد شد" : "!تغییرات گروه با موفقیت ذخیره شد";
             setAlertMessage(successMessage);
             setShowAlert(true);
-            onSuccess();
+            setTimeout(() => navigate(`/project/${projectId}`), 1000);
         }
     });
-
-    const { projectId } = useParams();
 
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
@@ -60,7 +62,7 @@ export default function GroupForm({ formType = 'create', onSuccess = () => { }, 
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className="max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Task } from 'iconsax-react'; // آیکون مناسب برای تکالیف
+import { Task } from 'iconsax-react';
 import { HeadSection } from '../../components/HeadSection';
 import { useExerciseList } from './hooks/useExerciseList';
 import { ExerciseCard } from './components/ExerciseCard';

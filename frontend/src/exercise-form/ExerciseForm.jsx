@@ -8,6 +8,7 @@ import TextArea from "../components/TextArea";
 import FileUploadInput from "./components/FileUploadInput";
 import CheckboxGroup from "../components/CheckboxGroup";
 import { Add, Edit2 } from 'iconsax-react';
+import { useNavigate, useParams } from "react-router-dom";
 
 import { allowedFormats } from "./validation/exerciseFormValidationSchema";
 
@@ -16,18 +17,22 @@ const fileFormats = allowedFormats.map(format => ({
     name: format,
 }));
 
-export default function ExerciseForm({ formType = 'create', onSuccess = () => { }, onClose = () => { } }) {
+export default function ExerciseForm({ formType = 'create' }) {
+    const navigate = useNavigate();
+    const { classId, exerciseId } = useParams();
+    const onClose = () =>  classId ? navigate(`/class/${classId}`) : navigate(`/exercise/${exerciseId}`);
+
     const {
         formik,
         apiError,
         isLoading,
     } = useExerciseForm({
         formType,
-        onSuccess: (type) => {
+        onSuccess: (type, exerciseId) => {
             const successMessage = type === 'create' ? "!تکلیف با موفقیت ایجاد شد" : "!تغییرات تکلیف با موفقیت ذخیره شد";
             setAlertMessage(successMessage);
             setShowAlert(true);
-            setTimeout(onSuccess, 100);
+            setTimeout(() => navigate(`/exercise/${exerciseId}`), 1000);
         }
     });
 
@@ -59,7 +64,7 @@ export default function ExerciseForm({ formType = 'create', onSuccess = () => { 
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className="max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}

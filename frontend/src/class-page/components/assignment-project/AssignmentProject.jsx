@@ -12,7 +12,7 @@ const AssignmentProject = ({ projects, classId }) => {
     };
 
     const handleProjectClick = (projectId) => {
-        navigate(`/project-management/${projectId}`);
+        navigate(`/project/${projectId}`);
     };
 
     return (
