@@ -68,7 +68,7 @@ const useExamForm = ({ formType = "create", onSuccess = () => {} }) => {
           resetForm({ values: defaultInitialValues });
           onSuccess("create");
         } else if (formType === "edit") {
-          await updateExam(formData, classId, examId);
+          await updateExam(formData, examId);
           onSuccess("edit");
         }
       } catch (err) {

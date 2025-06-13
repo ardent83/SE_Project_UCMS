@@ -76,12 +76,12 @@ const usePhaseForm = ({ formType = "create", onSuccess = () => {} }) => {
         }
 
         if (formType === "create") {
-          await createPhase(formData, projectId);
+          const response = await createPhase(formData, projectId);
           resetForm({ values: defaultInitialValues });
-          onSuccess("create");
+          onSuccess("create", response.data.phaseId);
         } else if (formType === "edit") {
-          await updatePhase(formData, projectId, phaseId);
-          onSuccess("edit");
+          await updatePhase(formData, phaseId);
+          onSuccess("edit", phaseId);
         }
       } catch (err) {
         setApiError(err.message || "!خطا در ثبت اطلاعات فاز");

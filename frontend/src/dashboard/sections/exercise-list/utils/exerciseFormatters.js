@@ -1,31 +1,37 @@
+const ExerciseStatus = {
+    NotStarted: 0,
+    InProgress: 1,
+    Completed: 2
+}
+
 const PERSIAN_STATUS_TEXT = {
-  2: "نمره‌دهی شده",
-  1: "تحویل داده شده",
-  0: "انجام نشده",
+  [ExerciseStatus.Completed]: "تکمیل شده",
+  [ExerciseStatus.InProgress]: "در حال انجام",
+  [ExerciseStatus.NotStarted]: "شروع نشده",
 };
 
 const STATUS_STYLES = {
-  2: "bg-purple-200 text-purple-800",
-  1: "bg-green-200 text-green-800",
-  0: "bg-orange-200 text-orange-700",
+  [ExerciseStatus.Completed]: "bg-green-200 text-green-800",
+  [ExerciseStatus.InProgress]: "bg-purple-200 text-purple-800",
+  [ExerciseStatus.NotStarted]: "bg-orange-200 text-orange-700",
 };
 
 const STATUS_BORDER_STYLES = {
-  2: "border border-purple-500",
-  1: "border border-green-500",
-  0: "border border-orange-500",
+  [ExerciseStatus.Completed]: "border border-green-500",
+  [ExerciseStatus.InProgress]: "border border-purple-500",
+  [ExerciseStatus.NotStarted]: "border border-orange-500",
 };
 
 const STATUS_BORDER_COLORS = {
-    2: '#8b5cf6',
-    1: '#22c55e',
-    0: '#f97316',
+    [ExerciseStatus.Completed]: '#22c55e',
+    [ExerciseStatus.InProgress]: '#8b5cf6',
+    [ExerciseStatus.NotStarted]: '#f97316',
 };
 
 const STATUS_PERCENTAGES = {
-    2: 0.5,
-    1: 1,
-    0: 0,
+    [ExerciseStatus.Completed]: 1,
+    [ExerciseStatus.InProgress]: 0.5,
+    [ExerciseStatus.NotStarted]: 0,
 };
 
 const formatPersianDate = (dateString) => {

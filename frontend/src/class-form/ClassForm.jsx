@@ -7,9 +7,14 @@ import Button from "../components/Button";
 import { Add, Edit2 } from 'iconsax-react';
 import TextArea from "../components/TextArea";
 import ScheduleFormSection from './components/ScheduleFormSection'
+import { useNavigate, useParams } from "react-router-dom";
 
 
-export default function ClassForm({ formType = 'create', onSuccess = () => { }, onClose = () => { } }) {
+export default function ClassForm({ formType = 'create'}) {
+    const navigate = useNavigate();
+    const { classId } = useParams();
+    const onClose = () => classId ? navigate(`/class/${classId}`) : navigate('/classes');
+
     const {
         formik,
         apiError,
@@ -18,11 +23,11 @@ export default function ClassForm({ formType = 'create', onSuccess = () => { }, 
         handleRemoveSchedule,
     } = useClassForm({
         formType,
-        onSuccess: (type) => {
+        onSuccess: (type, classId) => {
             const successMessage = type === 'create' ? "!کلاس با موفقیت ایجاد شد" : "!تغییرات کلاس با موفقیت ذخیره شد";
             setAlertMessage(successMessage);
             setShowAlert(true);
-            onSuccess();
+            setTimeout(() => navigate(`/class/${classId}`), 1000);
         }
     });
 
@@ -51,7 +56,7 @@ export default function ClassForm({ formType = 'create', onSuccess = () => { }, 
     };
 
     if (isLoading) {
-        return <div className="w-240 h-fit flex justify-center items-center p-6">Loading...</div>;
+        return <div className="max-w-240 h-fit flex justify-center items-center p-6">Loading...</div>;
     }
 
     const handleIconClick = () => {
@@ -59,7 +64,7 @@ export default function ClassForm({ formType = 'create', onSuccess = () => { }, 
     };
 
     return (
-        <form onSubmit={formik.handleSubmit} className="w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}

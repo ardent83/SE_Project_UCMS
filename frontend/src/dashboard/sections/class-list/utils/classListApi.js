@@ -2,7 +2,7 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 import { fetchData } from "../../utils/fetchDataApi";
 
 export const fetchStudentClasses = async (page = 1, pageSize = 4) => {
-    const endpoint = `${apiBaseUrl}/api/StudentClass/student?page=${page}&pageSize=${pageSize}`;
+    const endpoint = `${apiBaseUrl}/api/StudentClass/Student/classes?Page=${page}&PageSize=${pageSize}`;
     return fetchData(endpoint);
 };
 

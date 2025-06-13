@@ -76,12 +76,12 @@ const useExerciseForm = ({ formType = "create", onSuccess = () => {} }) => {
         }
 
         if (formType === "create") {
-          await createExercise(formData, classId);
+          const response = await createExercise(formData, classId);
           resetForm({ values: defaultInitialValues });
-          onSuccess("create");
+          onSuccess("create", response.data.exerciseId);
         } else if (formType === "edit") {
-          await updateExercise(formData, classId, exerciseId);
-          onSuccess("edit");
+          await updateExercise(formData, exerciseId);
+          onSuccess("edit", exerciseId);
         }
       } catch (err) {
         setApiError(err.message || "!خطا در ثبت اطلاعات تکلیف");
