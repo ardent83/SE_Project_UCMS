@@ -19,6 +19,7 @@ import TestPage from './Test';
 import EmailVerificationPage from './auth/email-validation/EmailVerificationPage';
 import EmailConfirmedPage from './auth/email-validation/EmailConfirmedPage';
 import ProjectsPage from './project-list/ProjectsPage';
+import ExercisePage from './exercise-page/ExercisePage';
 
 function App() {
   return (
@@ -37,7 +38,9 @@ function App() {
             <Route path="/test" element={<TestPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/project-management/:projectId" element={<ProjectManagementPage />} />
+            <Route path="/project/:projectId" element={<ProjectManagementPage />} />
+            <Route path="/exercise/:exerciseId" element={<ExercisePage />} />
+
             
             {/* Forms */}
             <Route path="/class/edit/:classId" element={<ClassForm formType='edit' />} />
