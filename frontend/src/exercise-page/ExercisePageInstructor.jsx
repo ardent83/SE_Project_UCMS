@@ -1,10 +1,9 @@
-// src/features/ExercisePage/ExercisePageForInstructor.jsx
 import React from "react";
 import { useParams } from "react-router-dom";
 import {
     Calendar,
-    Edit2,
-    Trash,
+    Edit2, 
+    Trash, 
     Information,
     DirectboxNotif,
     PresentionChart
@@ -14,6 +13,9 @@ import { useExerciseDataForInstructor } from "./hooks/useExerciseDataForInstruct
 import DropdownSection from "./components/DropdownSection.jsx";
 import GradeUpload from "./components/GradeDropdownSection.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
+import Modal from "../components/Modal";
+import DeleteConfirmModalContent from "../components/DeleteConfirmPopover";
+
 
 const ExercisePageForInstructor = () => {
     const { exerciseId } = useParams();
@@ -28,7 +30,13 @@ const ExercisePageForInstructor = () => {
         handleSubmitGrades,
         handleCancelGradeForm,
         handleDownloadSubmission,
-        handleDownloadExerciseFile, 
+        handleDownloadExerciseFile,
+        handleDeleteExerciseRequest,
+        handleConfirmDeleteExercise,
+        showDeleteExerciseModal,
+        setShowDeleteExerciseModal,
+        exerciseToDeleteDetails,
+        handleEditExerciseClick, 
         showGradeFormModal,
         selectedSubmissionId,
         grades,
@@ -38,7 +46,7 @@ const ExercisePageForInstructor = () => {
         gradeFormError,
         formatPersianDate,
         formatPersianTime,
-    } = useExerciseDataForInstructor(exerciseId, 'Instructor'); 
+    } = useExerciseDataForInstructor(exerciseId, 'Instructor');
 
     if (loading) return <div className="text-center mt-10">در حال بارگذاری تمرین...</div>;
     if (error) return <div className="text-center text-red-500 mt-10">خطا: {error}</div>;
@@ -54,26 +62,42 @@ const ExercisePageForInstructor = () => {
     return (
         <div className="w-full max-w-270 p-6">
             <div className="w-full flex flex-col items-center">
+                {/* Exercise Title and Actions */}
                 <div className="w-full flex justify-between items-center px-10 pb-10" dir="rtl">
                     <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">{currentExercise.title}</h2>
+                    {/* Actions: Download, Delete, Edit Exercise */}
                     <div className="flex gap-4 text-gray-600 mt-5">
+                        {/* دانلود فایل تمرین اصلی */}
                         <div title="دانلود فایل تمرین" className="cursor-pointer">
                             <DirectboxNotif
                                 size="30"
                                 variant="Bulk"
                                 color="#08146f"
-                                onClick={() => handleDownloadExerciseFile(currentExercise.exerciseId, `تمرین_${currentExercise.id}.${currentExercise.fileFormats}`)} // <-- اتصال به تابع جدید
+                                onClick={() => handleDownloadExerciseFile(currentExercise.exerciseId, `تمرین_${currentExercise.id}.${currentExercise.fileFormats}`)}
                             />
                         </div>
+                        {/* دکمه حذف تمرین */}
                         <div title="حذف تمرین" className="cursor-pointer">
-                            <Trash size="30" variant="Bulk" color="#08146f" />
+                            <Trash
+                                size="30"
+                                variant="Bulk"
+                                color="#08146f"
+                                onClick={() => handleDeleteExerciseRequest(currentExercise.exerciseId, currentExercise.title)}
+                            />
                         </div>
+                        {/* دکمه ویرایش تمرین */}
                         <div title="ویرایش تمرین" className="cursor-pointer">
-                            <Edit2 size="30" variant="Bulk" color="#08146f" />
+                            <Edit2
+                                size="30"
+                                variant="Bulk"
+                                color="#08146f"
+                                onClick={() => handleEditExerciseClick(currentExercise.exerciseId)} // <-- اتصال به تابع جدید
+                            />
                         </div>
                     </div>
                 </div>
 
+                {/* Exercise Details */}
                 <div className="w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 border-b-1 border-[#CED8E5F8]" dir="rtl">
                     <div className="text-xl flex items-center gap-2">
                         <Calendar size="25" variant="Linear" color="#495D72" />
@@ -91,6 +115,7 @@ const ExercisePageForInstructor = () => {
                     </div>
                 </div>
 
+                {/* Submissions Section */}
                 <div className="w-full mt-8">
                     <DropdownSection title="ارسال‌ها" bgColor="#1E2B4F">
                         <div className="overflow-y-auto max-h-72">
@@ -167,6 +192,18 @@ const ExercisePageForInstructor = () => {
                     error={gradeFormError}
                 />
             )}
+
+            <Modal show={showDeleteExerciseModal} onClose={() => setShowDeleteExerciseModal(false)}>
+                <DeleteConfirmModalContent
+                    onConfirm={handleConfirmDeleteExercise}
+                    onCancel={() => setShowDeleteExerciseModal(false)}
+                    message={
+                        exerciseToDeleteDetails
+                            ? `آیا از حذف تمرین "${exerciseToDeleteDetails.title}" مطمئن هستید؟`
+                            : "آیا از حذف این تمرین مطمئن هستید؟"
+                    }
+                />
+            </Modal>
         </div>
     );
 };

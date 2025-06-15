@@ -1,14 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     fetchExerciseDetailsApi,
     fetchExerciseSubmissionsApi,
     submitGradeApi,
     downloadSubmissionFileApi,
-    downloadExerciseFileApi
+    downloadExerciseFileApi,
+    deleteExerciseApi
 } from "../utils/exerciseApi";
 import { formatExerciseData, formatSubmissionData, formatPersianDate, formatPersianTime } from "../utils/exerciseFormatters";
 
-export const useExerciseDataForInstructor = (exerciseId, userRole) => { 
+export const useExerciseDataForInstructor = (exerciseId, userRole) => {
+    const navigate = useNavigate();
+
     const [currentExercise, setCurrentExercise] = useState(null);
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,6 +24,9 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
     const [isReadOnly, setIsReadOnly] = useState(false);
     const [gradeFormError, setGradeFormError] = useState("");
     const [showGradeFormModal, setShowGradeFormModal] = useState(false);
+
+    const [showDeleteExerciseModal, setShowDeleteExerciseModal] = useState(false);
+    const [exerciseToDeleteDetails, setExerciseToDeleteDetails] = useState(null);
 
     const loadExerciseDetails = useCallback(async () => {
         setLoading(true);
@@ -96,13 +103,13 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
 
     const handleDownloadExerciseFile = useCallback(async (exerciseId, fileName) => {
         try {
-            await downloadExerciseFileApi(exerciseId, userRole, fileName); 
+            await downloadExerciseFileApi(exerciseId, userRole, fileName);
         } catch (err) {
             console.error("Error downloading exercise file:", err);
             setError(err.message || "خطا در دانلود فایل تمرین.");
         }
-    }, [userRole]); 
-    
+    }, [userRole]);
+
     const handleDownloadSubmissionFile = useCallback(async (fileUrl, fileName) => {
         try {
             await downloadSubmissionFileApi(fileUrl, fileName);
@@ -111,6 +118,35 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
             setError(err.message || "خطا در دانلود فایل ارسال شده.");
         }
     }, []);
+
+    const handleDeleteExerciseRequest = useCallback((id, title) => {
+        setExerciseToDeleteDetails({ id, title });
+        setShowDeleteExerciseModal(true);
+    }, []);
+
+    const handleConfirmDeleteExercise = useCallback(async () => {
+        if (!exerciseToDeleteDetails || !exerciseToDeleteDetails.id) {
+            console.error("Error: No exercise selected for deletion.");
+            return;
+        }
+        try {
+            await deleteExerciseApi(exerciseToDeleteDetails.id);
+            console.log(`Exercise "${exerciseToDeleteDetails.title}" (${exerciseToDeleteDetails.id}) deleted successfully.`);
+            setShowDeleteExerciseModal(false);
+            setExerciseToDeleteDetails(null);
+            navigate('/exercisesPage', { state: { message: `تمرین "${exerciseToDeleteDetails.title}" با موفقیت حذف شد.` } });
+        } catch (err) {
+            console.error("Error deleting exercise:", err);
+            setError(err.message || "خطایی در حذف تمرین رخ داد!");
+            setShowDeleteExerciseModal(false);
+            setExerciseToDeleteDetails(null);
+        }
+    }, [exerciseToDeleteDetails, navigate]);
+
+
+    const handleEditExerciseClick = useCallback((id) => {
+        navigate(`/exercise/edit/${id}`); 
+    }, [navigate]);
 
     useEffect(() => {
         loadExerciseDetails();
@@ -127,6 +163,12 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         handleCancelGradeForm,
         handleDownloadSubmission: handleDownloadSubmissionFile,
         handleDownloadExerciseFile,
+        handleDeleteExerciseRequest,
+        handleConfirmDeleteExercise,
+        showDeleteExerciseModal,
+        setShowDeleteExerciseModal,
+        exerciseToDeleteDetails,
+        handleEditExerciseClick, 
         showGradeFormModal,
         selectedSubmissionId,
         grades,
