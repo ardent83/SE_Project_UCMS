@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import {
     fetchExerciseDetailsApi,
     fetchExerciseSubmissionsApi,
-    submitGradeApi,
+    submitGradeApi, 
     downloadSubmissionFileApi,
     downloadExerciseFileApi,
     deleteExerciseApi,
     getExerciseScoreTemplateFileApi,
-    updateExerciseSubmissionScoresApi
+    updateExerciseSubmissionScoresApi 
 } from "../utils/exerciseApi";
 import { formatExerciseData, formatSubmissionData, formatPersianDate, formatPersianTime } from "../utils/exerciseFormatters";
 
@@ -30,6 +30,9 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
     const [scoreUploadError, setScoreUploadError] = useState("");
     const [isUploadingScores, setIsUploadingScores] = useState(false);
 
+   
+    const [sortBy, setSortBy] = useState(0); 
+    const [sortOrder, setSortOrder] = useState(0); // 0: صعودی (Ascending), 1: نزولی (Descending)
 
     const loadExerciseDetails = useCallback(async () => {
         setLoading(true);
@@ -42,10 +45,17 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
             }
 
             const rawExercise = await fetchExerciseDetailsApi(exerciseId, userRole);
-            const formattedExercise = formatExerciseData(rawExercise); 
+            const formattedExercise = formatExerciseData(rawExercise);
             setCurrentExercise(formattedExercise);
 
-            const rawSubmissions = await fetchExerciseSubmissionsApi(exerciseId, userRole);
+            const submissionsFilterDto = {
+                exerciseId: exerciseId, 
+                SortBy: sortBy,
+                SortOrder: sortOrder 
+            };
+            const rawSubmissionsResponse = await fetchExerciseSubmissionsApi(exerciseId, userRole, submissionsFilterDto);
+            const rawSubmissions = rawSubmissionsResponse.items || []; 
+
             const formattedSubmissions = rawSubmissions.map(sub => formatSubmissionData(sub));
             setSubmissions(formattedSubmissions);
 
@@ -65,7 +75,7 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         } finally {
             setLoading(false);
         }
-    }, [exerciseId, userRole]);
+    }, [exerciseId, userRole, sortBy, sortOrder]);
 
     const handleInlineScoreChange = useCallback((submissionId, value) => {
         const numValue = Number(value);
@@ -93,9 +103,10 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         }
         setInlineSavingSubmissionId(submissionId);
         try {
-            await submitGradeApi(submissionId, scoreToSubmit);
-            await loadExerciseDetails();
-            setError(null);
+          
+            await submitGradeApi(submissionId, scoreToSubmit); 
+            await loadExerciseDetails(); 
+            setError(null); 
 
         } catch (err) {
             console.error(`Error submitting inline grade for submission ${submissionId}:`, err);
@@ -136,7 +147,7 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         }
         try {
             await deleteExerciseApi(exerciseToDeleteDetails.id);
-            console.log(`Exercise "${exerciseToDeleteDetails.title}" (${exerciseToDeleteDetails.id}) deleted successfully.`);
+            console.log(`تمرین "${exerciseToDeleteDetails.title}" (${exerciseToDeleteDetails.id}) با موفقیت حذف شد.`);
             setShowDeleteExerciseModal(false);
             setExerciseToDeleteDetails(null);
             navigate('/exercisesPage', { state: { message: `تمرین "${exerciseToDeleteDetails.title}" با موفقیت حذف شد.` } });
@@ -152,7 +163,6 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         navigate(`/exercise/edit/${id}`);
     }, [navigate]);
 
-
     const handleDownloadScoreTemplate = useCallback(async () => {
         if (!currentExercise || !currentExercise.id) {
             setScoreUploadError("شناسه تمرین برای دانلود قالب نمره در دسترس نیست.");
@@ -165,8 +175,7 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
             console.error("Error downloading score template:", err);
             setScoreUploadError(err.message || "خطا در دانلود قالب نمره.");
         }
-    }, [currentExercise]); 
-
+    }, [currentExercise]);
 
     const handleScoreFileChange = useCallback((file) => {
         setScoreFile(file);
@@ -199,8 +208,8 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         } finally {
             setIsUploadingScores(false);
         }
-    }, [currentExercise, scoreFile, loadExerciseDetails]); 
-    
+    }, [currentExercise, scoreFile, loadExerciseDetails]);
+
     const handleCancelScoreUpload = useCallback(() => {
         setScoreFile(null);
         setScoreUploadError("");
@@ -211,6 +220,17 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
     useEffect(() => {
         loadExerciseDetails();
     }, [loadExerciseDetails]);
+
+
+    const sortByOptionsInstructor = [
+        { label: "تاریخ ارسال", value: 0 }, // SortBy = 0
+        { label: "نام دانشجو", value: 1 }, // SortBy = 1
+    ];
+    const sortOrderOptions = [
+        { label: "صعودی", value: 0 }, // Ascending
+        { label: "نزولی", value: 1 }, // Descending
+    ];
+
 
     return {
         currentExercise,
@@ -236,6 +256,12 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         showDeleteExerciseModal,
         setShowDeleteExerciseModal,
         exerciseToDeleteDetails,
+        sortBy,
+        setSortBy,
+        sortOrder,
+        setSortOrder,
+        sortByOptionsInstructor, // <-- Exporting options for Instructor
+        sortOrderOptions, // <-- Exporting options
         formatPersianDate,
         formatPersianTime,
     };

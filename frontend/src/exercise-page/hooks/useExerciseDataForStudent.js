@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
     fetchExerciseDetailsApi,
-    fetchExerciseSubmissionsApi,
+    fetchExerciseSubmissionsApi, 
     submitStudentSubmissionApi,
     downloadExerciseFileApi 
 } from "../utils/exerciseApi";
@@ -14,11 +14,13 @@ export const useExerciseDataForStudent = (exerciseId, userRole) => {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState("ارسال پاسخ");
 
+    // States for submission form
     const [submissionFile, setSubmissionFile] = useState(null);
     const [submissionDescription, setSubmissionDescription] = useState("");
     const [submissionError, setSubmissionError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Fetch details for a specific exercise and student's own submission (if any)
     const loadExerciseDetailsAndSubmission = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -29,12 +31,13 @@ export const useExerciseDataForStudent = (exerciseId, userRole) => {
                 return;
             }
 
-            const rawExercise = await fetchExerciseDetailsApi(exerciseId, userRole); 
+            const rawExercise = await fetchExerciseDetailsApi(exerciseId, userRole);
             const formattedExercise = formatExerciseData(rawExercise);
             setCurrentExercise(formattedExercise);
 
-            const rawSubmissions = await fetchExerciseSubmissionsApi(exerciseId, userRole); 
-            const studentOwnSubmission = rawSubmissions.find(sub => sub.groupId === 'groupA');
+            // Mock: Fetch student's own submission (replace with real API)
+            const rawSubmissions = await fetchExerciseSubmissionsApi(exerciseId, userRole);
+            const studentOwnSubmission = rawSubmissions.find(sub => sub.groupId === 'groupA'); // Mocking student's own group
             setStudentSubmission(studentOwnSubmission ? formatSubmissionData(studentOwnSubmission) : null);
 
         } catch (err) {
@@ -47,6 +50,7 @@ export const useExerciseDataForStudent = (exerciseId, userRole) => {
         }
     }, [exerciseId, userRole]);
 
+    // Handle student submission
     const handleSubmitAnswer = useCallback(async (file, description) => {
         setIsSubmitting(true);
         setSubmissionError("");
@@ -62,7 +66,7 @@ export const useExerciseDataForStudent = (exerciseId, userRole) => {
                 await loadExerciseDetailsAndSubmission();
                 setSubmissionFile(null);
                 setSubmissionDescription("");
-                setActiveTab("ارسال‌ها");
+                setActiveTab("ارسال‌ها"); // Switch to submissions tab
             } else {
                 setSubmissionError(result.message || "خطا در ارسال پاسخ.");
             }
@@ -74,15 +78,17 @@ export const useExerciseDataForStudent = (exerciseId, userRole) => {
         }
     }, [exerciseId, loadExerciseDetailsAndSubmission]);
 
+    // <-- تابع جدید برای دانلود فایل اصلی تمرین -->
     const handleDownloadExerciseFile = useCallback(async (exerciseId, fileName) => {
         try {
-            await downloadExerciseFileApi(exerciseId, userRole, fileName);
+            await downloadExerciseFileApi(exerciseId, fileName);
         } catch (err) {
             console.error("Error downloading exercise file:", err);
             setError(err.message || "خطا در دانلود فایل تمرین.");
         }
-    }, [userRole]);
+    }, []);
 
+    // Initial data load
     useEffect(() => {
         loadExerciseDetailsAndSubmission();
     }, [loadExerciseDetailsAndSubmission]);
