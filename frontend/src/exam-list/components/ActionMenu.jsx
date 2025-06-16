@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { More, Edit2, Trash, TickCircle } from 'iconsax-react';
+import {useEffect, useRef, useState} from "react";
+import {Edit2, More, TickCircle, Trash} from "iconsax-react";
+import {deleteExamById} from "../utils/ExamsPageApi.js";
 
-export default function ActionMenu({ onGrade, onEdit, onDelete }) {
+export default function ActionMenu({ examId, onDeleteSuccess }) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
 
@@ -11,11 +12,19 @@ export default function ActionMenu({ onGrade, onEdit, onDelete }) {
                 setIsOpen(false);
             }
         }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    const handleDeleteClass = async () => {
+        const success = await deleteExamById(examId);
+        if (success && onDeleteSuccess) {
+            onDeleteSuccess(examId);
+        }
+        setIsOpen(false);
+    };
+
+
 
     return (
         <div className="relative inline-block text-center" ref={menuRef}>
@@ -27,37 +36,26 @@ export default function ActionMenu({ onGrade, onEdit, onDelete }) {
             </button>
 
             {isOpen && (
-                <div
-                    className="absolute mt-2 w-32 origin-top rounded-xl bg-big-stone-900 shadow-2xl ring-1 ring-black/10 z-50"
-                    style={{ animation: 'fadeInScale 0.1s ease-out forwards' }}
-                >
+                <div className="absolute mt-2 w-32 origin-top rounded-xl bg-big-stone-900 shadow-2xl ring-1 ring-black/10 z-50"
+                     style={{ animation: 'fadeInScale 0.1s ease-out forwards' }}>
                     <div className="py-1 px-1">
                         <button
-                            onClick={() => {
-                                onGrade();
-                                setIsOpen(false);
-                            }}
-                            className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-emerald-100 hover:text-emerald-700 transition cursor-pointer"
+                            onClick={() => setIsOpen(false)}
+                            className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-emerald-100 hover:text-emerald-700"
                         >
                             <TickCircle size="16" variant="Bold" />
                             ثبت نمره
                         </button>
                         <button
-                            onClick={() => {
-                                onEdit();
-                                setIsOpen(false);
-                            }}
-                            className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-sky-200 hover:text-sky-700 transition cursor-pointer"
+                            onClick={() => setIsOpen(false)}
+                            className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-sky-200 hover:text-sky-700"
                         >
                             <Edit2 size="16" variant="Bold" />
                             ویرایش
                         </button>
                         <button
-                            onClick={() => {
-                                onDelete();
-                                setIsOpen(false);
-                            }}
-                            className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-red-100 hover:text-red-700 transition cursor-pointer"
+                            onClick={handleDeleteClass}
+                            className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-red-100 hover:text-red-700"
                         >
                             <Trash size="16" variant="Bold" />
                             حذف
@@ -66,20 +64,18 @@ export default function ActionMenu({ onGrade, onEdit, onDelete }) {
                 </div>
             )}
 
-            <style>
-                {`
-          @keyframes fadeInScale {
-            0% {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            100% {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-        `}
-            </style>
+            <style>{`
+              @keyframes fadeInScale {
+                0% {
+                  opacity: 0;
+                  transform: scale(0.95);
+                }
+                100% {
+                  opacity: 1;
+                  transform: scale(1);
+                }
+              }
+            `}</style>
         </div>
     );
 }

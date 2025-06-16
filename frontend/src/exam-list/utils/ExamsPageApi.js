@@ -31,3 +31,23 @@ export const getExamsForStudent = async () => {
     }
     return response.json();
 };
+
+export const deleteExamById = async (examId) => {
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/Exam/${examId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete exam");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Error deleting exam:", error);
+        return false;
+    }
+};

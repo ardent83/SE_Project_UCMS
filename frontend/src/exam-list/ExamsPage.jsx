@@ -51,6 +51,12 @@ export default function ExamsPage() {
         return d.toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" });
     };
 
+    const handleDeleteExam = (deletedId) => {
+        setExams((prev) => prev.filter((exam) => exam.examId !== deletedId));
+    };
+
+
+
     return (
         <div dir="ltr" className="w-full max-w-[90rem] mx-auto my-10 px-10 text-bg-blue">
             <h2 className="text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-end">
@@ -74,7 +80,7 @@ export default function ExamsPage() {
                 <div className="text-center py-6 text-red-500">{error}</div>
             ) : (
                 <div className="w-full">
-                    <div className="overflow-y-auto max-h-[380px] relative z-10">
+                    <div className=" relative z-10">
                         <table className="w-full border-collapse text-center">
                             <thead className="sticky top-0 bg-white z-10">
                             <tr className="border-b border-gray-300 text-gray-400 text-sm">
@@ -94,11 +100,7 @@ export default function ExamsPage() {
                                         className="border-b border-gray-100 hover:bg-gray-100 transition"
                                     >
                                         <td className="py-3 px-4 cursor-pointer">
-                                            <ActionMenu
-                                                onGrade={() => console.log(`ثبت نمره برای ${exam.title}`)}
-                                                onEdit={() => console.log(`ویرایش ${exam.title}`)}
-                                                onDelete={() => console.log(`حذف ${exam.title}`)}
-                                            />
+                                            <ActionMenu examId={exam.examId} onDeleteSuccess={handleDeleteExam} />
                                         </td>
                                         <td className="py-3 px-4">{exam.examLocation}</td>
                                         <td className="py-3 px-4">{formatDate(exam.date)}</td>
