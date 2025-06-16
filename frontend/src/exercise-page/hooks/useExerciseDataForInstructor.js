@@ -6,7 +6,9 @@ import {
     submitGradeApi,
     downloadSubmissionFileApi,
     downloadExerciseFileApi,
-    deleteExerciseApi
+    deleteExerciseApi,
+    getExerciseScoreTemplateFileApi,
+    updateExerciseSubmissionScoresApi
 } from "../utils/exerciseApi";
 import { formatExerciseData, formatSubmissionData, formatPersianDate, formatPersianTime } from "../utils/exerciseFormatters";
 
@@ -18,15 +20,16 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
-    const [grades, setGrades] = useState({});
-    const [submissionOverallScore, setSubmissionOverallScore] = useState(0);
-    const [isReadOnly, setIsReadOnly] = useState(false);
-    const [gradeFormError, setGradeFormError] = useState("");
-    const [showGradeFormModal, setShowGradeFormModal] = useState(false);
+    const [inlineScores, setInlineScores] = useState({});
+    const [inlineSavingSubmissionId, setInlineSavingSubmissionId] = useState(null);
 
     const [showDeleteExerciseModal, setShowDeleteExerciseModal] = useState(false);
     const [exerciseToDeleteDetails, setExerciseToDeleteDetails] = useState(null);
+
+    const [scoreFile, setScoreFile] = useState(null);
+    const [scoreUploadError, setScoreUploadError] = useState("");
+    const [isUploadingScores, setIsUploadingScores] = useState(false);
+
 
     const loadExerciseDetails = useCallback(async () => {
         setLoading(true);
@@ -39,12 +42,20 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
             }
 
             const rawExercise = await fetchExerciseDetailsApi(exerciseId, userRole);
-            const formattedExercise = formatExerciseData(rawExercise);
+            const formattedExercise = formatExerciseData(rawExercise); 
             setCurrentExercise(formattedExercise);
 
             const rawSubmissions = await fetchExerciseSubmissionsApi(exerciseId, userRole);
             const formattedSubmissions = rawSubmissions.map(sub => formatSubmissionData(sub));
             setSubmissions(formattedSubmissions);
+
+            const initialInlineScores = {};
+            formattedSubmissions.forEach(sub => {
+                if (sub.grade !== null && sub.grade !== undefined) {
+                    initialInlineScores[sub.id] = sub.grade;
+                }
+            });
+            setInlineScores(initialInlineScores);
 
         } catch (err) {
             console.error(`Error loading exercise ${exerciseId} details or submissions:`, err);
@@ -56,50 +67,43 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         }
     }, [exerciseId, userRole]);
 
-    const handleOpenGradeForm = useCallback((submissionId, submissionDetails, groupMembersMock) => {
-        setSelectedSubmissionId(submissionId);
-        setGrades(submissionDetails.grades || {});
-        setSubmissionOverallScore(submissionDetails.grade !== null && submissionDetails.grade !== undefined ? submissionDetails.grade : 0);
-        setIsReadOnly(!!submissionDetails.submitted);
-        setShowGradeFormModal(true);
-        setGradeFormError("");
-    }, []);
-
-    const handleGradeChange = useCallback((memberId, value) => {
-        setGrades((prev) => ({ ...prev, [memberId]: value }));
-    }, []);
-
-    const handleSubmitGrades = useCallback(async (overallScore) => {
-        if (overallScore === undefined || overallScore === null || overallScore === "") {
-            setGradeFormError("لطفاً نمره کلی را وارد کنید.");
+    const handleInlineScoreChange = useCallback((submissionId, value) => {
+        const numValue = Number(value);
+        if (isNaN(numValue) || numValue < 0) {
+            setInlineScores(prev => ({ ...prev, [submissionId]: "" }));
             return;
         }
-        if (!selectedSubmissionId) {
-            setGradeFormError("خطا: ارسال انتخاب نشده است.");
+        if (currentExercise && numValue > currentExercise.exerciseScore) {
+            setInlineScores(prev => ({ ...prev, [submissionId]: currentExercise.exerciseScore }));
             return;
         }
 
+        setInlineScores(prev => ({ ...prev, [submissionId]: numValue }));
+    }, [currentExercise]);
+
+    const handleSubmitInlineScore = useCallback(async (submissionId) => {
+        const scoreToSubmit = inlineScores[submissionId];
+        if (scoreToSubmit === undefined || scoreToSubmit === null || scoreToSubmit === "") {
+            setError("لطفاً نمره را وارد کنید.");
+            return;
+        }
+        if (currentExercise && (scoreToSubmit < 0 || scoreToSubmit > currentExercise.exerciseScore)) {
+            setError(`نمره باید بین 0 و ${currentExercise.exerciseScore} باشد.`);
+            return;
+        }
+        setInlineSavingSubmissionId(submissionId);
         try {
-            await submitGradeApi(selectedSubmissionId, grades, overallScore);
-            setShowGradeFormModal(false);
-            setGradeFormError("");
-            setSelectedSubmissionId(null);
-            setGrades({});
-            setSubmissionOverallScore(0);
+            await submitGradeApi(submissionId, scoreToSubmit);
             await loadExerciseDetails();
-        } catch (err) {
-            console.error("Error submitting grades:", err);
-            setGradeFormError(err.message || "خطا در ثبت نمرات.");
-        }
-    }, [selectedSubmissionId, grades, loadExerciseDetails]);
+            setError(null);
 
-    const handleCancelGradeForm = useCallback(() => {
-        setShowGradeFormModal(false);
-        setGradeFormError("");
-        setSelectedSubmissionId(null);
-        setGrades({});
-        setSubmissionOverallScore(0);
-    }, []);
+        } catch (err) {
+            console.error(`Error submitting inline grade for submission ${submissionId}:`, err);
+            setError(err.message || "خطا در ثبت نمره.");
+        } finally {
+            setInlineSavingSubmissionId(null);
+        }
+    }, [inlineScores, currentExercise, loadExerciseDetails]);
 
     const handleDownloadExerciseFile = useCallback(async (exerciseId, fileName) => {
         try {
@@ -110,14 +114,15 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         }
     }, [userRole]);
 
-    const handleDownloadSubmissionFile = useCallback(async (fileUrl, fileName) => {
+    const handleDownloadSubmissionFile = useCallback(async (submissionId, fileName) => {
         try {
-            await downloadSubmissionFileApi(fileUrl, fileName);
+            await downloadSubmissionFileApi(submissionId, userRole, fileName);
         } catch (err) {
             console.error("Error downloading submission file:", err);
             setError(err.message || "خطا در دانلود فایل ارسال شده.");
         }
-    }, []);
+    }, [userRole]);
+
 
     const handleDeleteExerciseRequest = useCallback((id, title) => {
         setExerciseToDeleteDetails({ id, title });
@@ -143,10 +148,65 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         }
     }, [exerciseToDeleteDetails, navigate]);
 
-
     const handleEditExerciseClick = useCallback((id) => {
-        navigate(`/exercise/edit/${id}`); 
+        navigate(`/exercise/edit/${id}`);
     }, [navigate]);
+
+
+    const handleDownloadScoreTemplate = useCallback(async () => {
+        if (!currentExercise || !currentExercise.id) {
+            setScoreUploadError("شناسه تمرین برای دانلود قالب نمره در دسترس نیست.");
+            return;
+        }
+        try {
+            await getExerciseScoreTemplateFileApi(currentExercise.id);
+            setScoreUploadError("");
+        } catch (err) {
+            console.error("Error downloading score template:", err);
+            setScoreUploadError(err.message || "خطا در دانلود قالب نمره.");
+        }
+    }, [currentExercise]); 
+
+
+    const handleScoreFileChange = useCallback((file) => {
+        setScoreFile(file);
+        setScoreUploadError("");
+    }, []);
+
+    const handleUploadScores = useCallback(async () => {
+        if (!currentExercise || !currentExercise.id) {
+            setScoreUploadError("شناسه تمرین برای آپلود نمره در دسترس نیست.");
+            return;
+        }
+        if (!scoreFile) {
+            setScoreUploadError("لطفاً فایل نمره را انتخاب کنید.");
+            return;
+        }
+        setIsUploadingScores(true);
+        setScoreUploadError("");
+        try {
+            const result = await updateExerciseSubmissionScoresApi(currentExercise.id, scoreFile);
+            if (result.success) {
+                setScoreFile(null);
+                setScoreUploadError("");
+                await loadExerciseDetails();
+            } else {
+                setScoreUploadError(result.message || "خطا در بارگذاری نمرات.");
+            }
+        } catch (err) {
+            console.error("Error uploading scores:", err);
+            setScoreUploadError(err.message || "خطا در بارگذاری نمرات.");
+        } finally {
+            setIsUploadingScores(false);
+        }
+    }, [currentExercise, scoreFile, loadExerciseDetails]); 
+    
+    const handleCancelScoreUpload = useCallback(() => {
+        setScoreFile(null);
+        setScoreUploadError("");
+        setIsUploadingScores(false);
+    }, []);
+
 
     useEffect(() => {
         loadExerciseDetails();
@@ -157,25 +217,25 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         submissions,
         loading,
         error,
-        handleOpenGradeForm,
-        handleGradeChange,
-        handleSubmitGrades,
-        handleCancelGradeForm,
+        inlineScores,
+        handleInlineScoreChange,
+        handleSubmitInlineScore,
+        inlineSavingSubmissionId,
         handleDownloadSubmission: handleDownloadSubmissionFile,
         handleDownloadExerciseFile,
         handleDeleteExerciseRequest,
         handleConfirmDeleteExercise,
+        handleEditExerciseClick,
+        handleDownloadScoreTemplate,
+        handleScoreFileChange,
+        handleUploadScores,
+        handleCancelScoreUpload,
+        scoreFile,
+        scoreUploadError,
+        isUploadingScores,
         showDeleteExerciseModal,
         setShowDeleteExerciseModal,
         exerciseToDeleteDetails,
-        handleEditExerciseClick, 
-        showGradeFormModal,
-        selectedSubmissionId,
-        grades,
-        submissionOverallScore,
-        setSubmissionOverallScore,
-        isReadOnly,
-        gradeFormError,
         formatPersianDate,
         formatPersianTime,
     };

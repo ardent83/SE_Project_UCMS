@@ -1,3 +1,4 @@
+// src/features/ExercisePage/utils/exerciseApi.js
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchExerciseDetailsApi = async (exerciseId, userRole) => {
@@ -56,10 +57,58 @@ export const submitStudentSubmissionApi = async (exerciseId, file, description) 
     }
 };
 
-export const downloadSubmissionFileApi = async (submissionFileUrl, fileName = 'submission_file') => {
-    console.log(`Downloading submission file from: ${submissionFileUrl}`);
-    alert(`Mock Download: Downloading ${fileName} from ${submissionFileUrl}`);
-    await new Promise(resolve => setTimeout(resolve, 500));
+/**
+ * Downloads a submission file (from student).
+ * This API is used by both Instructor and Student.
+ * URL: /api/ExerciseSubmissions/instructor/{exerciseSubmissionId}
+ * @param {string} exerciseSubmissionId - The ID of the submission whose file is to be downloaded.
+ * @param {string} userRole - 'Instructor' or 'Student'.
+ * @param {string} fileName - Suggested file name.
+ * @returns {Promise<void>}
+ */
+export const downloadSubmissionFileApi = async (exerciseSubmissionId, userRole, fileName) => { // <-- Updated signature
+    if (!exerciseSubmissionId) {
+        throw new Error("شناسه ارسال برای دانلود معتبر نیست!");
+    }
+
+    let apiEndpoint;
+    if (userRole === "Instructor") {
+        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/instructor/${exerciseSubmissionId}`;
+    } else if (userRole === "Student") {
+        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/student/${exerciseSubmissionId}`;
+    } else {
+        throw new Error("نقش کاربر پشتیبانی نمی‌شود یا دسترسی به دانلود ارسال وجود ندارد!");
+    }
+
+    console.log(`Downloading submission file from: ${apiEndpoint}`);
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            throw error;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // The backend's Content-Disposition header should provide the actual file name.
+        // Fallback to a generic name if not available or for mock data.
+        a.download = fileName || `submission_${exerciseSubmissionId}.file`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        console.log(`File ${fileName} downloaded successfully.`);
+    } catch (err) {
+        console.error("Error downloading submission file:", err);
+        throw err;
+    }
 };
 
 export const downloadExerciseFileApi = async (exerciseId, userRole, fileName) => {
@@ -127,6 +176,72 @@ export const deleteExerciseApi = async (exerciseId) => {
         console.log(`Exercise ${exerciseId} deleted successfully from backend.`);
     } catch (err) {
         console.error("Error deleting exercise:", err);
+        throw err;
+    }
+};
+
+export const updateExerciseSubmissionScoresApi = async (exerciseId, scoreFile) => {
+    if (!exerciseId || !scoreFile) {
+        throw new Error("شناسه تمرین یا فایل نمره معتبر نیست!");
+    }
+
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/${exerciseId}`; // PUT endpoint
+
+    const formData = new FormData();
+    formData.append('scoreFile', scoreFile);
+
+    console.log(`Uploading scores for exercise ${exerciseId}, file: ${scoreFile.name}`);
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'PUT',
+            credentials: 'include',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            throw error;
+        }
+        return await response.json();
+    } catch (err) {
+        console.error("Error uploading scores:", err);
+        throw err;
+    }
+};
+
+export const getExerciseScoreTemplateFileApi = async (exerciseId) => {
+    if (!exerciseId) {
+        throw new Error("شناسه تمرین برای دانلود قالب نمره معتبر نیست!");
+    }
+
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/template/${exerciseId}`;
+
+    console.log(`Downloading score template for exercise ${exerciseId} from: ${apiEndpoint}`);
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            throw error;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `exercise_${exerciseId}_score_template.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        console.log(`Score template for exercise ${exerciseId} downloaded successfully.`);
+    } catch (err) {
+        console.error("Error downloading score template:", err);
         throw err;
     }
 };

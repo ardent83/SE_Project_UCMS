@@ -1,20 +1,23 @@
+// src/features/ExercisePage/ExercisePageForInstructor.jsx
 import React from "react";
 import { useParams } from "react-router-dom";
 import {
     Calendar,
-    Edit2, 
-    Trash, 
-    Information,
-    DirectboxNotif,
-    PresentionChart
+    Edit2, // Icon for edit
+    Trash, // Icon for delete
+    Information, // Icon for information
+    DirectboxNotif, // Icon for download
+    PresentionChart, // Icon for submission deadline
+    DocumentText, // Icon for final score input (if applicable)
+    TickCircle // Icon for save button (for score)
 } from "iconsax-react";
 import { useExerciseDataForInstructor } from "./hooks/useExerciseDataForInstructor";
 
 import DropdownSection from "./components/DropdownSection.jsx";
-import GradeUpload from "./components/GradeDropdownSection.jsx";
-import GradeForm from "./components/GradeFormPop.jsx";
-import Modal from "../components/Modal";
-import DeleteConfirmModalContent from "../components/DeleteConfirmPopover";
+import GradeUpload from "./components/GradeDropdownSection.jsx"; // For overall score upload
+// import GradeForm from "./components/GradeFormPop.jsx"; // <-- This import is removed as the component is no longer used
+import Modal from "../components/Modal"; // Path to Modal component
+import DeleteConfirmModalContent from "../components/DeleteConfirmPopover"; // Path to DeleteConfirmPopover component
 
 
 const ExercisePageForInstructor = () => {
@@ -25,25 +28,38 @@ const ExercisePageForInstructor = () => {
         submissions,
         loading,
         error,
-        handleOpenGradeForm,
-        handleGradeChange,
-        handleSubmitGrades,
-        handleCancelGradeForm,
-        handleDownloadSubmission,
-        handleDownloadExerciseFile,
+        // Removed unused props related to GradeFormPop.jsx
+        // handleOpenGradeForm,
+        // handleGradeChange,
+        // handleSubmitGrades,
+        // handleCancelGradeForm,
+        // showGradeFormModal,
+        // selectedSubmissionId,
+        // grades,
+        // submissionOverallScore,
+        // setSubmissionOverallScore,
+        // isReadOnly,
+        // gradeFormError,
+        handleDownloadSubmission, // For downloading student submissions
+        handleDownloadExerciseFile, // For downloading main exercise file
         handleDeleteExerciseRequest,
         handleConfirmDeleteExercise,
+        handleEditExerciseClick,
+        // Props for inline grading and overall score upload
+        inlineScores,
+        handleInlineScoreChange,
+        handleSubmitInlineScore,
+        inlineSavingSubmissionId,
+        handleDownloadScoreTemplate,
+        handleScoreFileChange,
+        handleUploadScores,
+        handleCancelScoreUpload,
+        scoreFile,
+        scoreUploadError,
+        isUploadingScores,
         showDeleteExerciseModal,
         setShowDeleteExerciseModal,
         exerciseToDeleteDetails,
-        handleEditExerciseClick, 
-        showGradeFormModal,
-        selectedSubmissionId,
-        grades,
-        submissionOverallScore,
-        setSubmissionOverallScore,
-        isReadOnly,
-        gradeFormError,
         formatPersianDate,
         formatPersianTime,
     } = useExerciseDataForInstructor(exerciseId, 'Instructor');
@@ -52,12 +68,6 @@ const ExercisePageForInstructor = () => {
     if (error) return <div className="text-center text-red-500 mt-10">خطا: {error}</div>;
     if (!currentExercise) return <div className="text-center text-gray-500 mt-10">تمرین مورد نظر یافت نشد یا وجود ندارد.</div>;
 
-    const mockGroupMembersForGradeForm = [
-        { studentId: 'mem1', fullName: 'فاطمه صیادزاده', score: null },
-        { studentId: 'mem2', fullName: 'حنانه نوروطن', score: null },
-        { studentId: 'mem3', fullName: 'محمدی', score: null },
-    ];
-
 
     return (
         <div className="w-full max-w-270 p-6">
@@ -65,9 +75,7 @@ const ExercisePageForInstructor = () => {
                 {/* Exercise Title and Actions */}
                 <div className="w-full flex justify-between items-center px-10 pb-10" dir="rtl">
                     <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">{currentExercise.title}</h2>
-                    {/* Actions: Download, Delete, Edit Exercise */}
                     <div className="flex gap-4 text-gray-600 mt-5">
-                        {/* دانلود فایل تمرین اصلی */}
                         <div title="دانلود فایل تمرین" className="cursor-pointer">
                             <DirectboxNotif
                                 size="30"
@@ -76,7 +84,6 @@ const ExercisePageForInstructor = () => {
                                 onClick={() => handleDownloadExerciseFile(currentExercise.exerciseId, `تمرین_${currentExercise.id}.${currentExercise.fileFormats}`)}
                             />
                         </div>
-                        {/* دکمه حذف تمرین */}
                         <div title="حذف تمرین" className="cursor-pointer">
                             <Trash
                                 size="30"
@@ -85,13 +92,12 @@ const ExercisePageForInstructor = () => {
                                 onClick={() => handleDeleteExerciseRequest(currentExercise.exerciseId, currentExercise.title)}
                             />
                         </div>
-                        {/* دکمه ویرایش تمرین */}
                         <div title="ویرایش تمرین" className="cursor-pointer">
                             <Edit2
                                 size="30"
                                 variant="Bulk"
                                 color="#08146f"
-                                onClick={() => handleEditExerciseClick(currentExercise.exerciseId)} // <-- اتصال به تابع جدید
+                                onClick={() => handleEditExerciseClick(currentExercise.exerciseId)}
                             />
                         </div>
                     </div>
@@ -136,23 +142,37 @@ const ExercisePageForInstructor = () => {
                                             <td className="px-4 py-2">{submission.formattedSubmissionTime}</td>
                                             <td className="px-4 py-2">{submission.fileType}</td>
                                             <td className="px-4 py-2">
-                                                <div className="flex items-center gap-2 justify-center">
+                                                <div className="flex items-center justify-center gap-2">
                                                     {submission.grade !== null && submission.grade !== undefined ? (
-                                                        <button
-                                                            className="text-green-500 hover:text-green-700 font-semibold cursor-pointer underline"
-                                                            title="مشاهده نمرات ثبت شده"
-                                                            onClick={() => handleOpenGradeForm(submission.id, { grades: {}, submitted: true, grade: submission.grade, totalScore: currentExercise.exerciseScore }, mockGroupMembersForGradeForm)}
-                                                        >
+                                                        <span className="font-semibold text-gray-800">
                                                             {submission.grade} از {currentExercise.exerciseScore}
-                                                        </button>
+                                                        </span>
                                                     ) : (
-                                                        <button
-                                                            className="bg-red-400 hover:bg-red-600 border border-none text-white px-2 py-1 rounded cursor-pointer"
-                                                            title="ثبت نمره"
-                                                            onClick={() => handleOpenGradeForm(submission.id, { grades: {}, submitted: false, grade: 0, totalScore: currentExercise.exerciseScore }, mockGroupMembersForGradeForm)}
-                                                        >
-                                                            ثبت نشده
-                                                        </button>
+                                                        <div className="flex items-center gap-1 border border-gray-300 rounded-md overflow-hidden bg-white">
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                max={currentExercise.exerciseScore}
+                                                                value={(inlineScores && inlineScores[submission.id] !== undefined) ? inlineScores[submission.id] : ''}
+                                                                onChange={(e) => handleInlineScoreChange(submission.id, e.target.value)}
+                                                                className="w-16 px-1 py-1 text-center text-sm border-none focus:outline-none"
+                                                                placeholder="نمره"
+                                                            />
+                                                            <button
+                                                                className="px-2 py-1 bg-green-500 text-white text-xs font-semibold hover:bg-green-600 transition-colors duration-200 flex items-center justify-center gap-1"
+                                                                onClick={() => handleSubmitInlineScore(submission.id)}
+                                                                disabled={inlineSavingSubmissionId === submission.id}
+                                                            >
+                                                                {inlineSavingSubmissionId === submission.id ? (
+                                                                    <span className="animate-pulse">...</span>
+                                                                ) : (
+                                                                    <>
+                                                                        <TickCircle size="20" variant="Bulk" color="white" />
+                                                                        <span>نمره</span>
+                                                                    </>
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </td>
@@ -172,34 +192,28 @@ const ExercisePageForInstructor = () => {
                     </DropdownSection>
 
                     <DropdownSection title="ثبت نمره کلی / ارسال" bgColor="#5C6BC0">
-                        <GradeUpload />
+                        <GradeUpload
+                            onDownloadTemplate={handleDownloadScoreTemplate}
+                            onFileChange={handleScoreFileChange}
+                            onUpload={handleUploadScores}
+                            onCancel={handleCancelScoreUpload}
+                            selectedFile={scoreFile}
+                            uploadError={scoreUploadError}
+                            isUploading={isUploadingScores}
+                            currentExercise={currentExercise} // Pass currentExercise to GradeUpload
+                        />
                     </DropdownSection>
                 </div>
             </div>
 
-            {showGradeFormModal && (
-                <GradeForm
-                    submissionId={selectedSubmissionId}
-                    members={mockGroupMembersForGradeForm}
-                    grades={grades}
-                    exerciseMaxScore={currentExercise.exerciseScore}
-                    overallScore={submissionOverallScore}
-                    onOverallScoreChange={setSubmissionOverallScore}
-                    onMemberGradeChange={handleGradeChange}
-                    onSubmit={handleSubmitGrades}
-                    onCancel={handleCancelGradeForm}
-                    readOnly={isReadOnly}
-                    error={gradeFormError}
-                />
-            )}
-
+            {/* Modal for deleting exercise */}
             <Modal show={showDeleteExerciseModal} onClose={() => setShowDeleteExerciseModal(false)}>
                 <DeleteConfirmModalContent
                     onConfirm={handleConfirmDeleteExercise}
                     onCancel={() => setShowDeleteExerciseModal(false)}
                     message={
                         exerciseToDeleteDetails
-                            ? `آیا از حذف تمرین "${exerciseToDeleteDetails.title}" مطمئن هستید؟`
+                            ? `آیا از حذف تمرین "${exerciseToDeleteDetails.title}" مطمئن هستید؟ این عمل غیرقابل بازگشت است.`
                             : "آیا از حذف این تمرین مطمئن هستید؟"
                     }
                 />
