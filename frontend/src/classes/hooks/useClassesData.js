@@ -76,8 +76,7 @@ export const useClassesData = (userRole) => {
     }, [userRole, navigate]);
 
     const handleManageClassClick = useCallback((classId) => {
-        // navigate(`/class/manage/${classId}`);
-        // url class page
+        navigate(`/class/${classId}`);
     }, [navigate]);
 
     const handleEditClassClick = useCallback((classId) => {
