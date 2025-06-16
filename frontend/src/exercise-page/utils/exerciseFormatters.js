@@ -38,11 +38,12 @@ export const formatPersianTime = (dateInput) => {
  */
 export const formatExerciseData = (exercise) => {
     if (!exercise) return null;
-    const startDate = new Date(exercise.startDate); 
-    const endDate = new Date(exercise.endDate); 
+    const startDate = new Date(exercise.startDate);
+    const endDate = new Date(exercise.endDate);
 
     return {
         ...exercise,
+        id: exercise.exerciseId,
         formattedStartDate: formatPersianDate(startDate),
         formattedStartTime: formatPersianTime(startDate),
         formattedEndDate: formatPersianDate(endDate),
@@ -61,6 +62,5 @@ export const formatSubmissionData = (submission) => {
     return {
         ...submission,
         formattedSubmissionTime: `${formatPersianDate(submissionDateTime)} – ساعت ${formatPersianTime(submissionDateTime)}`,
-        // You might want to format grade if it's not a simple number
     };
 };
