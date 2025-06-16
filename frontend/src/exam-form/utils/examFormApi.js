@@ -24,8 +24,8 @@ export const createExam = async (formData, classId) => {
   return handleApiResponse(response, "!خطا در ایجاد امتحان");
 };
 
-export const updateExam = async (formData, classId, examId) => {
-  const response = await fetch(`${apiBaseUrl}/api/Exam/${examId}?classId=${classId}`, {
+export const updateExam = async (formData, examId) => {
+  const response = await fetch(`${apiBaseUrl}/api/Exam/${examId}`, {
       method: "PATCH",
       credentials: "include",
       body: formData,

@@ -59,7 +59,7 @@ function JoinClass({ onSubmit, onClose }) {
         >
           {({ values, setFieldValue, handleBlur, touched, errors }) => (
             <Form className="space-y-1">
-              <div className="flex gap-4">
+              <div className="flex gap-4 pb-4">
                 <div className="flex-1">
                   <Input
                     label="رمز ورود به کلاس"

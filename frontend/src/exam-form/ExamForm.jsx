@@ -4,8 +4,14 @@ import useExamForm from "./hooks/useExamForm";
 import MyDatePicker from "../components/DatePicker";
 import Input from '../components/Input';
 import Button from "../components/Button";
+import { Add, Edit2 } from "iconsax-react";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function ExamForm({ formType = 'create', onSuccess = () => { }, onClose = () => { } }) {
+export default function ExamForm({ formType = 'create' }) {
+    const navigate = useNavigate();
+    const { classId } = useParams();
+    const onClose = () => classId ? navigate(`/class/${classId}`) : navigate(`/exams`);
+
     const {
         formik,
         apiError,
@@ -16,7 +22,7 @@ export default function ExamForm({ formType = 'create', onSuccess = () => { }, o
             const successMessage = type === 'create' ? "!امتحان با موفقیت ایجاد شد" : "!تغییرات امتحان با موفقیت ذخیره شد";
             setAlertMessage(successMessage);
             setShowAlert(true);
-            setTimeout(onSuccess, 100);
+            setTimeout(() => classId ? navigate(`/class/${classId}`) : navigate(`/exams`), 1000);
         }
     });
 
@@ -48,7 +54,7 @@ export default function ExamForm({ formType = 'create', onSuccess = () => { }, o
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className="w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}
@@ -57,10 +63,12 @@ export default function ExamForm({ formType = 'create', onSuccess = () => { }, o
                 {formType === 'create' ? (
                     <>
                         <span>ایجاد امتحان جدید</span>
+                        <Add size={32} color="var(--color-redp)" />
                     </>
                 ) : (
                     <>
                         <span>ویرایش امتحان</span>
+                        <Edit2 variant={'Bold'} size={32} color="var(--color-redp)" />
                     </>
                 )}
             </div>
