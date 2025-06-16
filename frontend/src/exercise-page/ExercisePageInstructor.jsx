@@ -1,23 +1,23 @@
-// src/features/ExercisePage/ExercisePageForInstructor.jsx
 import React from "react";
 import { useParams } from "react-router-dom";
 import {
     Calendar,
-    Edit2, // Icon for edit
-    Trash, // Icon for delete
-    Information, // Icon for information
-    DirectboxNotif, // Icon for download
-    PresentionChart, // Icon for submission deadline
-    DocumentText, // Icon for final score input (if applicable)
-    TickCircle // Icon for save button (for score)
+    Edit2,
+    Trash, 
+    Information,
+    DirectboxNotif,
+    PresentionChart, 
+    DocumentText,
+    TickCircle,
+    ArrowUp2,
+    ArrowDown2
 } from "iconsax-react";
 import { useExerciseDataForInstructor } from "./hooks/useExerciseDataForInstructor";
 
 import DropdownSection from "./components/DropdownSection.jsx";
-import GradeUpload from "./components/GradeDropdownSection.jsx"; // For overall score upload
-// import GradeForm from "./components/GradeFormPop.jsx"; // <-- This import is removed as the component is no longer used
-import Modal from "../components/Modal"; // Path to Modal component
-import DeleteConfirmModalContent from "../components/DeleteConfirmPopover"; // Path to DeleteConfirmPopover component
+import GradeUpload from "./components/GradeDropdownSection.jsx";
+import Modal from "../components/Modal";
+import DeleteConfirmModalContent from "../components/DeleteConfirmPopover";
 
 
 const ExercisePageForInstructor = () => {
@@ -28,24 +28,11 @@ const ExercisePageForInstructor = () => {
         submissions,
         loading,
         error,
-        // Removed unused props related to GradeFormPop.jsx
-        // handleOpenGradeForm,
-        // handleGradeChange,
-        // handleSubmitGrades,
-        // handleCancelGradeForm,
-        // showGradeFormModal,
-        // selectedSubmissionId,
-        // grades,
-        // submissionOverallScore,
-        // setSubmissionOverallScore,
-        // isReadOnly,
-        // gradeFormError,
-        handleDownloadSubmission, // For downloading student submissions
-        handleDownloadExerciseFile, // For downloading main exercise file
+        handleDownloadSubmission,
+        handleDownloadExerciseFile,
         handleDeleteExerciseRequest,
         handleConfirmDeleteExercise,
         handleEditExerciseClick,
-        // Props for inline grading and overall score upload
         inlineScores,
         handleInlineScoreChange,
         handleSubmitInlineScore,
@@ -60,6 +47,10 @@ const ExercisePageForInstructor = () => {
         showDeleteExerciseModal,
         setShowDeleteExerciseModal,
         exerciseToDeleteDetails,
+        sortBy,
+        setSortBy,
+        sortOrder,
+        setSortOrder,
         formatPersianDate,
         formatPersianTime,
     } = useExerciseDataForInstructor(exerciseId, 'Instructor');
@@ -67,6 +58,27 @@ const ExercisePageForInstructor = () => {
     if (loading) return <div className="text-center mt-10">در حال بارگذاری تمرین...</div>;
     if (error) return <div className="text-center text-red-500 mt-10">خطا: {error}</div>;
     if (!currentExercise) return <div className="text-center text-gray-500 mt-10">تمرین مورد نظر یافت نشد یا وجود ندارد.</div>;
+
+
+    const handleSortClick = (columnValue) => {
+        if (sortBy === columnValue) {
+            setSortOrder(prev => (prev === 0 ? 1 : 0)); // 0: ascending, 1: descending
+        } else {
+            setSortBy(columnValue);
+            setSortOrder(0); // Default to ascending when changing column
+        }
+    };
+
+    const renderSortIcon = (columnValue) => {
+        if (sortBy === columnValue) {
+            return sortOrder === 0 ? (
+                <ArrowUp2 size="16" variant="Bold" className="text-gray-800" />
+            ) : (
+                <ArrowDown2 size="16" variant="Bold" className="text-gray-800" />
+            );
+        }
+        return <ArrowUp2 size="16" variant="Linear" className="text-gray-400" />; // Default icon for inactive columns
+    };
 
 
     return (
@@ -128,8 +140,16 @@ const ExercisePageForInstructor = () => {
                             <table className="w-full text-center border-collapse text-sm" dir="rtl">
                                 <thead className="bg-gray-100 sticky top-0 z-10">
                                     <tr>
-                                        <th className="px-4 py-2">نام گروه/دانشجو</th>
-                                        <th className="px-4 py-2">زمان ارسال</th>
+                                        {/* نام گروه/دانشجو - SortBy = 1 (Student Name) */}
+                                        <th className="px-4 py-2 cursor-pointer" onClick={() => handleSortClick(1)}>
+                                            نام گروه/دانشجو
+                                            {renderSortIcon(1)}
+                                        </th>
+                                        {/* زمان ارسال - SortBy = 0 (Date) */}
+                                        <th className="px-4 py-2 cursor-pointer" onClick={() => handleSortClick(0)}>
+                                            زمان ارسال
+                                            {renderSortIcon(0)}
+                                        </th>
                                         <th className="px-4 py-2">نوع فایل</th>
                                         <th className="px-4 py-2">نمره استاد</th>
                                         <th className="px-4 py-2">فایل</th>
@@ -167,7 +187,7 @@ const ExercisePageForInstructor = () => {
                                                                     <span className="animate-pulse">...</span>
                                                                 ) : (
                                                                     <>
-                                                                        <TickCircle size="20" variant="Bulk" color="white" />
+                                                                        <TickCircle size="20" color="#37d67a" variant="Bulk" />
                                                                         <span>نمره</span>
                                                                     </>
                                                                 )}
@@ -200,13 +220,12 @@ const ExercisePageForInstructor = () => {
                             selectedFile={scoreFile}
                             uploadError={scoreUploadError}
                             isUploading={isUploadingScores}
-                            currentExercise={currentExercise} // Pass currentExercise to GradeUpload
+                            currentExercise={currentExercise}
                         />
                     </DropdownSection>
                 </div>
             </div>
 
-            {/* Modal for deleting exercise */}
             <Modal show={showDeleteExerciseModal} onClose={() => setShowDeleteExerciseModal(false)}>
                 <DeleteConfirmModalContent
                     onConfirm={handleConfirmDeleteExercise}
