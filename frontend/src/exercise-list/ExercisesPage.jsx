@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Notepad2, ArrowSwapVertical } from "iconsax-react";
+import { ArrowSwapVertical, TaskSquare} from "iconsax-react";
 import FilterBox from "./components/FilterBox";
 import SearchBox from "./components/SearchBox";
 import { useAuth } from "../auth/context/AuthContext.jsx";
@@ -27,9 +27,9 @@ export default function ExercisesPage() {
         const loadExercises = async () => {
             let data = [];
             try {
-                if (userRole === "student") {
+                if (userRole === "Student") {
                     data = await fetchExercisesForStudent();
-                } else if (userRole === "instructor") {
+                } else if (userRole === "Instructor") {
                     data = await fetchExercisesForInstructor();
                 } else {
                     data = [];
@@ -61,7 +61,6 @@ export default function ExercisesPage() {
         let aValue = a[sortConfig.key] || "";
         let bValue = b[sortConfig.key] || "";
 
-        // برای تاریخ، مقایسه باید روی Date باشه
         if (sortConfig.key === "endDate") {
             aValue = new Date(aValue);
             bValue = new Date(bValue);
@@ -89,7 +88,7 @@ export default function ExercisesPage() {
             <h2 className="text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-end">
                 <span>تکالیف</span>
                 <div className="flex items-start gap-[0.625rem] self-stretch z-10 relative">
-                    <Notepad2 color="#0C1E33" size={35} variant="Bold" />
+                    <TaskSquare color="#0C1E33" size={35} variant="Bold" />
                 </div>
             </h2>
 
@@ -190,7 +189,7 @@ export default function ExercisesPage() {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center text-gray-400">
-                        <img src="/not%20found.png" alt="No results" className="w-80 h-80 mb-6" />
+                        <img src="/Animation - 1750148058142.gif" alt="No results" className="w-80 h-80 mb-6" />
                         <p className="text-lg mt-0">نتیجه‌ای یافت نشد</p>
                     </div>
                 )}
