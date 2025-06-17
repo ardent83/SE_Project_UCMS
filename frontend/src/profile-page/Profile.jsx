@@ -37,8 +37,6 @@ function ProfilePage() {
             ? "/woman.png"
             : "/man.jpg";
 
-    console.log("userGender:", userGender);
-
 
     return (
         <div className="w-full max-w-[1000px] max-h-[700px] px-6 py-10 flex flex-col gap-6 text-right mx-auto">

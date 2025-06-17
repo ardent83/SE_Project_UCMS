@@ -170,7 +170,7 @@ export default function ProjectsPage() {
                 ) : (
                     <div className="flex flex-col items-center justify-center text-gray-400">
                         <img
-                            src="/not%20found.png"
+                            src="/Animation - 1750148058142.gif"
                             alt="No results"
                             className="w-80 h-80 mb-6"
                         />
