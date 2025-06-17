@@ -97,7 +97,9 @@ export default function ExamsPage() {
                                     className="border-b border-gray-100 hover:bg-gray-100 transition"
                                 >
                                     <td className="py-3 px-4 cursor-pointer">
-                                        <ActionMenu examId={exam.examId} onDeleteSuccess={handleDeleteExam} />
+                                        {userRole !== "Student" && (
+                                            <ActionMenu examId={exam.examId} onDeleteSuccess={handleDeleteExam} />
+                                        )}
                                     </td>
                                     <td className="py-3 px-4">{exam.examLocation}</td>
                                     <td className="py-3 px-4">{formatDate(exam.date)}</td>
