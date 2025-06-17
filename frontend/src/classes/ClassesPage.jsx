@@ -9,7 +9,6 @@ import { Add, ArrowRight2, ArrowLeft2 } from "iconsax-react";
 import FilterBox from "./components/FilterBox.jsx";
 import JoinClass from "./components/JoinClassPop.jsx";
 import { useAuth } from "../auth/context/AuthContext";
-
 import { useClassesData } from "./hooks/useClassesData"; 
 
 const ClassesPage = () => {
@@ -88,6 +87,7 @@ const ClassesPage = () => {
                                     userRole={userRole}
                                     onManageClick={() => handleManageClassClick(classItem.id)}
                                     onEditClick={() => handleEditClassClick(classItem.id)}
+                                    onCardClick={() => handleManageClassClick(classItem.id)} // استفاده از handleManageClassClick
                                 />
                             );
                         })}

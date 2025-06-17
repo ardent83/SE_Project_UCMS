@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./ProjectManagementPage.css"; 
+import "./ProjectManagementPage.css";
 import PhaseList from "./components/PhaseList";
 import GroupList from "./components/GroupList";
 import {
@@ -31,10 +31,16 @@ const ProjectManagementPage = () => {
     loading,
     error,
     handleDownload,
-    handleDelete,
+    handleDeleteProject,
+    loadProjectData,
+    showDeleteTeamModal,
+    setShowDeleteTeamModal,
+    teamToDeleteDetails,
+    handleDeleteTeamRequest,
+    handleConfirmDeleteTeam,
   } = useProjectData(projectId, userRole, navigate);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false);
 
   const handleEditProject = () => {
     navigate(`/project/edit/${projectId}`);
@@ -47,14 +53,12 @@ const ProjectManagementPage = () => {
   const handleCreatePhase = () => {
     navigate(`/project/${projectId}/phase/create/`);
   };
-  // ------------------------------------------
 
-  // default project
   const defaultProject = {
     title: "سیستم مدیریت پروژه",
     type: "گروهی",
     date: "۱ فروردین، ۰۶:۰۰ - ۳۱ فروردین، ۲۳:۰۰",
-    description: "توضیحات اضافی درباره‌ی پروژه...",
+    description: "توضیحی وجود ندارد",
     status: "در حال انجام",
   };
 
@@ -76,6 +80,7 @@ const ProjectManagementPage = () => {
       </div>
     );
   }
+  console.log("Current Project Description:", currentProject.description);
 
   return (
     <div className="project-header-top">
@@ -100,7 +105,7 @@ const ProjectManagementPage = () => {
             <Trash
               size="24"
               variant="Bulk"
-              onClick={() => setShowDeleteModal(true)}
+              onClick={() => setShowDeleteProjectModal(true)}
               style={{ cursor: "pointer" }}
               className="text-gray-500 hover:text-red-500 transition-colors"
             />
@@ -118,26 +123,36 @@ const ProjectManagementPage = () => {
           <Calendar size={20} style={{ fill: "#495d72" }} variant="Bulk" />
         </div>
         <div className="project-description">
-          <span>{currentProject.description}</span>
+          <span
+            className={
+              !currentProject.description ||
+              currentProject.description === "توضیحی وجود ندارد"
+                ? "text-light-gray"
+                : ""
+            }
+          >
+            {currentProject.description}
+          </span>
           <InfoCircle size={20} style={{ fill: "#495d72" }} variant="Bulk" />
         </div>
         <button className="status-badge">{currentProject.status}</button>
       </div>
       <hr className="separator" />
 
-      <div className="flex flex-col md:flex-row gap-8 justify-center items-start mt-8">
-        {/* GroupList */}
-        <div className="w-full md:basis-2/5">
+      <div className="project-content-section">
+        <div className="w-full">
+          {" "}
           <GroupList
             teams={teams}
             userRole={userRole}
             currentUserId={currentUserId}
             onAddGroupClick={handleCreateGroup}
+            onDeleteTeamRequest={handleDeleteTeamRequest}
           />
         </div>
 
-        {/* PhaseList */}
-        <div className="w-full md:basis-3/5">
+        <div className="w-full">
+          {" "}
           <PhaseList
             phases={phases}
             projectId={projectId}
@@ -147,14 +162,26 @@ const ProjectManagementPage = () => {
         </div>
       </div>
 
-      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+      <Modal show={showDeleteProjectModal} onClose={() => setShowDeleteProjectModal(false)}>
         <DeleteConfirmModalContent
           onConfirm={() => {
-            handleDelete();
-            setShowDeleteModal(false);
+            handleDeleteProject();
+            setShowDeleteProjectModal(false);
           }}
-          onCancel={() => setShowDeleteModal(false)}
+          onCancel={() => setShowDeleteProjectModal(false)}
           message="آیا از حذف این پروژه مطمئن هستید؟"
+        />
+      </Modal>
+
+      <Modal show={showDeleteTeamModal} onClose={() => setShowDeleteTeamModal(false)}>
+        <DeleteConfirmModalContent
+          onConfirm={handleConfirmDeleteTeam}
+          onCancel={() => setShowDeleteTeamModal(false)}
+          message={
+            teamToDeleteDetails
+              ? `آیا از حذف تیم "${teamToDeleteDetails.name}" مطمئن هستید؟ این عمل غیرقابل بازگشت است.`
+              : "آیا از حذف این تیم مطمئن هستید؟"
+          }
         />
       </Modal>
     </div>

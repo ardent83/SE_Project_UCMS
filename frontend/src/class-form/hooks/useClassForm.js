@@ -104,12 +104,12 @@ const useClassForm = ({
         });
 
         if (formType === "create") {
-          await createClass(formData);
+          const response = await createClass(formData);
           resetForm({ values: defaultInitialValues });
-          onSuccess("create");
+          onSuccess("create", response.data.id);
         } else if (formType === "edit" && classId) {
           await updateClass(formData, classId);
-          onSuccess("edit");
+          onSuccess("edit", classId);
         }
       } catch (err) {
         setApiError(err.message || "!خطا در ثبت اطلاعات کلاس");

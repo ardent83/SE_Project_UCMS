@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { ArrowDown2, InfoCircle } from "iconsax-react";
-import { useTeamMembers } from "../hooks/useTeamMembers";
+import { ArrowDown2, InfoCircle, Trash } from "iconsax-react"; 
+import { useTeamMembers } from '../hooks/useTeamMembers';
 
-const GroupItem = ({ team, userRole, currentUserId }) => {
+const GroupItem = ({ team, userRole, currentUserId, onDeleteTeamRequest }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [showTooltip, setShowTooltip] = useState(false); 
+
     const { members, loadingMembers, membersError, loadMembers } = useTeamMembers(team.id, userRole);
 
     const handleToggle = async () => {
@@ -11,6 +13,14 @@ const GroupItem = ({ team, userRole, currentUserId }) => {
             await loadMembers();
         }
         setIsOpen(!isOpen);
+    };
+
+    
+    const handleDeleteClick = (event) => {
+        event.stopPropagation();
+        if (onDeleteTeamRequest) {
+            onDeleteTeamRequest(team.id, team.name); 
+        }
     };
 
     return (
@@ -21,12 +31,12 @@ const GroupItem = ({ team, userRole, currentUserId }) => {
                 p-4 rounded-xl mb-3
                 shadow-lg hover:shadow-xl
                 transition-all duration-300 ease-in-out
-                hover:scale-[1.005] // انیمیشن scale در هاور
+                hover:scale-[1.005]
                 ${isOpen ? 'ring-2 ring-blue-500' : 'ring-0'}
             `}
             style={{ minHeight: isOpen ? 'auto' : '65px' }}
         >
-            {/* هدر گروه (نام تیم و فلش) */}
+            {/* هدر گروه (نام تیم، فلش و آیکون حذف) */}
             <div
                 className="flex justify-between items-center cursor-pointer text-gray-100 text-right"
                 onClick={handleToggle}
@@ -35,6 +45,25 @@ const GroupItem = ({ team, userRole, currentUserId }) => {
                 <span className="flex-grow text-base font-bold flex items-center">
                     {team.name}
                 </span>
+                {userRole === "Instructor" && ( 
+                    <div className="relative">
+                        <Trash
+                            size="20"
+                            variant="Outline"
+                            color="#a0aec0" 
+                            className="text-gray-400 hover:text-red-500 transition-colors duration-200 ml-2"
+                            onClick={handleDeleteClick}
+                            onMouseEnter={() => setShowTooltip(true)}
+                            onMouseLeave={() => setShowTooltip(false)} 
+                            style={{ cursor: 'pointer' }}
+                        />
+                        {showTooltip && (
+                            <div className="absolute top-1/2 left-full -translate-y-1/2 transform bg-gray-700 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-50 mr-2">
+                                حذف تیم
+                            </div>
+                        )}
+                    </div>
+                )}
                 <ArrowDown2
                     size="28"
                     color={isOpen ? "#3b82f6" : "#a0aec0"}

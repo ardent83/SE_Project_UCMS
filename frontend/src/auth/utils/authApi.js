@@ -32,7 +32,7 @@ export const logout = async () => {
     return response;
 };
 
-export const profile = async () => { 
+export const profile = async () => {
     const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
         method: 'GET',
         credentials: 'include',
@@ -40,10 +40,42 @@ export const profile = async () => {
     return response;
 };
 
-export const authStatus = async () => { 
+export const authStatus = async () => {
     const response = await fetch(`${apiBaseUrl}/api/auth/status`, {
         method: 'GET',
         credentials: 'include',
+    });
+    return response;
+};
+
+export const sendResetPasswordEmail = async (email) => {
+    const response = await fetch(`${apiBaseUrl}/api/auth/RequestTempPassword`, { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ email }),
+    });
+    return response;
+};
+
+export const verifyResetPasswordCode = async (email, code) => {
+    const currentDateTimeISO = new Date().toISOString(); 
+
+    const response = await fetch(`${apiBaseUrl}/api/auth/TempPassword`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            email: email,
+            oneTimeCode: {
+                code: code,
+                expiry: currentDateTimeISO 
+            }
+        }),
     });
     return response;
 };

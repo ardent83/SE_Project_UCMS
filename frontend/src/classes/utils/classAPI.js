@@ -27,7 +27,7 @@ export const fetchClassesApi = async (params, userRole) => {
     if (userRole === "Instructor") {
         apiEndpoint = `${API_BASE_URL}/api/Classes/instructor?${queryParams}`;
     } else if (userRole === "Student") {
-        apiEndpoint = `${API_BASE_URL}/api/studentclass/student?${queryParams}`;
+        apiEndpoint = `${API_BASE_URL}/api/studentclass/student/classes?${queryParams}`;
     } else {
         throw new Error("نقش کاربر پشتیبانی نمی‌شود!");
     }

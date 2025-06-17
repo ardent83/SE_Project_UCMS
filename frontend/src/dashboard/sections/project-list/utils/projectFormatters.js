@@ -1,14 +1,21 @@
-const STATUS_STYLES = {
-    2: "bg-green-200 text-green-800",
-    1: "bg-sky-200 text-sky-700",
-    0: "bg-orange-200 text-orange-700",
-};
+const ProjectStatus = {
+    NotStarted: 0,
+    InProgress: 1,
+    Completed: 2
+}
 
 const PERSIAN_STATUS_TEXT = {
-    2: "تحویل شده",
-    1: "در حال انجام",
-    0: "انجام نشده",
+    [ProjectStatus.Completed]: "تکمیل شده",
+    [ProjectStatus.InProgress]: "در حال انجام",
+    [ProjectStatus.NotStarted]: "شروع نشده",
 };
+
+const STATUS_STYLES = {
+    [ProjectStatus.Completed]: "bg-green-200 text-green-800",
+    [ProjectStatus.InProgress]: "bg-sky-200 text-sky-700",
+    [ProjectStatus.NotStarted]: "bg-orange-200 text-orange-700",
+};
+
 
 const formatPersianDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('fa-IR', {

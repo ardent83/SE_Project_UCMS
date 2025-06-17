@@ -60,8 +60,10 @@ function GeneralSettingsSection({
               rightIconComponent={<Edit />}
               size="forty"
               style="none"
+              data-testid="general-settings-form"
               onClick={onEditToggle}
               disabled={isEditing || formik.isSubmitting}
+              type="button"
             />
           )}
         </div>
@@ -104,7 +106,7 @@ function GeneralSettingsSection({
           <Input
             field={{ name: "roleDisplay" }}
             label="نقش"
-            value={userData.roleId == 1 ? "دانشجو" : "استاد"}
+            value={userData.role.id === 2 ? "دانشجو" : "استاد"}
             disabled={true}
           />
           <Selector

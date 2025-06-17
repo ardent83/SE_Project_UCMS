@@ -1,11 +1,13 @@
 import React from 'react';
-import { Task } from 'iconsax-react'; // آیکون مناسب برای تکالیف
+import { Task } from 'iconsax-react';
 import { HeadSection } from '../../components/HeadSection';
 import { useExerciseList } from './hooks/useExerciseList';
 import { ExerciseCard } from './components/ExerciseCard';
+import { useNavigate } from 'react-router-dom';
 
 export const ExerciseList = ({ userRoleId }) => {
     const { exercises, loading, error } = useExerciseList({ userRoleId });
+    const navigate = useNavigate();
 
     const renderContent = () => {
         if (loading) {
@@ -29,9 +31,14 @@ export const ExerciseList = ({ userRoleId }) => {
         );
     };
 
+
     return (
         <div className="w-full max-w-60 flex flex-col justify-start items-center gap-4">
-            <HeadSection title="تکالیف" icon={<Task variant="Bold" color="var(--color-redp)" size={24} />} />
+            <HeadSection
+                onClick={() => navigate('/exercises')}
+                title="تکالیف"
+                icon={<Task variant="Bold" color="var(--color-redp)" size={24} />}
+            />
             {renderContent()}
         </div>
     );
