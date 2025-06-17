@@ -24,6 +24,8 @@ function ProfilePage() {
         fetchProfile();
     }, []);
 
+    console.log(user);
+
     if (error) return <p className="text-black-500 text-center mt-10">{error}</p>;
     if (!profile) return <p className="text-center mt-10 text-gray-600">در حال بارگذاری...</p>;
 

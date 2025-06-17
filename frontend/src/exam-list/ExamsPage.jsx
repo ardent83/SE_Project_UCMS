@@ -7,12 +7,13 @@ import { getExamsForInstructor, getExamsForStudent } from "./utils/ExamsPageApi.
 
 export default function ExamsPage() {
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
     const [search, setSearch] = useState("");
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    console.log(userRole);
     useEffect(() => {
         async function fetchExams() {
             try {
