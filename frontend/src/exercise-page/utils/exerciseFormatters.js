@@ -1,5 +1,3 @@
-// src/features/ExercisePage/utils/exerciseFormatters.js
-
 const PERSIAN_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
 export const toPersianDigits = (str) => {
@@ -48,6 +46,7 @@ export const formatExerciseData = (exercise) => {
         formattedStartTime: formatPersianTime(startDate),
         formattedEndDate: formatPersianDate(endDate),
         formattedEndTime: formatPersianTime(endDate),
+        description: exercise.description || "توضیحاتی وجود ندارد!"
     };
 };
 
@@ -58,9 +57,11 @@ export const formatExerciseData = (exercise) => {
  */
 export const formatSubmissionData = (submission) => {
     if (!submission) return null;
-    const submissionDateTime = new Date(submission.submissionTime);
+    const submittedAtDate = new Date(submission.submittedAt);
     return {
         ...submission,
-        formattedSubmissionTime: `${formatPersianDate(submissionDateTime)} – ساعت ${formatPersianTime(submissionDateTime)}`,
+        studentName: submission.studentName || 'نامشخص',
+        studentNumber: submission.studentNumber,
+        formattedSubmissionTime: `${formatPersianDate(submittedAtDate)} – ساعت ${formatPersianTime(submittedAtDate)}`,
     };
 };
