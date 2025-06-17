@@ -3,7 +3,7 @@ import { Notepad2, ArrowSwapVertical } from "iconsax-react";
 import FilterBox from "./components/FilterBox";
 import SearchBox from "./components/SearchBox";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-import { fetchProjects } from "./utils/ProjectListApi.js";
+import { fetchProjectsForInstructor, fetchProjectsForStudent } from "./utils/ProjectListApi.js";
 import { useNavigate } from "react-router-dom";
 
 const statusColors = {
@@ -19,16 +19,29 @@ export default function ProjectsPage() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("همه");
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loadProjects = async () => {
-            const data = await fetchProjects();
-            setProjectsData(data);
-        };
+        async function loadProjects() {
+            try {
+                setLoading(true);
+                const data = userRole === "Student"
+                    ? await fetchProjectsForStudent()
+                    : await fetchProjectsForInstructor();
+                setProjectsData(data);
+                setError(null);
+            } catch (err) {
+                setError("خطا در بارگذاری داده‌ها");
+            } finally {
+                setLoading(false);
+            }
+        }
+
         loadProjects();
-    }, []);
+    }, [userRole]);
 
     const handleSort = (key) => {
         setSortConfig((prevConfig) => {
@@ -80,7 +93,11 @@ export default function ProjectsPage() {
             </div>
 
             <div className="w-full">
-                {filteredProjects.length > 0 ? (
+                {loading ? (
+                    <div className="text-center py-6 text-gray-400">در حال بارگذاری...</div>
+                ) : error ? (
+                    <div className="text-center py-6 text-red-500">{error}</div>
+                ) : filteredProjects.length > 0 ? (
                     <div className="overflow-y-auto max-h-[380px] relative z-10">
                         <table className="w-full border-collapse text-center">
                             <thead className="sticky top-0 bg-white z-10">
@@ -101,8 +118,7 @@ export default function ProjectsPage() {
                                                 : ""
                                         }`}
                                     />
-                                    تاریخ تحویل{" "}
-
+                                    تاریخ تحویل
                                 </th>
 
                                 <th className="py-3 px-4">زمان</th>
@@ -121,8 +137,7 @@ export default function ProjectsPage() {
                                                 : ""
                                         }`}
                                     />
-                                    درس{" "}
-
+                                    درس
                                 </th>
 
                                 <th
@@ -139,8 +154,7 @@ export default function ProjectsPage() {
                                                 : ""
                                         }`}
                                     />
-                                    نام پروژه{" "}
-
+                                    نام پروژه
                                 </th>
                             </tr>
                             </thead>
@@ -168,13 +182,13 @@ export default function ProjectsPage() {
                         </table>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center text-gray-400">
+                    <div className="flex flex-col items-center justify-center text-gray-400 mt-12">
                         <img
                             src="/Animation - 1750148058142.gif"
                             alt="No results"
                             className="w-80 h-80 mb-6"
                         />
-                        <p className="text-lg mt-0">نتیجه‌ای یافت نشد</p>
+                        <p className="text-lg">نتیجه‌ای یافت نشد</p>
                     </div>
                 )}
             </div>
