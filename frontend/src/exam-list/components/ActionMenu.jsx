@@ -1,10 +1,12 @@
-import {useEffect, useRef, useState} from "react";
-import {Edit2, More, TickCircle, Trash} from "iconsax-react";
-import {deleteExamById} from "../utils/ExamsPageApi.js";
+import { useEffect, useRef, useState } from "react";
+import { Edit2, More, TickCircle, Trash } from "iconsax-react";
+import { deleteExamById } from "../utils/ExamsPageApi.js";
 import { useNavigate } from "react-router-dom";
+import ScoreUpload from "./ScoreUploadPop"; // مسیر را تنظیم کن
 
 export default function ActionMenu({ examId, onDeleteSuccess }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isScoreModalOpen, setScoreModalOpen] = useState(false);
     const menuRef = useRef(null);
     const navigate = useNavigate();
 
@@ -41,11 +43,16 @@ export default function ActionMenu({ examId, onDeleteSuccess }) {
             </button>
 
             {isOpen && (
-                <div className="absolute mt-2 w-32 origin-top rounded-xl bg-big-stone-900 shadow-2xl ring-1 ring-black/10 z-50"
-                     style={{ animation: 'fadeInScale 0.1s ease-out forwards' }}>
+                <div
+                    className="absolute mt-2 w-32 origin-top rounded-xl bg-big-stone-900 shadow-2xl ring-1 ring-black/10 z-50"
+                    style={{ animation: 'fadeInScale 0.1s ease-out forwards' }}
+                >
                     <div className="py-1 px-1">
                         <button
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => {
+                                setIsOpen(false);
+                                setScoreModalOpen(true);
+                            }}
                             className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-emerald-100 hover:text-emerald-700"
                         >
                             <TickCircle size="16" variant="Bold" />
@@ -68,6 +75,12 @@ export default function ActionMenu({ examId, onDeleteSuccess }) {
                     </div>
                 </div>
             )}
+
+            <ScoreUpload
+                show={isScoreModalOpen}
+                onClose={() => setScoreModalOpen(false)}
+                examId={examId}
+            />
 
             <style>{`
               @keyframes fadeInScale {
