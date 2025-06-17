@@ -24,7 +24,7 @@ export const ClassList = ({ userRoleId, userFullName }) => {
             )}
 
             {!loading && !error && (
-                <div className="w-full flex justify-start flex-row-reverse items-start flex-wrap gap-2">
+                <div data-testid="class-list-section" className="w-full flex justify-between flex-row-reverse items-start flex-wrap">
                     {classes.map((detail) => (
                         <ClassCard
                             key={detail.id}

@@ -72,7 +72,7 @@ export const ProjectList = ({ userRoleId }) => {
                         <th className="p-2 font-medium w-[30%] text-wrap break-words">نام پروژه</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody data-testid="project-list-section">
                     {renderTableBody()}
                 </tbody>
             </table>
