@@ -3,15 +3,13 @@ import { useParams } from "react-router-dom";
 import {
     Calendar,
     Edit2,
-    Trash, 
+    Trash,
     Information,
     DirectboxNotif,
-    PresentionChart, 
-    DocumentText,
+    PresentionChart,
     TickCircle,
-    ArrowUp2,
-    ArrowDown2
-} from "iconsax-react";
+    ArrowSwapVertical 
+} from "iconsax-react"; 
 import { useExerciseDataForInstructor } from "./hooks/useExerciseDataForInstructor";
 
 import DropdownSection from "./components/DropdownSection.jsx";
@@ -47,37 +45,34 @@ const ExercisePageForInstructor = () => {
         showDeleteExerciseModal,
         setShowDeleteExerciseModal,
         exerciseToDeleteDetails,
-        sortBy,
+        sortBy, 
         setSortBy,
         sortOrder,
-        setSortOrder,
+        setSortOrder, 
         formatPersianDate,
-        formatPersianTime,
+        formatPersianTime, 
     } = useExerciseDataForInstructor(exerciseId, 'Instructor');
 
     if (loading) return <div className="text-center mt-10">در حال بارگذاری تمرین...</div>;
     if (error) return <div className="text-center text-red-500 mt-10">خطا: {error}</div>;
     if (!currentExercise) return <div className="text-center text-gray-500 mt-10">تمرین مورد نظر یافت نشد یا وجود ندارد.</div>;
 
-
     const handleSortClick = (columnValue) => {
         if (sortBy === columnValue) {
-            setSortOrder(prev => (prev === 0 ? 1 : 0)); // 0: ascending, 1: descending
+            // 1: صعودی (Ascending) -> 2: نزولی (Descending)
+            // 2: نزولی (Descending) -> 1: صعودی (Ascending)
+            setSortOrder(prev => (prev === 1 ? 2 : 1)); 
         } else {
             setSortBy(columnValue);
-            setSortOrder(0); // Default to ascending when changing column
+            setSortOrder(1); // Default to Ascending (1)
         }
     };
 
     const renderSortIcon = (columnValue) => {
         if (sortBy === columnValue) {
-            return sortOrder === 0 ? (
-                <ArrowUp2 size="16" variant="Bold" className="text-gray-800" />
-            ) : (
-                <ArrowDown2 size="16" variant="Bold" className="text-gray-800" />
-            );
+            return <ArrowSwapVertical size="16" variant="Bold" color="#555555" />;
         }
-        return <ArrowUp2 size="16" variant="Linear" className="text-gray-400" />; // Default icon for inactive columns
+        return <ArrowSwapVertical size="16" variant="Bulk" color="#555555" />;
     };
 
 
@@ -140,15 +135,26 @@ const ExercisePageForInstructor = () => {
                             <table className="w-full text-center border-collapse text-sm" dir="rtl">
                                 <thead className="bg-gray-100 sticky top-0 z-10">
                                     <tr>
-                                        {/* نام گروه/دانشجو - SortBy = 1 (Student Name) */}
-                                        <th className="px-4 py-2 cursor-pointer" onClick={() => handleSortClick(1)}>
-                                            نام گروه/دانشجو
-                                            {renderSortIcon(1)}
+                                        {/* Sortable Column: Student Name (SortBy = 2) */}
+                                        <th className="px-4 py-2 cursor-pointer"> {/* Remove onClick from here */}
+                                            <div className="flex items-center justify-center gap-1" onClick={() => handleSortClick(2)}> {/* Added flex container */}
+                                                نام و نام خانوادگی دانشجو
+                                                {renderSortIcon(2)}
+                                            </div>
                                         </th>
-                                        {/* زمان ارسال - SortBy = 0 (Date) */}
-                                        <th className="px-4 py-2 cursor-pointer" onClick={() => handleSortClick(0)}>
-                                            زمان ارسال
-                                            {renderSortIcon(0)}
+                                        {/* New Sortable Column: Student Number (SortBy = 3) */}
+                                        <th className="px-4 py-2 cursor-pointer"> {/* Remove onClick from here */}
+                                            <div className="flex items-center justify-center gap-1" onClick={() => handleSortClick(3)}> {/* Added flex container */}
+                                                شماره دانشجویی
+                                                {renderSortIcon(3)}
+                                            </div>
+                                        </th>
+                                        {/* زمان ارسال - SortBy = 1 (Date) */}
+                                        <th className="px-4 py-2 cursor-pointer"> {/* Remove onClick from here */}
+                                            <div className="flex items-center justify-center gap-1" onClick={() => handleSortClick(1)}> {/* Added flex container */}
+                                                زمان ارسال
+                                                {renderSortIcon(1)}
+                                            </div>
                                         </th>
                                         <th className="px-4 py-2">نوع فایل</th>
                                         <th className="px-4 py-2">نمره استاد</th>
@@ -158,7 +164,10 @@ const ExercisePageForInstructor = () => {
                                 <tbody>
                                     {(submissions || []).map((submission) => (
                                         <tr key={submission.id} className="odd:bg-white even:bg-gray-50">
-                                            <td className="px-4 py-2">{submission.groupName || 'نامشخص'}</td>
+                                            {/* Display student name in its own cell */}
+                                            <td className="px-4 py-2">{submission.studentName || 'نامشخص'}</td>
+                                            {/* Display student number in its own cell */}
+                                            <td className="px-4 py-2">{submission.studentNumber || 'ثبت نشده'}</td>
                                             <td className="px-4 py-2">{submission.formattedSubmissionTime}</td>
                                             <td className="px-4 py-2">{submission.fileType}</td>
                                             <td className="px-4 py-2">
@@ -188,7 +197,7 @@ const ExercisePageForInstructor = () => {
                                                                 ) : (
                                                                     <>
                                                                         <TickCircle size="20" color="#37d67a" variant="Bulk" />
-                                                                        <span>نمره</span>
+                                                                        <span>ثبت</span>
                                                                     </>
                                                                 )}
                                                             </button>
@@ -199,7 +208,7 @@ const ExercisePageForInstructor = () => {
                                             <td className="px-4 py-2">
                                                 <button
                                                     className="justify-center text-big-stone-400 hover:text-big-stone-600 text-[1rem] cursor-pointer"
-                                                    onClick={() => handleDownloadSubmission(submission.fileUrl, `submission_${submission.id}.${submission.fileType}`)}
+                                                    onClick={() => handleDownloadSubmission(submission.id, `submission_${submission.id}.${submission.fileType}`)}
                                                 >
                                                     دانلود
                                                 </button>
@@ -232,7 +241,7 @@ const ExercisePageForInstructor = () => {
                     onCancel={() => setShowDeleteExerciseModal(false)}
                     message={
                         exerciseToDeleteDetails
-                            ? `آیا از حذف تمرین "${exerciseToDeleteDetails.title}" مطمئن هستید؟ این عمل غیرقابل بازگشت است.`
+                            ? `آیا از حذف تمرین "${exerciseToDeleteDetails.title}" مطمئن هستید؟`
                             : "آیا از حذف این تمرین مطمئن هستید؟"
                     }
                 />

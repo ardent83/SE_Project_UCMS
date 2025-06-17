@@ -1,3 +1,4 @@
+// src/features/ExercisePage/utils/exerciseApi.js
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchExerciseDetailsApi = async (exerciseId, userRole) => {
@@ -27,7 +28,6 @@ export const fetchExerciseDetailsApi = async (exerciseId, userRole) => {
             const errorData = await response.json();
             error.message = errorData.message || error.message;
         } catch (jsonError) {
-            // If the response is not JSON, use the default message
         }
         throw error;
     }
@@ -36,59 +36,68 @@ export const fetchExerciseDetailsApi = async (exerciseId, userRole) => {
 
 /**
  * Fetches detailed submissions for a specific exercise for Instructor or Student.
- * (این تابع حالا Mock است)
  * @param {string} exerciseId - The ID of the exercise.
  * @param {string} userRole - 'Instructor' or 'Student'.
- * @param {object} filterDto - Filter DTO for submissions (SortExerciseSubmissionsForInstructorDto or SortExerciseSubmissionsStudentDto)
- * @returns {Promise<object>} An object containing submission items, totalPages, etc. (response.items)
+ * @param {object} filterDto - Filter DTO for submissions.
+ * @returns {Promise<object>} An object containing submission items (response.data), totalPages, etc.
  */
 export const fetchExerciseSubmissionsApi = async (exerciseId, userRole, filterDto = {}) => {
-    console.log(`Mock API: Fetching submissions for exercise ${exerciseId} as ${userRole} with filters:`, filterDto);
-    await new Promise(resolve => setTimeout(resolve, 700)); // Simulate network delay
+    if (!exerciseId) {
+        throw new Error("شناسه تمرین معتبر نیست!");
+    }
 
-    // <-- Mock Data برای ارسال‌ها -->
-    const mockSubmissions = [
-        { id: 'sub1', groupId: 'groupA', groupName: 'گروه ستاره', submissionTime: '2025-06-20T10:00:00Z', fileType: 'pdf', grade: null, submitted: false, fileUrl: 'mock_file_a.pdf', studentId: 'stu1' },
-        { id: 'sub2', groupId: 'groupB', groupName: 'گروه ماه', submissionTime: '2025-06-21T14:30:00Z', fileType: 'zip', grade: 18, submitted: true, fileUrl: 'mock_file_b.zip', studentId: 'stu2' },
-        { id: 'sub3', groupId: 'groupC', groupName: 'گروه خورشید', submissionTime: '2025-06-22T09:15:00Z', fileType: 'rar', grade: null, submitted: false, fileUrl: 'mock_file_c.rar', studentId: 'stu3' },
-        { id: 'sub4', groupId: 'groupD', groupName: 'گروه نپتون', submissionTime: '2025-06-19T08:00:00Z', fileType: 'docx', grade: 15, submitted: true, fileUrl: 'mock_file_d.docx', studentId: 'stu4' },
-        { id: 'sub5', groupId: 'groupE', groupName: 'گروه مشتری', submissionTime: '2025-06-23T16:00:00Z', fileType: 'pptx', grade: null, submitted: false, fileUrl: 'mock_file_e.pptx', studentId: 'stu5' },
-    ];
+    let apiEndpoint;
+    const params = new URLSearchParams({
+        ExerciseId: exerciseId,
+        ...(filterDto.SortBy !== undefined && { SortBy: filterDto.SortBy }),
+        ...(filterDto.SortOrder !== undefined && { SortOrder: filterDto.SortOrder }),
+        ...(filterDto.Page !== undefined && { Page: filterDto.Page }),
+        ...(filterDto.PageSize !== undefined && { PageSize: filterDto.PageSize }),
+    }).toString();
 
-    // پیاده‌سازی ساده برای مرتب‌سازی Mock data
-    let sortedSubmissions = [...mockSubmissions];
-    if (filterDto.SortBy !== undefined) {
-        if (userRole === "Instructor") {
-            // SortBy: 0 = Date, 1 = StudentName
-            if (filterDto.SortBy === 0) { // Date
-                sortedSubmissions.sort((a, b) => new Date(a.submissionTime) - new Date(b.submissionTime));
-            } else if (filterDto.SortBy === 1) { // StudentName / GroupName
-                sortedSubmissions.sort((a, b) => (a.groupName || a.studentName || '').localeCompare(b.groupName || b.studentName || ''));
+    if (userRole === "Instructor") {
+        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/instructor?${params}`;
+    } else if (userRole === "Student") {
+        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/student?${params}`;
+    } else {
+        throw new Error("نقش کاربر پشتیبانی نمی‌شود یا دسترسی به ارسال‌ها وجود ندارد!");
+    }
+
+    console.log(`Fetching submissions from: ${apiEndpoint}`);
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            try {
+                const errorData = await response.json();
+                error.message = errorData.message || error.message;
+            } catch (jsonError) {
             }
-        } else if (userRole === "Student") {
-            // SortBy: 0 = Date
-            if (filterDto.SortBy === 0) { // Date
-                sortedSubmissions.sort((a, b) => new Date(a.submissionTime) - new Date(b.submissionTime));
-            }
+            throw error;
         }
+        const result = await response.json();
+        return {
+            items: result.data || [],
+            totalCount: result.data ? result.data.length : 0,
+            totalPages: 1,
+            currentPage: 1,
+            pageSize: result.data ? result.data.length : 0,
+            success: result.success,
+            message: result.message
+        };
+    } catch (err) {
+        console.error("Error fetching exercise submissions:", err);
+        throw err;
     }
-
-    if (filterDto.SortOrder === 1) { // Descending
-        sortedSubmissions.reverse();
-    }
-
-
-    return {
-        items: sortedSubmissions, // داده‌های مرتب شده
-        totalCount: sortedSubmissions.length,
-        totalPages: 1, // برای Mock، فرض می‌کنیم یک صفحه است
-        currentPage: 1,
-        pageSize: sortedSubmissions.length,
-    };
 };
 
-export const submitGradeApi = async (exerciseSubmissionId, score) => {
-    console.log(`Mock API: Instructor submitting grades for submission ${exerciseSubmissionId}:`, score);
+export const submitGradeApi = async (submissionId, gradesData, totalScore) => {
+    console.log(`Mock API: Instructor submitting grades for submission ${submissionId}:`, gradesData, `Total Score: ${totalScore}`);
     await new Promise(resolve => setTimeout(resolve, 1000));
     return { success: true, message: "نمرات با موفقیت ثبت شدند. (Mock)" };
 };
@@ -103,12 +112,64 @@ export const submitStudentSubmissionApi = async (exerciseId, file, description) 
     }
 };
 
+/**
+ * Downloads a submission file for Instructor or Student.
+ * (این تابع جایگزین Mock قبلی می‌شود و به API واقعی متصل می‌شود)
+ * URL: GET /api/ExerciseSubmissions/instructor/{exerciseSubmissionId}
+ * URL: GET /api/ExerciseSubmissions/student/{exerciseSubmissionId}
+ * @param {string} exerciseSubmissionId - The ID of the submission whose file is to be downloaded.
+ * @param {string} userRole - 'Instructor' or 'Student'.
+ * @param {string} fileName - Suggested file name for the downloaded file.
+ * @returns {Promise<void>}
+ */
+export const downloadSubmissionFileApi = async (exerciseSubmissionId, userRole, fileName) => { // Updated signature
+    if (!exerciseSubmissionId) {
+        throw new Error("شناسه ارسال برای دانلود معتبر نیست!");
+    }
 
-export const downloadSubmissionFileApi = async (exerciseSubmissionId, userRole, fileName) => {
-    console.log(`Mock API: Downloading submission file from submission ID: ${exerciseSubmissionId}`);
-    alert(`Mock Download: Downloading ${fileName} from submission ID: ${exerciseSubmissionId}`);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    // در Mock، نیازی به فراخوانی API نیست
+    let apiEndpoint;
+    // بر اساس کنترلر شما: Instructor/Student برای دانلود فایل ارسالی
+    if (userRole === "Instructor") {
+        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/instructor/${exerciseSubmissionId}`;
+    } else if (userRole === "Student") {
+        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/student/${exerciseSubmissionId}`;
+    } else {
+        throw new Error("نقش کاربر پشتیبانی نمی‌شود یا دسترسی به دانلود ارسال وجود ندارد!");
+    }
+
+    console.log(`Downloading submission file from: ${apiEndpoint}`);
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            try {
+                const errorData = await response.json();
+                error.message = errorData.message || error.message;
+            } catch (jsonError) { }
+            throw error;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // نام فایل واقعی از هدر Content-Disposition در پاسخ سرور می‌آید.
+        // Fallback به نام پیشنهادی یا generic اگر هدر نباشد.
+        a.download = fileName || `submission_${exerciseSubmissionId}_download.file`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        console.log(`File ${fileName} downloaded successfully.`);
+    } catch (err) {
+        console.error("Error downloading submission file:", err);
+        throw err;
+    }
 };
 
 export const downloadExerciseFileApi = async (exerciseId, userRole, fileName) => {
@@ -219,7 +280,8 @@ export const updateExerciseSubmissionScoresApi = async (exerciseId, scoreFile) =
             throw error;
         }
         return await response.json();
-    } catch (err) {
+    }
+    catch (err) {
         console.error("Error uploading scores:", err);
         throw err;
     }
@@ -245,7 +307,8 @@ export const getExerciseScoreTemplateFileApi = async (exerciseId) => {
             try {
                 const errorData = await response.json();
                 error.message = errorData.message || error.message;
-            } catch (jsonError) {
+            }
+            catch (jsonError) {
             }
             throw error;
         }
