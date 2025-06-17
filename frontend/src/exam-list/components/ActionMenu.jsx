@@ -1,10 +1,12 @@
 import {useEffect, useRef, useState} from "react";
 import {Edit2, More, TickCircle, Trash} from "iconsax-react";
 import {deleteExamById} from "../utils/ExamsPageApi.js";
+import { useNavigate } from "react-router-dom";
 
 export default function ActionMenu({ examId, onDeleteSuccess }) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -24,7 +26,10 @@ export default function ActionMenu({ examId, onDeleteSuccess }) {
         setIsOpen(false);
     };
 
-
+    const handleEdit = () => {
+        navigate(`/exam/edit/${examId}`);
+        setIsOpen(false);
+    };
 
     return (
         <div className="relative inline-block text-center" ref={menuRef}>
@@ -47,7 +52,7 @@ export default function ActionMenu({ examId, onDeleteSuccess }) {
                             ثبت نمره
                         </button>
                         <button
-                            onClick={() => setIsOpen(false)}
+                            onClick={handleEdit}
                             className="flex justify-center items-center w-full gap-2 px-4 py-2 text-sm rounded-lg text-white hover:bg-sky-200 hover:text-sky-700"
                         >
                             <Edit2 size="16" variant="Bold" />
