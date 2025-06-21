@@ -5,12 +5,12 @@ import {
   Information,
   PresentionChart,
   DirectboxNotif,
-  ArrowSwapVertical,
-  ArrangeHorizontalSquare,
+  ArrangeVerticalSquare,
 } from "iconsax-react";
 
 import { useExerciseDataForStudent } from "./hooks/useExerciseDataForStudent";
 import ExerciseSubmitTab from "./components/ExerciseSubmitTab.jsx";
+import ExerciseSubmissionTab from "./components/ExerciseSubmissionTab.jsx";
 
 const ExercisePageForStudent = () => {
   const { exerciseId } = useParams();
@@ -40,9 +40,6 @@ const ExercisePageForStudent = () => {
     formatPersianTime,
   } = useExerciseDataForStudent(exerciseId, "Student");
 
-  // حالت آیکون مرتب سازی: 1=Bulk, 2=Bold, 3=ArrangeHorizontalSquare
-  const [sortIconState, setSortIconState] = useState(1);
-
   if (!exerciseId)
     return (
       <div className="text-center text-red-500 mt-10">
@@ -63,60 +60,28 @@ const ExercisePageForStudent = () => {
       </div>
     );
 
-  // هندل کلیک روی ستون مرتب سازی
-  const handleSortClick = (columnValue) => {
-    if (sortBy === columnValue) {
-      // هر کلیک حالت آیکون رو یک مرحله جلو میبره
-      setSortIconState((prev) => (prev === 3 ? 1 : prev + 1));
-      // فقط حالت دوم (Bold) ترتیب رو تغییر میده
-      if (sortIconState === 2) {
-        setSortOrder((prev) => (prev === 1 ? 2 : 1));
-      }
-    } else {
-      setSortBy(columnValue);
+
+  const handleSortClick = () => {
+    if (sortBy !== 1) {
+      setSortBy(1);
       setSortOrder(1);
-      setSortIconState(1); // وقتی ستون عوض میشه حالت آیکون به اول ریست میشه
+    } else {
+      setSortOrder(sortOrder === 1 ? 2 : 1);
     }
   };
 
-  // رندر آیکون بر اساس حالت فعلی
-  const renderSortIcon = () => {
-    if (sortIconState === 1) {
-      return (
-        <ArrowSwapVertical
-          size="16"
-          variant="Bulk"
-          color={sortBy === 1 ? "#1F2937" : "#9CA3AF"}
-          style={{ marginLeft: "0.25rem", transition: "all transform 0.3s ease" }}
-        />
-      );
-    }
-    if (sortIconState === 2) {
-      return (
-        <ArrowSwapVertical
-          size="16"
-          variant="Bold"
-          color={sortBy === 1 ? "#1F2937" : "#9CA3AF"}
-          style={{
-            marginLeft: "0.25rem",
-            transition: "all transform 0.3s ease",
-            transform: sortOrder === 1 ? "rotate(0deg)" : "rotate(180deg)",
-          }}
-        />
-      );
-    }
-    if (sortIconState === 3) {
-      return (
-        <ArrangeHorizontalSquare
-          size="16"
-          variant="Bold"
-          color={sortBy === 1 ? "#1F2937" : "#9CA3AF"}
-          style={{ marginLeft: "0.25rem", transition: "all transform 0.3s ease" }}
-        />
-      );
-    }
-    return null;
-  };
+  const renderSortIcon = () => (
+    <ArrangeVerticalSquare
+      size="16"
+      variant="Bold"
+      color={sortOrder === 1 ? "#1F2937" : "#9CA3AF"}
+      style={{
+        marginLeft: "0.25rem",
+        transition: "color 0.3s ease",
+        cursor: "pointer",
+      }}
+    />
+  );
 
   return (
     <div className="w-full max-w-270 p-6" dir="rtl">
@@ -183,84 +148,18 @@ const ExercisePageForStudent = () => {
       </div>
 
       {activeTab === "ارسال‌ها" && (
-        <div className="w-full">
-          <table className="w-full text-center border-collapse text-sm" dir="ltr">
-            <thead className="bg-gray-100 sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-2">فایل</th>
-                <th className="px-4 py-2">نمره</th>
-                <th className="px-4 py-2">نوع فایل</th>
-                <th
-                  className="px-4 py-2 cursor-pointer select-none"
-                  onClick={() => handleSortClick(1)}
-                >
-                  <div className="flex items-center justify-center">
-                    تاریخ و ساعت ارسال
-                    {renderSortIcon()}
-                  </div>
-                </th>
-                <th className="px-4 py-2">ارسال نهایی</th>
-              </tr>
-            </thead>
-            <tbody>
-              {studentSubmissions && studentSubmissions.length > 0 ? (
-                studentSubmissions.map((submission) => (
-                  <tr key={submission.id} className="odd:bg-white even:bg-gray-50">
-                    <td className="px-4 py-2">
-                      <button
-                        className="text-big-stone-400 hover:text-big-stone-600 text-[1rem] cursor-pointer"
-                        onClick={() =>
-                          handleDownloadSubmission(
-                            submission.id,
-                            `submission_${submission.id}.${submission.fileType}`
-                          )
-                        }
-                      >
-                        دانلود
-                      </button>
-                    </td>
-                    <td className="px-4 py-2">
-                      {submission.grade != null ? (
-                        <span className="font-semibold text-gray-800">
-                          {submission.grade}
-                          {currentExercise.exerciseScore &&
-                            ` از ${currentExercise.exerciseScore}`}
-                        </span>
-                      ) : (
-                        <span>ثبت نشده</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2">{submission.fileType || "نامشخص"}</td>
-                    <td className="px-4 py-2" dir="rtl">
-                      {formatPersianDate(submission.submittedAt)} -{" "}
-                      {formatPersianTime(submission.submittedAt)}
-                    </td>
-                    <td className="px-4 py-2 flex justify-center items-center">
-                      <label className="inline-flex items-center cursor-pointer flex-row-reverse gap-1">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox h-5 w-5 text-blue-600 rounded"
-                          checked={submission.isFinal}
-                          onChange={(e) =>
-                            handleUpdateFinalSubmission(submission.id, e.target.checked)
-                          }
-                          disabled={submission.grade != null}
-                          aria-label="ارسال نهایی"
-                        />
-                      </label>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="px-4 py-4 text-center text-gray-500">
-                    هنوز پاسخی ارسال نکرده‌اید.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <ExerciseSubmissionTab
+          submissions={studentSubmissions}
+          onDownload={handleDownloadSubmission}
+          onFinalToggle={handleUpdateFinalSubmission}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortClick={handleSortClick}
+          renderSortIcon={renderSortIcon}
+          formatPersianDate={formatPersianDate}
+          formatPersianTime={formatPersianTime}
+          exerciseScore={currentExercise.exerciseScore}
+        />
       )}
 
       {activeTab === "ارسال پاسخ" && (
