@@ -1,5 +1,3 @@
-import {useAuth} from "../../auth/context/AuthContext.jsx";
-
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const getClassInfoForInstructor = async (classId) => {
