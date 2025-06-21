@@ -51,7 +51,7 @@ export const formatExerciseData = (exercise) => {
 };
 
 /**
- * Formats a submission object for table display.
+ * Formats a submission object for table display (for Student and Instructor).
  * @param {object} submission - Raw submission object from API.
  * @returns {object} Formatted submission data.
  */
@@ -60,8 +60,9 @@ export const formatSubmissionData = (submission) => {
     const submittedAtDate = new Date(submission.submittedAt);
     return {
         ...submission,
-        studentName: submission.studentName || 'نامشخص',
-        studentNumber: submission.studentNumber,
+        studentName: submission.studentName || 'نامشخص', 
+        studentNumber: submission.studentNumber || null,
         formattedSubmissionTime: `${formatPersianDate(submittedAtDate)} – ساعت ${formatPersianTime(submittedAtDate)}`,
+        isFinal: submission.isFinal,
     };
 };

@@ -1,4 +1,3 @@
-// src/features/ExercisePage/utils/exerciseApi.js
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchExerciseDetailsApi = async (exerciseId, userRole) => {
@@ -34,40 +33,87 @@ export const fetchExerciseDetailsApi = async (exerciseId, userRole) => {
     return await response.json();
 };
 
-/**
- * Fetches detailed submissions for a specific exercise for Instructor or Student.
- * @param {string} exerciseId - The ID of the exercise.
- * @param {string} userRole - 'Instructor' or 'Student'.
- * @param {object} filterDto - Filter DTO for submissions.
- * @returns {Promise<object>} An object containing submission items (response.data), totalPages, etc.
- */
 export const fetchExerciseSubmissionsApi = async (exerciseId, userRole, filterDto = {}) => {
-    if (!exerciseId) {
-        throw new Error("شناسه تمرین معتبر نیست!");
+  if (!exerciseId) {
+    throw new Error("شناسه تمرین معتبر نیست!");
+  }
+
+  const queryParams = new URLSearchParams();
+  queryParams.append("ExerciseId", exerciseId);
+
+  if (filterDto.SortBy !== undefined) {
+    queryParams.append("SortBy", filterDto.SortBy);
+
+    if (filterDto.SortBy !== 0 && filterDto.SortOrder !== undefined) {
+      queryParams.append("SortOrder", filterDto.SortOrder);
+    }
+  }
+
+  const params = queryParams.toString();
+
+  let apiEndpoint;
+  if (userRole === "Instructor") {
+    apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/instructor?${params}`;
+  } else if (userRole === "Student") {
+    apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/student?${params}`;
+  } else {
+    throw new Error("نقش کاربر پشتیبانی نمی‌شود یا دسترسی به ارسال‌ها وجود ندارد!");
+  }
+
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const error = new Error(`HTTP error! Status: ${response.status}`);
+      error.status = response.status;
+
+      try {
+        const errorData = await response.json();
+        error.message = errorData.message || error.message;
+      } catch {}
+
+      throw error;
     }
 
-    let apiEndpoint;
-    const params = new URLSearchParams({
-        ExerciseId: exerciseId,
-        ...(filterDto.SortBy !== undefined && { SortBy: filterDto.SortBy }),
-        ...(filterDto.SortOrder !== undefined && { SortOrder: filterDto.SortOrder }),
-        ...(filterDto.Page !== undefined && { Page: filterDto.Page }),
-        ...(filterDto.PageSize !== undefined && { PageSize: filterDto.PageSize }),
-    }).toString();
+    const result = await response.json();
 
-    if (userRole === "Instructor") {
-        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/instructor?${params}`;
-    } else if (userRole === "Student") {
-        apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/student?${params}`;
-    } else {
-        throw new Error("نقش کاربر پشتیبانی نمی‌شود یا دسترسی به ارسال‌ها وجود ندارد!");
+    return {
+      items: result.data || [],
+      success: result.success,
+      message: result.message,
+    };
+  } catch (err) {
+    console.error("Error fetching exercise submissions:", err);
+    throw err;
+  }
+};
+
+export const submitGradeApi = async (submissionId, gradesData, totalScore) => {
+    console.log(`Mock API: Instructor submitting grades for submission ${submissionId}:`, gradesData, `Total Score: ${totalScore}`);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true, message: "نمرات با موفقیت ثبت شدند. (Mock)" };
+};
+
+export const submitStudentSubmissionApi = async (exerciseId, file) => {
+    console.log("2. submitStudentSubmissionApi: file parameter =", file); // Debugging log
+    if (!file) {
+        throw new Error("FileIsNeeded");
     }
 
-    console.log(`Fetching submissions from: ${apiEndpoint}`);
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/${exerciseId}`;
+
+    const formData = new FormData();
+    formData.append('SubmissionFile', file); 
+
+    console.log(`Submitting student's answer for exercise ${exerciseId}. File: ${file?.name}, Desc: (not sent)`);
     try {
         const response = await fetch(apiEndpoint, {
-            method: "GET",
-            credentials: "include",
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
         });
 
         if (!response.ok) {
@@ -80,55 +126,19 @@ export const fetchExerciseSubmissionsApi = async (exerciseId, userRole, filterDt
             }
             throw error;
         }
-        const result = await response.json();
-        return {
-            items: result.data || [],
-            totalCount: result.data ? result.data.length : 0,
-            totalPages: 1,
-            currentPage: 1,
-            pageSize: result.data ? result.data.length : 0,
-            success: result.success,
-            message: result.message
-        };
+        return await response.json();
     } catch (err) {
-        console.error("Error fetching exercise submissions:", err);
+        console.error("Error submitting student answer:", err);
         throw err;
     }
 };
 
-export const submitGradeApi = async (submissionId, gradesData, totalScore) => {
-    console.log(`Mock API: Instructor submitting grades for submission ${submissionId}:`, gradesData, `Total Score: ${totalScore}`);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true, message: "نمرات با موفقیت ثبت شدند. (Mock)" };
-};
-
-export const submitStudentSubmissionApi = async (exerciseId, file, description) => {
-    console.log(`Mock API: Student submitting for exercise ${exerciseId}. File: ${file?.name}, Desc: ${description}`);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    if (file && description) {
-        return { success: true, message: "پاسخ با موفقیت ارسال شد. (Mock)" };
-    } else {
-        return { success: false, message: "فایل یا توضیحات ناقص است. (Mock)" };
-    }
-};
-
-/**
- * Downloads a submission file for Instructor or Student.
- * (این تابع جایگزین Mock قبلی می‌شود و به API واقعی متصل می‌شود)
- * URL: GET /api/ExerciseSubmissions/instructor/{exerciseSubmissionId}
- * URL: GET /api/ExerciseSubmissions/student/{exerciseSubmissionId}
- * @param {string} exerciseSubmissionId - The ID of the submission whose file is to be downloaded.
- * @param {string} userRole - 'Instructor' or 'Student'.
- * @param {string} fileName - Suggested file name for the downloaded file.
- * @returns {Promise<void>}
- */
-export const downloadSubmissionFileApi = async (exerciseSubmissionId, userRole, fileName) => { // Updated signature
+export const downloadSubmissionFileApi = async (exerciseSubmissionId, userRole, fileName) => { 
     if (!exerciseSubmissionId) {
         throw new Error("شناسه ارسال برای دانلود معتبر نیست!");
     }
 
     let apiEndpoint;
-    // بر اساس کنترلر شما: Instructor/Student برای دانلود فایل ارسالی
     if (userRole === "Instructor") {
         apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/instructor/${exerciseSubmissionId}`;
     } else if (userRole === "Student") {
@@ -158,8 +168,7 @@ export const downloadSubmissionFileApi = async (exerciseSubmissionId, userRole, 
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        // نام فایل واقعی از هدر Content-Disposition در پاسخ سرور می‌آید.
-        // Fallback به نام پیشنهادی یا generic اگر هدر نباشد.
+
         a.download = fileName || `submission_${exerciseSubmissionId}_download.file`;
         document.body.appendChild(a);
         a.click();
