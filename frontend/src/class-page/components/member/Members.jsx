@@ -10,6 +10,7 @@ const Members = ({ members }) => {
     const navigate = useNavigate();
 
     const getDisplayName = (member) => {
+        console.log(member.userId);
         if (userRole === "Instructor") {
             return `${member.studentNumber} | ${member.firstName}\t${member.lastName}`;
         }
@@ -43,7 +44,7 @@ const Members = ({ members }) => {
                     members.map((member, index) => (
                         <div
                             key={index}
-                            onClick={() => handleMemberClick(member.id)}
+                            onClick={() => handleMemberClick(member.userId)}
                             className="cursor-pointer hover:bg-neutralgray-1 transition-colors"
                         >
                             <MemberItem
