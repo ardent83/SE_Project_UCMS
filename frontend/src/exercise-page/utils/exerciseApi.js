@@ -337,3 +337,48 @@ export const getExerciseScoreTemplateFileApi = async (exerciseId) => {
         throw err;
     }
 };
+
+export const updateFinalExerciseSubmissionApi = async (submissionId, isFinalStatus) => {
+    if (!submissionId) {
+        throw new Error("شناسه ارسال معتبر نیست!");
+    }
+
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/final/${submissionId}`;
+
+    console.log(`Updating final status of submission ${submissionId} to: ${isFinalStatus}`);
+
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ isFinal: isFinalStatus }),
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            try {
+                const errorData = await response.json();
+                error.message = errorData.message || error.message;
+            } catch (jsonError) {}
+            throw error;
+        }
+
+        const result = await response.json();
+        return {
+            success: true,
+            message: result.message || "وضعیت نهایی با موفقیت به‌روزرسانی شد.",
+            data: result.data || null,
+        };
+    } catch (err) {
+        console.error("Error updating final submission status:", err);
+        return {
+            success: false,
+            message: err.message || "خطای ناشناخته در بروزرسانی نهایی بودن ارسال.",
+        };
+    }
+};
+

@@ -6,6 +6,7 @@ import {
   submitStudentSubmissionApi,
   downloadExerciseFileApi,
   downloadSubmissionFileApi,
+  updateFinalExerciseSubmissionApi, // ← ایمپورت واقعی این تابع
 } from "../utils/exerciseApi";
 import {
   formatExerciseData,
@@ -14,16 +15,6 @@ import {
   formatSubmissionData,
 } from "../utils/exerciseFormatters";
 import { useAuth } from "../../auth/context/AuthContext";
-
-
-const updateFinalExerciseSubmissionApi = async (submissionId, isFinalStatus) => {
-  // Mock implementation for now, replace with actual API call
-  console.log(
-    `Mock API: Updating final status for submission ${submissionId} to ${isFinalStatus}`
-  );
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return { success: true, message: "وضعیت نهایی ارسال با موفقیت به‌روز شد. (Mock)" };
-};
 
 export const useExerciseDataForStudent = (exerciseId, userRole) => {
   const { user } = useAuth();
