@@ -5,7 +5,7 @@ import {
   Information,
   PresentionChart,
   DirectboxNotif,
-  ArrangeVerticalSquare,
+  ArrowSwapVertical,
 } from "iconsax-react";
 
 import { useExerciseDataForStudent } from "./hooks/useExerciseDataForStudent";
@@ -60,7 +60,6 @@ const ExercisePageForStudent = () => {
       </div>
     );
 
-
   const handleSortClick = () => {
     if (sortBy !== 1) {
       setSortBy(1);
@@ -71,15 +70,13 @@ const ExercisePageForStudent = () => {
   };
 
   const renderSortIcon = () => (
-    <ArrangeVerticalSquare
-      size="16"
-      variant="Bold"
-      color={sortOrder === 1 ? "#1F2937" : "#9CA3AF"}
-      style={{
-        marginLeft: "0.25rem",
-        transition: "color 0.3s ease",
-        cursor: "pointer",
-      }}
+    <ArrowSwapVertical
+      size={16}
+      variant="Bulk"
+      color="#0C1E33"
+      className={`inline-block transition-transform duration-800 ${
+        sortOrder === 2 ? "rotate-180" : ""
+      }`}
     />
   );
 

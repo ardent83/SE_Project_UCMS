@@ -7,10 +7,10 @@ export default function ExerciseSubmissionsTab({
   sortBy,
   sortOrder,
   onSortClick,
-  renderSortIcon,
   formatPersianDate,
   formatPersianTime,
   exerciseScore,
+  renderSortIcon,
 }) {
   const [selectedId, setSelectedId] = useState(null);
 
@@ -36,11 +36,11 @@ export default function ExerciseSubmissionsTab({
             <th className="px-4 py-2">نوع فایل</th>
             <th
               className="px-4 py-2 cursor-pointer select-none"
-              onClick={() => onSortClick(1)}
+              onClick={onSortClick}
             >
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center gap-1">
+                {renderSortIcon(sortBy === 1)}
                 تاریخ و ساعت ارسال
-                {renderSortIcon()}
               </div>
             </th>
             <th className="px-4 py-2">ارسال نهایی</th>
