@@ -10,14 +10,8 @@ const PhaseSubmitTab = () => {
 
     return (
         <div className="w-full max-w-[60rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
-            <div className="space-y-2 mt-5 mr-5">
-                <label className="block font-semibold text-gray-700">نوع فایل</label>
-                <select
-                    className="border border-gray-300 rounded-xl text-center px-5 py-1 bg-gray-50 text-gray-800 min-w-[300px] truncate cursor-pointer">
-                    <option value="pdf">PDF</option>
-                    <option value="zip">Zip</option>
-                    <option value="rar">rar</option>
-                </select>
+            <div className="space-y-2 mt-5 mr-5 text-[1rem]">
+                <p>لطفا فایل پاسخ خود را انتخاب کنید.</p>
             </div>
 
             <div className="flex items-center gap-3 justify-end ml-5">
@@ -35,7 +29,7 @@ const PhaseSubmitTab = () => {
                 </label>
             </div>
 
-            <div className="flex gap-3 justify-end ml-5 mb-5">
+            <div className="flex gap-3 justify-end ml-5 mb-5 mt-10">
                 <button
                     onClick={() => setSelectedFile(null)}
                     className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-1.5 rounded-xl cursor-pointer"
