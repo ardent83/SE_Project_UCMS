@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import MainLayout from './main/MainLayout';
+import NotFound from './components/NotFound';
 
 // Pages & Forms
 import AuthPage from './auth/AuthPage';
@@ -17,14 +18,15 @@ import ClassesPage from './classes/ClassesPage';
 import ClassPage from './class-page/ClassPage';
 import ProjectsPage from './project-list/ProjectsPage';
 import ProjectManagementPage from './project-management-page/ProjectManagementPage';
+import ExercisePage from './exercise-page/ExercisePage';
 import ClassForm from './class-form/ClassForm';
 import ProjectForm from './project-form/ProjectForm';
 import GroupForm from './group-form/GroupForm';
 import PhaseForm from './phase-form/PhaseForm';
 import ExamForm from './exam-form/ExamForm';
 import ExerciseForm from './exercise-form/ExerciseForm';
+
 import TestPage from './Test';
-import NotFound from './components/NotFound';
 
 function App() {
   return (
