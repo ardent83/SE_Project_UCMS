@@ -24,8 +24,8 @@ export const createPhase = async (formData, projectId) => {
   return handleApiResponse(response, "!خطا در ایجاد فاز");
 };
 
-export const updatePhase = async (formData, projectId, phaseId) => {
-  const response = await fetch(`${apiBaseUrl}/api/Phase/${phaseId}?projectId=${projectId}`, {
+export const updatePhase = async (formData, phaseId) => {
+  const response = await fetch(`${apiBaseUrl}/api/Phase/${phaseId}`, {
       method: "PATCH",
       credentials: "include",
       body: formData,

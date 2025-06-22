@@ -39,13 +39,12 @@ export const useExerciseList = ({ userRoleId }) => {
                 const exercisesByClass = await Promise.all(exercisePromises);
 
                 const allExercises = exercisesByClass.flat();
-                const formattedExercises = allExercises.map(formatExerciseForCard);
+                const formattedExercises = allExercises.map(formatExerciseForCard).slice(0, 4);
 
                 setExercises(formattedExercises);
 
             } catch (err) {
-                console.error("خطا در بارگذاری تکالیف:", err);
-                setError("مشکلی در دریافت اطلاعات تکالیف پیش آمد.");
+                setError(".مشکلی در دریافت اطلاعات تکالیف پیش آمد");
             } finally {
                 setLoading(false);
             }

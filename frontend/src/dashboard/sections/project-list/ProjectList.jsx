@@ -2,9 +2,11 @@ import React from "react";
 import { HeadSection } from '../../components/HeadSection';
 import { Notepad2 } from "iconsax-react";
 import { useProjectList } from "./hooks/useProjectList";
+import { useNavigate } from "react-router-dom";
 
 export const ProjectList = ({ userRoleId }) => {
     const { projects, loading, error } = useProjectList({ userRoleId });
+    const navigate = useNavigate();
 
     const renderTableBody = () => {
         if (loading) {
@@ -31,14 +33,14 @@ export const ProjectList = ({ userRoleId }) => {
             return (
                 <tr>
                     <td colSpan="5" className="text-center py-6 text-neutralgray-4">
-                        نتیجه‌ای یافت نشد
+                        .پروژه‌ای برای نمایش وجود ندارد
                     </td>
                 </tr>
             );
         }
 
         return projects.map((project) => (
-            <tr dir="rtl" key={project.id} className="text-body-04 text-neutralgray-8 border-b border-neutralgray-2 hover:bg-neutralgray-2 transition cursor-pointer">
+            <tr dir="rtl" key={project.id} onClick={() => navigate(`/project/${project.id}`)} className="text-body-04 text-neutralgray-8 border-b border-neutralgray-2 hover:bg-neutralgray-2 transition cursor-pointer">
                 <td className="p-2">
                     <span className={`w-25 inline-block px-3 py-1 rounded-sm ${project.statusStyle}`}>
                         {project.statusText}
@@ -55,7 +57,11 @@ export const ProjectList = ({ userRoleId }) => {
 
     return (
         <div className="w-full flex flex-col justify-start items-center">
-            <HeadSection title="پروژه‌ها" icon={<Notepad2 variant="Bold" color="var(--color-redp)" size={24} />} />
+            <HeadSection
+                onClick={() => navigate('/projects')}
+                title="پروژه‌ها"
+                icon={<Notepad2 variant="Bold" color="var(--color-redp)" size={24} />} 
+            />
             <table className="w-full text-center table-auto">
                 <thead className="bg-white">
                     <tr className="border-b border-neutralgray-3 text-neutralgray-7 text-body-04">
@@ -66,7 +72,7 @@ export const ProjectList = ({ userRoleId }) => {
                         <th className="p-2 font-medium w-[30%] text-wrap break-words">نام پروژه</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody data-testid="project-list-section">
                     {renderTableBody()}
                 </tbody>
             </table>

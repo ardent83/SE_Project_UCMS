@@ -78,12 +78,12 @@ const useProjectForm = ({ formType = "create", onSuccess = () => {} }) => {
         }
 
         if (formType === "create") {
-          await createProject(formData, classId);
+          const response = await createProject(formData, classId);
           resetForm({ values: defaultInitialValues });
-          onSuccess("create");
+          onSuccess("create", response.data.id);
         } else if (formType === "edit" && projectId !== undefined) {
-          await updateProject(formData, classId, projectId);
-          onSuccess("edit");
+          await updateProject(formData, projectId);
+          onSuccess("edit", projectId);
         }
       } catch (err) {
         setApiError(err.message || "!خطا در ثبت اطلاعات پروژه");

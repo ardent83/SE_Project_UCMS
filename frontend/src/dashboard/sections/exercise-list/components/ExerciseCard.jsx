@@ -1,4 +1,5 @@
 import React, { useRef, } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const ExerciseCard = ({ exercise }) => {
     const containerRef = useRef(null);
@@ -12,8 +13,12 @@ export const ExerciseCard = ({ exercise }) => {
         strokeDasharray: pathLength ? `${filledLength} ${pathLength}` : 'none',
     };
 
+    const navigate = useNavigate();
+
     return (
-        <div ref={containerRef} className="relative w-full max-w-64 rounded-lg bg-white border border-neutral-200">
+        <div
+            onClick={() => navigate(`/exercise/${exercise.id}`)}
+            ref={containerRef} className="relative w-full max-w-64 rounded-lg bg-white border border-neutral-200 cursor-pointer">
             <svg
                 className="absolute top-0 left-0 w-full h-full"
                 fill="none"

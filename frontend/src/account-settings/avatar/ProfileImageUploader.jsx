@@ -49,12 +49,12 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-  if (!initialImagePath) {
-    setCurrentImageUrl(gender === 0 ? '/man.jpg' : '/woman.png');
-  } else {
-    setCurrentImageUrl(initialImagePath);
-  }
-}, [gender, initialImagePath]);
+    if (!initialImagePath) {
+      setCurrentImageUrl(gender === 0 ? '/man.jpg' : '/woman.png');
+    } else {
+      setCurrentImageUrl(initialImagePath);
+    }
+  }, [gender, initialImagePath]);
 
   const handleIconClick = () => {
     if (isPendingConfirmation || isUploading || isDeleting) return;
@@ -95,16 +95,16 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
     setIsPendingConfirmation(false);
     setIsConfirmingDelete(false);
     if (selectedFile) {
-        setSelectedFile(null);
-        setCurrentImageUrl(initialImagePath || (gender === 0 ? '/man.jpg' : '/woman.png'));
+      setSelectedFile(null);
+      setCurrentImageUrl(initialImagePath || (gender === 0 ? '/man.jpg' : '/woman.png'));
     }
   };
 
   const handleConfirm = async () => {
     if (isConfirmingDelete) {
-        await handleConfirmDelete();
+      await handleConfirmDelete();
     } else if (selectedFile) {
-        await handleConfirmUpload();
+      await handleConfirmUpload();
     }
   };
 
@@ -161,7 +161,7 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
     if (isUploading) {
       return (
         <div
-          className="absolute bg-blue-500 w-10 h-10 rounded-full flex justify-center items-center animate-spin"
+          className="absolute bg-blue-500 w-10 h-10 z-10 rounded-full flex justify-center items-center animate-spin"
           title="در حال آپلود..."
           style={getIconPositionStyle(ANGLES.loading)}
         >
@@ -171,36 +171,38 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
     }
 
     if (isDeleting) {
-       return (
-         <div
-           className="absolute bg-blue-500 w-10 h-10 rounded-full flex justify-center items-center animate-spin"
-           title="در حال حذف..."
-           style={getIconPositionStyle(ANGLES.loading)}
-         >
-           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-         </div>
-       );
+      return (
+        <div
+          className="absolute bg-blue-500 w-10 h-10 z-10 rounded-full flex justify-center items-center animate-spin"
+          title="در حال حذف..."
+          style={getIconPositionStyle(ANGLES.loading)}
+        >
+          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+        </div>
+      );
     }
 
     if (isPendingConfirmation) {
       return (
         <>
           <div
-            className="absolute bg-stateerror-light w-10 h-10 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out"
+            className="absolute bg-stateerror-light w-10 h-10 z-10 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out"
             onClick={handleCancel}
             title={isConfirmingDelete ? "انصراف از حذف" : "لغو تغییرات"}
             style={getIconPositionStyle(ANGLES.cancel)}
+            data-testid="cancel-image-profile"
           >
             <CloseCircle color="#ffffff" size={24} />
           </div>
           <div
             className={
-                `absolute w-10 h-10 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out ` +
-                (isConfirmingDelete ? 'bg-stateerror' : 'bg-statesuccess')
+              `absolute w-10 h-10 z-10 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out ` +
+              (isConfirmingDelete ? 'bg-stateerror' : 'bg-statesuccess')
             }
             onClick={handleConfirm}
             title={isConfirmingDelete ? "تایید حذف تصویر" : "تایید تغییرات"}
             style={getIconPositionStyle(ANGLES.confirm)}
+            data-testid="confirm-image-profile"
           >
             {isConfirmingDelete ? <Trash color="#ffffff" size={24} /> : <GalleryTick color="#ffffff" size={24} />}
           </div>
@@ -215,15 +217,17 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
           onClick={handleIconClick}
           title="تغییر تصویر پروفایل"
           style={getIconPositionStyle(ANGLES.camera)}
+          data-testid="change-profile-image"
         >
           <Camera color="#ffffff" size={24} />
         </div>
         {currentImageUrl !== defaultImageUrl && (
           <div
-            className={`absolute bg-stateerror w-10 h-10 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out`}
+            className={`absolute bg-stateerror w-10 h-10 z-9 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out`}
             style={getIconPositionStyle(isHovered ? ANGLES.trash_hover : ANGLES.trash_default)}
             onClick={initiateDelete}
             title="حذف تصویر پروفایل"
+            data-testid="delete-profile-image"
           >
             <Trash color="#ffffff" size={24} />
           </div>
@@ -234,12 +238,12 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
 
   return (
     <div
-      className="relative"
+      className="relative w-50 h-50"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className="profile-img w-50 h-50 rounded-full border-[12px] border-solid border-neutralgray-4"
+        className="profile-img w-full h-full rounded-full border-[12px] border-solid border-neutralgray-4"
         style={{ "--bg": `url(${currentImageUrl})` }}
       />
 
@@ -247,16 +251,17 @@ export default function ProfileImageUploader({ initialImagePath, gender, onImage
 
       <input
         type="file"
+        className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-5 rounded-full"
         ref={fileInputRef}
         onChange={handleFileChange}
-        style={{ display: 'none' }}
         accept="image/*"
         disabled={isUploading || isDeleting || isPendingConfirmation}
+        data-testid="profile-input-file"
       />
 
       {error && (
         <div className="absolute top-[13.5rem] right-0 left-0 text-center w-full">
-          <Alert type="error" message={error} onClose={() => setTimeout(() => {setError(null)}, 0)} />
+          <Alert type="error" message={error} onClose={() => setTimeout(() => { setError(null) }, 0)} />
         </div>
       )}
     </div>

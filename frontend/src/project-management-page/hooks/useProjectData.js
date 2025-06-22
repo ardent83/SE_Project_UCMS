@@ -6,7 +6,7 @@ import {
     deleteProjectApi
 } from "../utils/projectAPI";
 
-import { fetchTeamsApi } from "../utils/teamAPI"; 
+import { fetchTeamsApi, deleteTeamApi } from "../utils/teamAPI";
 
 import { formatProjectData } from "../utils/projectFormatters";
 
@@ -16,6 +16,9 @@ export const useProjectData = (projectId, userRole, navigate) => {
     const [phases, setPhases] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [showDeleteTeamModal, setShowDeleteTeamModal] = useState(false);
+    const [teamToDeleteDetails, setTeamToDeleteDetails] = useState(null);
 
     const loadProjectData = useCallback(async () => {
         setLoading(true);
@@ -70,12 +73,12 @@ export const useProjectData = (projectId, userRole, navigate) => {
         }
     }, [projectId, userRole, project]);
 
-    const handleDelete = useCallback(async () => {
+    const handleDeleteProject = useCallback(async () => {
         setLoading(true);
         try {
             await deleteProjectApi(projectId);
             console.log(`Project ${projectId} deleted successfully.`);
-            navigate('/projectsPage', { state: { message: "پروژه با موفقیت حذف شد." } });
+            navigate('/projects', { state: { message: "پروژه با موفقیت حذف شد." } });
         } catch (err) {
             console.error("Error deleting project:", err);
             setError("خطایی در حذف پروژه رخ داد!");
@@ -84,5 +87,43 @@ export const useProjectData = (projectId, userRole, navigate) => {
         }
     }, [projectId, navigate]);
 
-    return { project, teams, phases, loading, error, handleDownload, handleDelete, loadProjectData };
+    const handleDeleteTeamRequest = useCallback((teamId, teamName) => {
+        setTeamToDeleteDetails({ id: teamId, name: teamName });
+        setShowDeleteTeamModal(true);
+    }, []);
+
+    const handleConfirmDeleteTeam = useCallback(async () => {
+        if (!teamToDeleteDetails || !teamToDeleteDetails.id) {
+            console.error("Error: No team selected for deletion.");
+            return;
+        }
+        try {
+            await deleteTeamApi(teamToDeleteDetails.id);
+            console.log(`Team "${teamToDeleteDetails.name}" (${teamToDeleteDetails.id}) deleted successfully.`);
+            setShowDeleteTeamModal(false); 
+            setTeamToDeleteDetails(null); 
+            await loadProjectData(); 
+        } catch (err) {
+            console.error("Error deleting team:", err);
+            setError(err.message || "خطایی در حذف تیم رخ داد!"); 
+            setShowDeleteTeamModal(false); 
+            setTeamToDeleteDetails(null);
+        }
+    }, [teamToDeleteDetails, loadProjectData]);
+
+    return {
+        project,
+        teams,
+        phases,
+        loading,
+        error,
+        handleDownload,
+        handleDeleteProject,
+        loadProjectData,
+        showDeleteTeamModal,
+        setShowDeleteTeamModal,
+        teamToDeleteDetails,
+        handleDeleteTeamRequest,
+        handleConfirmDeleteTeam
+    };
 };

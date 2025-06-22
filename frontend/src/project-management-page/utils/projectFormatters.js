@@ -66,6 +66,6 @@ export const formatProjectData = (rawProject) => {
         date: formattedDateRange,
         type: projectType,
         status: statusText,
-        description: rawProject.description || "توضیحات اضافی درباره‌ی پروژه...",
+        description: rawProject.description || "توضیحاتی وجود ندارد!",
     };
 };

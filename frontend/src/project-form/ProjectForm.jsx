@@ -8,19 +8,24 @@ import TextArea from "../components/TextArea";
 import Selector from "../components/Selector";
 import FileUploadInput from "./components/FileUploadInput";
 import { Add, Edit2 } from 'iconsax-react';
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function ProjectForm({ formType = 'create', onSuccess = () => { }, onClose = () => { } }) {
+export default function ProjectForm({ formType = 'create' }) {
+    const navigate = useNavigate();
+    const { classId, projectId } = useParams();
+    const onClose = () => projectId ? navigate(`/project/${projectId}`) : navigate(`/class/${classId}`);
+
     const {
         formik,
         apiError,
         isLoading,
     } = useProjectForm({
         formType,
-        onSuccess: (type) => {
+        onSuccess: (type, projectId) => {
             const successMessage = type === 'create' ? "!پروژه با موفقیت ایجاد شد" : "!تغییرات پروژه با موفقیت ذخیره شد";
             setAlertMessage(successMessage);
             setShowAlert(true);
-            onSuccess();
+            setTimeout(() => navigate(`/project/${projectId}`), 1000);
         }
     });
 
@@ -52,7 +57,7 @@ export default function ProjectForm({ formType = 'create', onSuccess = () => { }
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className="w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}
