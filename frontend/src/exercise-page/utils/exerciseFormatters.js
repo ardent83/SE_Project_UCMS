@@ -60,7 +60,8 @@ export const formatSubmissionData = (submission) => {
     const submittedAtDate = new Date(submission.submittedAt);
     return {
         ...submission,
-        studentName: submission.studentName || 'نامشخص', 
+        grade: submission.score,
+        studentName: submission.studentName || 'نامشخص',
         studentNumber: submission.studentNumber || null,
         formattedSubmissionTime: `${formatPersianDate(submittedAtDate)} – ساعت ${formatPersianTime(submittedAtDate)}`,
         isFinal: submission.isFinal,
