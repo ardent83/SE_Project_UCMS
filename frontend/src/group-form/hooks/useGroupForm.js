@@ -87,6 +87,7 @@ const useGroupForm = ({ formType = "create", onSuccess = () => {} }) => {
               formData.append("file", values.file);
             }
             await createGroupBulk(formData, projectId);
+            resetForm({ values: defaultInitialValues, mode: 'bulk' });
           } else {
             const studentNumbers = (values.studentTeams || []).map(
               (member) => member.studentNumber
@@ -106,8 +107,8 @@ const useGroupForm = ({ formType = "create", onSuccess = () => {} }) => {
               formData.append(`StudentNumbers[${index}]`, studentNumber);
             });
             await createGroupIndividual(formData, projectId);
+            resetForm({ values: defaultInitialValues });
           }
-          resetForm({ values: defaultInitialValues });
           onSuccess("create");
         } else if (formType === "edit" && groupId) {
           const currentStudentNumbers = (values.studentTeams || []).map(
@@ -199,7 +200,7 @@ const useGroupForm = ({ formType = "create", onSuccess = () => {} }) => {
       formik.setErrors({});
       formik.setTouched({});
     }
-  }, [mode, formik.values.mode, formType]);
+  }, [mode]);
 
   const handleAddMember = () => {
     const { currentMemberStudentNumber, studentTeams } = formik.values;
@@ -256,9 +257,6 @@ const useGroupForm = ({ formType = "create", onSuccess = () => {} }) => {
     formik.setFieldError("studentTeams", null);
   };
 
-  useEffect(() => {
-    setMode(formik.values.mode);
-  }, [formik.values.mode]);
 
   return {
     formik,

@@ -26,6 +26,7 @@ export default function GroupMemberFormSection({ formik, handleAddMember, handle
                     className={"!max-w-10"}
                     onClick={handleAddMember}
                     type="button"
+                    name="add"
                     disabled={formik.isSubmitting}
                 />
             </div>
