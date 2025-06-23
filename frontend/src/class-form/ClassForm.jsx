@@ -102,6 +102,7 @@ export default function ClassForm({ formType = 'create'}) {
 
                 <div className="w-full max-w-100 flex justify-center items-end gap-2">
                     <div
+                        data-testid="file-upload-icon"
                         className="flex w-10 h-10 justify-center items-center bg-[#495D72] rounded-2xl cursor-pointer"
                         onClick={handleIconClick}
                     >
@@ -110,6 +111,7 @@ export default function ClassForm({ formType = 'create'}) {
                         </svg>
                     </div>
                     <Input
+                        data-testid="profileImageInput"
                         ref={fileInputRef}
                         className="!max-w-88"
                         type="file"
