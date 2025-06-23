@@ -72,7 +72,7 @@ export default function PhaseForm({ formType = 'create' }) {
             <div className="w-full flex justify-end items-center text-heading-h4 text-redp border-b border-b-neutralgray-3 py-4 gap-3 text-shadow-[0px_5.37px_5.37px_rgba(0_0_0_/_0.25)]">
                 {formType === 'create' ? (
                     <>
-                        <span>ایجاد فاز جدید</span>
+                        <span data-testid="create-phase-form-title">ایجاد فاز جدید</span>
                         <Add size={32} color="var(--color-redp)" />
                     </>
                 ) : (
@@ -169,6 +169,7 @@ export default function PhaseForm({ formType = 'create' }) {
                     className="w-fit"
                     disabled={formik.isSubmitting || isLoading}
                     onClick={onClose}
+                    data-testid="create-phase-cancel-button"
                 />
             </div>
         </form>
