@@ -28,6 +28,7 @@ import ExerciseForm from './exercise-form/ExerciseForm';
 
 import TestPage from './Test';
 import ExamsPage from "./exam-list/ExamsPage.jsx";
+import ExercisesPage from "./exercise-list/ExercisesPage.jsx";
 
 function App() {
   return (
@@ -56,7 +57,7 @@ function App() {
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path='/exams' element={<ExamsPage/>} />
-            <Route path='/exercises' element={<ExercisePage />} />
+            <Route path='/exercises' element={<ExercisesPage />} />
 
             {/* --- Class Routes (Correct Order) --- */}
             <Route path="/class/create" element={<ClassForm />} />
