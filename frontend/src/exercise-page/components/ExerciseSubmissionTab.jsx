@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Alert from "../../components/Alert";
 
 export default function ExerciseSubmissionsTab({
   submissions,
@@ -13,9 +14,26 @@ export default function ExerciseSubmissionsTab({
   renderSortIcon,
 }) {
   const [selectedId, setSelectedId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleCheckboxChange = (id) => {
-    setSelectedId((prev) => (prev === id ? null : id));
+  const handleCheckboxChange = async (id, checked) => {
+    try {
+      await onFinalToggle(id, checked);
+    } catch (error) {
+      setErrorMessage("خطا در به‌روزرسانی وضعیت نهایی ارسال.");
+    }
+  };
+
+  const handleDownload = async (id, filename) => {
+    try {
+      await onDownload(id, filename);
+    } catch (error) {
+      setErrorMessage("خطا در دانلود فایل ارسال‌شده.");
+    }
+  };
+
+  const handleAlertClose = () => {
+    setErrorMessage("");
   };
 
   if (!submissions || submissions.length === 0) {
@@ -27,81 +45,94 @@ export default function ExerciseSubmissionsTab({
   }
 
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full text-center border-collapse text-sm" dir="ltr">
-        <thead className="bg-gray-100 sticky top-0 z-10">
-          <tr>
-            <th className="px-4 py-2">فایل</th>
-            <th className="px-4 py-2">نمره</th>
-            <th className="px-4 py-2">نوع فایل</th>
-            <th
-              className="px-4 py-2 cursor-pointer select-none"
-              onClick={onSortClick}
-            >
-              <div className="flex items-center justify-center gap-1">
-                {renderSortIcon(sortBy === 1)}
-                تاریخ و ساعت ارسال
-              </div>
-            </th>
-            <th className="px-4 py-2">ارسال نهایی</th>
-          </tr>
-        </thead>
-        <tbody>
-          {submissions.map((submission) => (
-            <tr
-              key={submission.id}
-              className={`border-b border-gray-100 transition ${
-                selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"
-              }`}
-            >
-              <td className="py-3 px-4">
-                <button
-                  className="text-big-stone-400 hover:text-big-stone-600 text-[1rem] cursor-pointer"
-                  onClick={() =>
-                    onDownload(
-                      submission.id,
-                      `submission_${submission.id}.${submission.fileType}`
-                    )
-                  }
-                >
-                  دانلود
-                </button>
-              </td>
-              <td className="py-3 px-4">
-                {submission.grade != null ? (
-                  <span className="text-green-700 font-semibold">
-                    {submission.grade}
-                    {exerciseScore && ` از ${exerciseScore}`}
-                  </span>
-                ) : (
-                  <span className="text-gray-400">ثبت نشده</span>
-                )}
-              </td>
-              <td className="py-3 px-4 text-gray-700">
-                {submission.fileType || "نامشخص"}
-              </td>
-              <td className="py-3 px-4" dir="rtl">
-                {formatPersianDate(submission.submittedAt)} -{" "}
-                {formatPersianTime(submission.submittedAt)}
-              </td>
-              <td className="py-3 px-4 flex justify-center items-center">
-                <label className="inline-flex items-center cursor-pointer flex-row-reverse gap-1">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox h-5 w-5 text-blue-600 rounded"
-                    checked={submission.isFinal}
-                    onChange={(e) =>
-                      onFinalToggle(submission.id, e.target.checked)
-                    }
-                    disabled={submission.grade != null}
-                    aria-label="ارسال نهایی"
-                  />
-                </label>
-              </td>
+    <>
+      {errorMessage && (
+        <Alert
+          message={errorMessage}
+          type="error"
+          duration={4000}
+          onClose={handleAlertClose}
+        />
+      )}
+
+      <div className="w-full overflow-x-auto">
+        <table className="w-full text-center border-collapse text-sm" dir="ltr">
+          <thead className="bg-gray-100 sticky top-0 z-10">
+            <tr>
+              <th className="px-4 py-2">فایل</th>
+              <th className="px-4 py-2">نمره</th>
+              <th className="px-4 py-2">نوع فایل</th>
+              <th
+                className="px-4 py-2 cursor-pointer select-none"
+                onClick={onSortClick}
+              >
+                <div className="flex items-center justify-center gap-1">
+                  {renderSortIcon(sortBy === 1)}
+                  تاریخ و ساعت ارسال
+                </div>
+              </th>
+              <th className="px-4 py-2">ارسال نهایی</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {submissions.map((submission) => (
+              <tr
+                key={submission.id}
+                className={`border-b border-gray-100 transition ${
+                  selectedId === submission.id
+                    ? "bg-blue-50"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                <td className="py-3 px-4">
+                  <button
+                    className="text-big-stone-400 hover:text-big-stone-600 text-[1rem] cursor-pointer"
+                    onClick={() =>
+                      handleDownload(
+                        submission.id,
+                        `submission_${submission.id}.${submission.fileType}`
+                      )
+                    }
+                  >
+                    دانلود
+                  </button>
+                </td>
+                <td className="py-3 px-4">
+                  {submission.grade != null ? (
+                    <span className="text-green-700 font-semibold">
+                      {submission.grade}
+                      {exerciseScore && ` از ${exerciseScore}`}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400">ثبت نشده</span>
+                  )}
+                </td>
+                <td className="py-3 px-4 text-gray-700">
+                  {submission.fileType || "نامشخص"}
+                </td>
+                <td className="py-3 px-4" dir="rtl">
+                  {formatPersianDate(submission.submittedAt)} -{" "}
+                  {formatPersianTime(submission.submittedAt)}
+                </td>
+                <td className="py-3 px-4 flex justify-center items-center">
+                  <label className="inline-flex items-center cursor-pointer flex-row-reverse gap-1">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 text-blue-600 rounded"
+                      checked={submission.isFinal}
+                      onChange={(e) =>
+                        handleCheckboxChange(submission.id, e.target.checked)
+                      }
+                      disabled={submission.grade != null}
+                      aria-label="ارسال نهایی"
+                    />
+                  </label>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
