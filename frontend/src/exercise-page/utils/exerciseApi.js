@@ -91,10 +91,39 @@ export const fetchExerciseSubmissionsApi = async (exerciseId, userRole, filterDt
   }
 };
 
-export const submitGradeApi = async (submissionId, gradesData, totalScore) => {
-    console.log(`Mock API: Instructor submitting grades for submission ${submissionId}:`, gradesData, `Total Score: ${totalScore}`);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true, message: "نمرات با موفقیت ثبت شدند. (Mock)" };
+export const submitGradeApi = async (exerciseSubmissionId, scoreValue) => { // Renamed 'score' to 'scoreValue' for clarity
+    if (!exerciseSubmissionId || scoreValue === undefined || scoreValue === null) {
+        throw new Error("شناسه ارسال یا نمره معتبر نیست!");
+    }
+
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/score/${exerciseSubmissionId}`;
+    const requestBody = { score: scoreValue };
+
+    console.log(`Submitting grade for submission ${exerciseSubmissionId}, Score: ${scoreValue}`);
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            try {
+                const errorData = await response.json();
+                error.message = errorData.message || error.message;
+            } catch (jsonError) {}
+            throw error;
+        }
+        return await response.json();
+    } catch (err) {
+        console.error("Error submitting grade:", err);
+        throw err;
+    }
 };
 
 export const submitStudentSubmissionApi = async (exerciseId, file) => {
@@ -265,7 +294,7 @@ export const updateExerciseSubmissionScoresApi = async (exerciseId, scoreFile) =
         throw new Error("شناسه تمرین یا فایل نمره معتبر نیست!");
     }
 
-    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/${exerciseId}`; // PUT endpoint
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/${exerciseId}/scores`; // PUT endpoint
 
     const formData = new FormData();
     formData.append('scoreFile', scoreFile);
@@ -273,7 +302,7 @@ export const updateExerciseSubmissionScoresApi = async (exerciseId, scoreFile) =
     console.log(`Uploading scores for exercise ${exerciseId}, file: ${scoreFile.name}`);
     try {
         const response = await fetch(apiEndpoint, {
-            method: 'PUT',
+            method: 'PATCH',
             credentials: 'include',
             body: formData,
         });
