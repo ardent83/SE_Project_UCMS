@@ -84,7 +84,7 @@ function App() {
 
             {/* --- Exercise Routes (Correct Order) --- */}
             <Route path="/exercise/edit/:exerciseId" element={<ExerciseForm formType='edit' />} />
-            <Route path="/exercise/:exerciseId" element={<div><ExercisePage/></div>} />
+            <Route path="/exercise/:exerciseId" element={<ExercisePage/>} />
 
             <Route path="*" element={<NotFound />} />
           </Route>
