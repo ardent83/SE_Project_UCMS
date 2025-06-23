@@ -39,7 +39,7 @@ const Modal = ({ show, onClose, children }) => {
 
   return ReactDOM.createPortal(
     <div
-      data-testid="delete-project-modal"
+      data-testid="delete-modal"
       className="fixed inset-0 flex items-center justify-center z-[1000] p-4" 
       style={{
         backgroundColor: 'rgba(0, 0, 0, 0.6)', 

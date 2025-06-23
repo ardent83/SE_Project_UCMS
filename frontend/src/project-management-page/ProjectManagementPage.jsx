@@ -151,7 +151,7 @@ const ProjectManagementPage = () => {
             currentUserId={currentUserId}
             onAddGroupClick={handleCreateGroup}
             onDeleteTeamRequest={handleDeleteTeamRequest}
-            data-testid="group-list-section" // Added data-testid
+            data-testid="group-list-container" // Added data-testid
           />
         </div>
 
@@ -161,7 +161,7 @@ const ProjectManagementPage = () => {
             projectId={projectId}
             userRole={userRole}
             onAddPhaseClick={handleCreatePhase}
-            data-testid="phase-list-section" // Added data-testid
+            data-testid="phase-list-container" // Added data-testid
           />
         </div>
       </div>
@@ -186,7 +186,7 @@ const ProjectManagementPage = () => {
           onCancel={() => setShowDeleteTeamModal(false)}
           message={
             teamToDeleteDetails
-              ? `آیا از حذف تیم "${teamToDeleteDetails.name}" مطمئن هستید؟ این عمل غیرقابل بازگشت است.`
+              ? `آیا از حذف تیم ${teamToDeleteDetails.name} مطمئن هستید؟`
               : "آیا از حذف این تیم مطمئن هستید؟"
           }
           data-testid="delete-team-confirm-content" // Added data-testid

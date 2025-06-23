@@ -29,13 +29,13 @@ const PhaseList = ({ phases, projectId, userRole, onAddPhaseClick }) => {
       </div>
 
       {(phases && phases.length === 0) ? (
-        <div className="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-50 rounded-xl mt-4" data-testid="no-phases-message"> {/* Added data-testid */}
+        <div className="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-50 rounded-xl mt-4">
           <img
             src={NoPhaseImage}
             alt="هیچ فازی یافت نشد"
             className="w-32 h-32 mb-4 opacity-70"
           />
-          <p className="text-gray-600 mb-4 font-bold text-lg">
+          <p className="text-gray-600 mb-4 font-bold text-lg"  data-testid="no-phases-message"> {/* Added data-testid */}
             هیچ فازی برای این پروژه تعریف نشده است.
           </p>
           <p className="text-gray-500 mb-6 text-sm">
