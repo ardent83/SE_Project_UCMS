@@ -18,6 +18,7 @@ import ClassesPage from './classes/ClassesPage';
 import ClassPage from './class-page/ClassPage';
 import ProjectsPage from './project-list/ProjectsPage';
 import ProjectManagementPage from './project-management-page/ProjectManagementPage';
+import ExamsPage from './exam-list/ExamsPage';
 import ExercisePage from './exercise-page/ExercisePage';
 import ClassForm from './class-form/ClassForm';
 import ProjectForm from './project-form/ProjectForm';
@@ -54,7 +55,7 @@ function App() {
             {/* --- Resource List Pages --- */}
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
-            <Route path='/exams' element={<div><h1>Exams</h1></div>} />
+            <Route path='/exams' element={<ExamsPage />} />
             <Route path='/exercises' element={<div><h1>Exercises</h1></div>} />
 
             {/* --- Class Routes (Correct Order) --- */}
@@ -82,7 +83,7 @@ function App() {
 
             {/* --- Exercise Routes (Correct Order) --- */}
             <Route path="/exercise/edit/:exerciseId" element={<ExerciseForm formType='edit' />} />
-            <Route path="/exercise/:exerciseId" element={<div><h1>Exercise Detail</h1></div>} />
+            <Route path="/exercise/:exerciseId" element={<ExercisePage />} />
 
             <Route path="*" element={<NotFound />} />
           </Route>

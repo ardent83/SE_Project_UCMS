@@ -8,7 +8,7 @@ export const setupAuthInterceptor = () => {
   window.fetch = async (...args) => {
     const response = await originalFetch(...args);
     if (
-      response.status === 401 &&
+      (response.status === 401 || response.status === 403) &&
       !hasRedirectedToLogin &&
       window.location.pathname !== '/auth' &&
       window.location.pathname !== '/verification' &&
@@ -24,7 +24,7 @@ export const setupAuthInterceptor = () => {
     res => res,
     err => {
       if (
-        err.response?.status === 401 &&
+        (err.response?.status === 401 || err.response?.status === 403) &&
         !hasRedirectedToLogin &&
         window.location.pathname !== '/auth' &&
         window.location.pathname !== '/verification' &&
