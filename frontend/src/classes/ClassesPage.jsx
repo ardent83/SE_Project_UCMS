@@ -38,16 +38,16 @@ export default function ClassesPage() {
         <div dir="rtl" className="w-full max-w-[90rem] mx-auto my-10 px-10 text-bg-blue">
             <div className="w-full">
                 {/* --- Page Header Section (Title and Icon/Button) --- */}
-                <h2 className="text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-end" dir="ltr">
-                    <span>لیست کلاس‌ها</span>
+                <h2 className="text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-start">
                     <div className="flex items-start gap-[0.625rem] self-stretch z-10 relative">
                         <img src={classesPageIcon} alt="آیکون کلاس" className="w-9 h-9" />
                     </div>
+                    <span>لیست کلاس‌ها</span>
                 </h2>
                 {/* --- End of Page Header Section --- */}
 
                 {/* --- Search and Filter Section --- */}
-                <div className="flex flex-wrap justify-between items-center mb-15 gap-4 relative z-20">
+                <div className="w-full max-w-screen-xl mx-auto flex flex-wrap justify-between items-center mb-10 gap-3 px-15 relative z-20">
                     <SearchBox
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -69,7 +69,7 @@ export default function ClassesPage() {
                             textShow={true}
                             leftIcon={false}
                             className="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 px-5 rounded-md flex items-center gap-2 transition-colors duration-200 shadow-md"
-                            rightIconComponent={<Add size="20" variant="Bold" color="white" />}
+                            rightIconComponent={<Add size="20" color="white" />}
                             onClick={userRole === "Instructor" ? handleNewClassClick : () => setShowJoinClassPopup(true)}
                         />
                     </div>
@@ -83,7 +83,7 @@ export default function ClassesPage() {
                     <div className="text-center py-6 text-red-500">{error}</div>
                 ) : (classes && classes.length > 0) ? (
                     <>
-                        <div className="class-list w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr justify-items-center">
+                       <div className="class-list w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 px-15 auto-rows-fr justify-items-center">
                             {(classes || []).map((classItem) => { 
                                 return (
                                     <ProductCard
@@ -101,7 +101,7 @@ export default function ClassesPage() {
                             })}
                         </div>
                         {/* --- Pagination --- */}
-                        <div className="flex justify-between items-center w-full mt-10">
+                        <div className="flex justify-center items-center gap-10 mt-10">
                             <Button
                                 rightIcon={false}
                                 onClick={() => setPage(page - 1)}
