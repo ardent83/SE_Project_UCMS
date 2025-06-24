@@ -97,13 +97,10 @@ function Sidebar() {
                         <Frame to="/exercises" label={"تکالیف"} icon={<TaskSquare variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
                     </li>
                     <li>
+                        <Frame to="/exams" label={"امتحانات"} icon={<ClipboardText variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
+                    </li>
+                    <li>
                         <Frame to="/grade-reports" label={"گزارش نمرات"} icon={<Chart variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
-                    </li>
-                    <li>
-                        <Frame to="/surveys" label={"نظرسنجی"} icon={<MessageQuestion variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
-                    </li>
-                    <li>
-                        <Frame to="/exams" label={"امتحان‌ها"} icon={<ClipboardText variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
                     </li>
                 </ul>
                 <div className="w-full h-px bg-gray-600 my-4 mx-auto" />
@@ -113,9 +110,6 @@ function Sidebar() {
                     </li>
                     <li>
                         <Frame to="/profile" label={"پروفایل"} icon={<ProfileCircle variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
-                    </li>
-                    <li>
-                        <Frame to="/notifications" label={"اعلان‌ها"} icon={<Notification variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
                     </li>
                 </ul>
             </div>
