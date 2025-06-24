@@ -165,7 +165,7 @@ export default function ExercisesPage() {
                             {filteredExercises.map((exercise) => (
                                 <tr
                                     key={exercise.exerciseId}
-                                    onClick={() => navigate(`/exercise-management/${exercise.exerciseId}`)}
+                                    onClick={() => navigate(`/exercise/${exercise.exerciseId}`)}
                                     className="border-b border-gray-100 hover:bg-gray-100 transition cursor-pointer"
                                 >
                                     <td className="py-3 px-4">
