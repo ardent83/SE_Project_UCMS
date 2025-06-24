@@ -13,7 +13,7 @@ const validationSchema = Yup.object({
 
 function JoinClass({ onSubmit, onClose }) {
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" dir="ltr">
       <div
         className="bg-[var(--white)] w-[400px] p-6 rounded-2xl shadow-lg relative"
         style={{ animation: "var(--animate-fadeIn)" }}
@@ -63,7 +63,7 @@ function JoinClass({ onSubmit, onClose }) {
                 <div className="flex-1">
                   <Input
                     label="رمز ورود به کلاس"
-                    text="Example1234"
+                    text="@Example12"
                     value={values.Password}
                     handleValueChange={(e, val) =>
                       setFieldValue("Password", val)
@@ -90,7 +90,7 @@ function JoinClass({ onSubmit, onClose }) {
                 <div className="flex-1">
                   <Input
                     label="کد کلاس"
-                    text="123456"
+                    text="Ex3am5"
                     value={values.ClassCode}
                     handleValueChange={(e, val) =>
                       setFieldValue("ClassCode", val) 
