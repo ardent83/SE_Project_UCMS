@@ -31,6 +31,7 @@
   font-size: 32px;
   color: var(--bg-blue);
   text-align: center;
+  white-space: nowrap;
 }
 
 .form-box h2::after {
@@ -46,7 +47,7 @@
 
 .form-box .input-box {
   position: relative;
-  width: 100%;
+  width: 100%; 
   height: 50px;
   margin-top: 25px;
 }
@@ -363,4 +364,214 @@
   color: var(--error);
   font-size: 0.75rem;
   text-wrap-mode: nowrap;
+}
+
+.tempPassword form button {
+  width: 100%;
+  height: 45px;
+  margin-top: 25px;
+  background-color: var(--bg-blue);
+  color: var(--white);
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.tempPassword form button:hover {
+  box-shadow: 0 0 10px var(--blue-shadow);
+}
+
+.tempPassword form .linkTxt {
+  font-size: 14px;
+  color: var(--label);
+  text-align: center;
+  margin: 20px 0 10px;
+}
+
+.tempPassword form .errorInput {
+  font-size: 14px;
+  z-index: 10;
+  color: var(--error);
+  text-align: left;
+  padding: 1px;
+}
+
+
+.wrapper .form-box.tempPassword {
+  padding: 0 40px 0 60px;
+  right: 0;
+}
+
+.wrapper.active .form-box.tempPassword {
+  pointer-events: auto;
+}
+
+.wrapper .form-box.tempPassword .animation {
+  transform: translateX(120%);
+  opacity: 0;
+  filter: blur(10px);
+  transition: 0.7s ease;
+  transition-delay: calc(0.1s * var(--j));
+}
+
+.wrapper.active .form-box.tempPassword .animation {
+  transform: translateX(0);
+  opacity: 1;
+  filter: blur(0);
+  transition-delay: calc(0.1s * var(--i));
+}
+
+.wrapper .info-text.tempPassword {
+  left: 0;
+  text-align: left;
+  padding: 0 150px 60px 40px;
+  pointer-events: none;
+}
+
+.wrapper.active .info-text.tempPassword {
+  pointer-events: auto;
+}
+
+.wrapper .info-text.tempPassword .animation {
+  transform: translateX(-120%);
+  opacity: 0;
+  filter: blur(10px);
+  transition: 0.7s ease;
+  transition-delay: calc(0.1s * var(--j));
+}
+
+.wrapper.active .info-text.tempPassword .animation {
+  transform: translateX(0);
+  opacity: 1;
+  filter: blur(0);
+  transition-delay: calc(0.1s * var(--i));
+}
+
+.wrapper .rotate-bg2 {
+  position: absolute;
+  top: 100%;
+  left: 250px;
+  width: 1000px;
+  height: 1100px;
+  background: var(--white);
+  transform: rotate(0) skewY(0);
+  transform-origin: bottom left;
+  transition: 1.5s ease;
+  transition-delay: 0.5s;
+}
+
+.wrapper.active .rotate-bg2 {
+  transform: rotate(-11deg) skewY(-40deg);
+  transition-delay: 1.2s;
+}
+
+.error-message {
+  position: absolute;
+  right: 0rem;
+  bottom: -1rem;
+  color: var(--error);
+  font-size: 0.75rem;
+  text-wrap-mode: nowrap;
+}
+
+
+/* Resend link styles */
+.resend-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.resend-link a {
+  color: var(--blue-link);
+  text-decoration: underline;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* ... */
+.resend-link a[disabled] {
+    pointer-events: none;
+    opacity: 0.6; 
+    text-decoration: none; 
+    cursor: not-allowed; 
+}
+
+.resend-link a:hover {
+  color: var(--color-big-stone-700);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.code-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+    width: 100%;
+    position: relative;
+    height: 50px;
+}
+
+.code-input-wrapper .input-box {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 100%;
+}
+
+.code-input-wrapper .timer-display {
+    width: 80px;
+    height: 45px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(var(--bg-blue-rgb, 2, 18, 87), 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    flex-shrink: 0;
+    order: -1;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--bg-blue);
+    letter-spacing: 0.5px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.code-input-wrapper .timer-display .timer-countdown {
+    color: inherit;
+    animation: subtlePulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes subtlePulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.tempPassword form button {
+    margin-top: 25px;
+}
+
+.tempPassword form .linkTxt {
+    margin-top: 20px;
 }

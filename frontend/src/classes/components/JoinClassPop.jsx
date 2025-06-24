@@ -3,10 +3,10 @@ import { Formik, Form } from "formik";
 import Input from "../../components/Input.jsx";
 
 const validationSchema = Yup.object({
-  classCode: Yup.string()
+  ClassCode: Yup.string()
     .required("کد کلاس الزامی است")
     .matches(/^[A-Za-z0-9]{6}$/, "کد کلاس باید ۶ کاراکتر باشد"),
-  classPassword: Yup.string()
+  Password: Yup.string()
     .required("رمز ورود الزامی است")
     .min(6, "حداقل ۶ کاراکتر باشد"),
 });
@@ -51,33 +51,33 @@ function JoinClass({ onSubmit, onClose }) {
         </p>
 
         <Formik
-          initialValues={{ classCode: "", classPassword: "" }}
+          initialValues={{ ClassCode: "", Password: "" }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            onSubmit(values);
+            onSubmit(values); 
           }}
         >
           {({ values, setFieldValue, handleBlur, touched, errors }) => (
             <Form className="space-y-1">
-              <div className="flex gap-4">
+              <div className="flex gap-4 pb-4">
                 <div className="flex-1">
                   <Input
                     label="رمز ورود به کلاس"
                     text="Example1234"
-                    value={values.classPassword}
+                    value={values.Password}
                     handleValueChange={(e, val) =>
-                      setFieldValue("classPassword", val)
+                      setFieldValue("Password", val)
                     }
                     field={{
-                      name: "classPassword",
-                      value: values.classPassword,
+                      name: "Password",
+                      value: values.Password, 
                       onChange: (e) =>
-                        setFieldValue("classPassword", e.target.value),
+                        setFieldValue("Password", e.target.value), 
                       onBlur: handleBlur,
                     }}
                     form={{ touched, errors }}
                     className={`rounded-lg p--1 w-full placeholder-[var(--label)] text-left transition-all duration-200 focus:ring-2 focus:ring-[var(--lightBulue)] focus:border-[var(--lightBulue)] ${
-                      touched.classPassword && errors.classPassword
+                      touched.Password && errors.Password 
                         ? "border-[var(--error)]"
                         : "border-[var(--color-big-stone-200)]"
                     }`}
@@ -91,20 +91,20 @@ function JoinClass({ onSubmit, onClose }) {
                   <Input
                     label="کد کلاس"
                     text="123456"
-                    value={values.classCode}
+                    value={values.ClassCode}
                     handleValueChange={(e, val) =>
-                      setFieldValue("classCode", val)
+                      setFieldValue("ClassCode", val) 
                     }
                     field={{
-                      name: "classCode",
-                      value: values.classCode,
+                      name: "ClassCode", 
+                      value: values.ClassCode,
                       onChange: (e) =>
-                        setFieldValue("classCode", e.target.value),
+                        setFieldValue("ClassCode", e.target.value), 
                       onBlur: handleBlur,
                     }}
                     form={{ touched, errors }}
                     className={`rounded-lg p--1 w-full placeholder-[var(--label)] text-left transition-all duration-200 focus:ring-2 focus:ring-[var(--lightBulue)] focus:border-[var(--lightBulue)] ${
-                      touched.classCode && errors.classCode
+                      touched.ClassCode && errors.ClassCode
                         ? "border-[var(--error)]"
                         : "border-[var(--color-big-stone-200)]"
                     }`}

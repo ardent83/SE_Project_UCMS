@@ -69,6 +69,7 @@ function PrivateSettingsSection({
               style="none"
               onClick={onEditToggle}
               disabled={isEditing || formik.isSubmitting}
+              type="button"
             />
           )}
         </div>

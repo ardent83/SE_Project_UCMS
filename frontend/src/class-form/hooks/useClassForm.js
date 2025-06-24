@@ -24,7 +24,7 @@ const defaultInitialValues = {
 
 const useClassForm = ({
   formType = "create",
-  onSuccess = () => {},
+  onSuccess,
 }) => {
   const { classId } = useParams();
 
@@ -43,18 +43,18 @@ const useClassForm = ({
           const data = await fetchClassById(classId);
           setInitialValues({
             ...defaultInitialValues,
-            title: data.title || "",
-            description: data.description || "",
+            title: data.title,
+            description: data.description,
             startDate: data.startDate,
             endDate: data.endDate,
-            schedules: (data.schedules || []).map((schedule) => ({
+            schedules: (data.schedules).map((schedule) => ({
               dayOfWeek: schedule.dayOfWeek,
               startTime: schedule.startTime.substring(0, 5),
               endTime: schedule.endTime.substring(0, 5),
             })),
           });
         } catch (err) {
-          setApiError(err.message || "Error loading class data!");
+          setApiError(err.message);
           setInitialValues(defaultInitialValues);
         } finally {
           setIsLoading(false);
@@ -91,7 +91,7 @@ const useClassForm = ({
         formData.append("StartDate", values.startDate);
         formData.append("EndDate", values.endDate);
 
-        (values.schedules || []).forEach((schedule, index) => {
+        (values.schedules).forEach((schedule, index) => {
           formData.append(`Schedules[${index}].DayOfWeek`, schedule.dayOfWeek);
           formData.append(
             `Schedules[${index}].StartTime`,
@@ -104,15 +104,15 @@ const useClassForm = ({
         });
 
         if (formType === "create") {
-          await createClass(formData);
+          const response = await createClass(formData);
           resetForm({ values: defaultInitialValues });
-          onSuccess("create");
+          onSuccess("create", response.data.id);
         } else if (formType === "edit" && classId) {
           await updateClass(formData, classId);
-          onSuccess("edit");
+          onSuccess("edit", classId);
         }
       } catch (err) {
-        setApiError(err.message || "!خطا در ثبت اطلاعات کلاس");
+        setApiError(err.message);
       } finally {
         setSubmitting(false);
       }
@@ -136,7 +136,6 @@ const useClassForm = ({
     }
 
     const timeToMinutes = (timeString) => {
-      if (!timeString) return 0;
       const [hours, minutes] = timeString.split(":").map(Number);
       return hours * 60 + minutes;
     };
@@ -156,7 +155,7 @@ const useClassForm = ({
     };
 
     formik.setFieldValue("schedules", [
-      ...(formik.values.schedules || []),
+      ...(formik.values.schedules),
       newSchedule,
     ]);
 
