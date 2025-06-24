@@ -8,15 +8,23 @@ const ProductCard = ({
   instructorName,
   studentCount,
   imageUrl,
-  onEdit,
+  onEditClick,
   userRole,
+  onCardClick, 
 }) => {
   const formatStudentCount = (count) => {
     return Number(count ?? 0).toLocaleString("fa-IR");
   };
 
   return (
-    <div className="product-card">
+    <div 
+      className="product-card" 
+      onClick={onCardClick} 
+      style={{ cursor: "pointer" }} 
+      role="button" 
+      tabIndex={0} 
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onCardClick(); }} 
+    >
       <div
         className="card-image"
         style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : "none" }}
@@ -41,7 +49,7 @@ const ProductCard = ({
         </div>
         {userRole === "Instructor" && (
           <button
-            onClick={onEdit ? onEdit : () => {}}
+            onClick={(e) => { e.stopPropagation(); onEditClick(); }} 
             className="edit-button"
             aria-label="ویرایش"
           >

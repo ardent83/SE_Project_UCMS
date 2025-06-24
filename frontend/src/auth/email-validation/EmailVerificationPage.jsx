@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-const VerificationPage = () => {
+const EmailVerificationPage = () => {
     const [timeLeft, setTimeLeft] = useState(60);
     const [resendEnabled, setResendEnabled] = useState(false);
 
@@ -36,7 +36,7 @@ const VerificationPage = () => {
 
                     <div className="h-full flex flex-col justify-center items-center px-8">
                         <img
-                            src="emailVerification.jpg"
+                            src="/emailVerification.jpg"
                             alt="email"
                             className="w-[300px] h-[220px] mb-4"
                         />
@@ -72,4 +72,4 @@ const VerificationPage = () => {
         </div>);
 };
 
-export default VerificationPage;
+export default EmailVerificationPage;

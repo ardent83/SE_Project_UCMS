@@ -33,9 +33,9 @@ export default function ScheduleFormSection({ formik, handleAddSchedule, handleR
                             <option key={day.value} value={day.value}>{day.label}</option>
                         ))}
                     </select>
-                    {formik.touched.currentScheduleDayOfWeek && formik.errors.currentScheduleDayOfWeek ? (
+                    {/* {formik.touched.currentScheduleDayOfWeek && formik.errors.currentScheduleDayOfWeek ? (
                         <div className="text-stateerror text-right text-caption-04 mt-1">{formik.errors.currentScheduleDayOfWeek}</div>
-                    ) : null}
+                    ) : null} */}
                 </div>
 
                 <Input
@@ -69,13 +69,6 @@ export default function ScheduleFormSection({ formik, handleAddSchedule, handleR
                 />
             </div>
 
-            {(formik.touched.currentScheduleDayOfWeek && formik.errors.currentScheduleDayOfWeek && typeof formik.errors.currentScheduleDayOfWeek === 'string') ||
-                (formik.touched.currentScheduleStartTime && formik.errors.currentScheduleStartTime && typeof formik.errors.currentScheduleStartTime === 'string') ||
-                (formik.touched.currentScheduleEndTime && formik.errors.currentScheduleEndTime && typeof formik.errors.currentScheduleEndTime === 'string') ? (
-                <div className="w-full text-stateerror text-right text-caption-04 mt-1">
-                    {formik.errors.currentScheduleDayOfWeek || formik.errors.currentScheduleStartTime || formik.errors.currentScheduleEndTime}
-                </div>
-            ) : null}
 
             <div className="w-full mt-4">
                 <h4 className="w-full text-caption-01 text-neutralgray-5 text-right mb-2">جلسات اضافه شده</h4>
@@ -98,7 +91,7 @@ export default function ScheduleFormSection({ formik, handleAddSchedule, handleR
                                 <span className="flex-1 text-center">{schedule.startTime}</span>
                                 <span className="flex-1 text-center">{daysOfWeek.find(day => day.value === schedule.dayOfWeek)?.label}</span>
                             </div>
-                            <span className="cursor-pointer w-8 flex justify-center items-center"
+                            <span data-testid="remove-button" className="cursor-pointer w-8 flex justify-center items-center"
                                 onClick={() => handleRemoveSchedule(index)}
                                 disabled={formik.isSubmitting}
                             >

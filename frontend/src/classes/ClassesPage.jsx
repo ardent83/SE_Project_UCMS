@@ -1,204 +1,174 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Add, ArrowRight2, ArrowLeft2 } from "iconsax-react";
 import ProductCard from "./components/ProductCard.jsx";
-import "./ClassesPage.css";
-import classesIcon from "./assets/classes.svg";
 import SearchBox from "./components/SearchBox.jsx";
 import Button from "../components/Button.jsx";
-import { Add, ArrowRight2, ArrowLeft2 } from "iconsax-react";
 import FilterBox from "./components/FilterBox.jsx";
 import JoinClass from "./components/JoinClassPop.jsx";
-import { useAuth } from "../auth/context/AuthContext";
+import { useAuth } from "../auth/context/AuthContext.jsx";
+import { useClassesData } from "./hooks/useClassesData";
+import classesPageIcon from "./assets/classes.svg";
+import Alert from "../components/Alert";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-const ClassesPage = () => {
+export default function ClassesPage() {
   const { user } = useAuth();
-  const userRole = user?.data?.role?.name || "guest";
-  const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState("همه");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(6);
-  const [totalPages, setTotalPages] = useState(1);
-  const [showJoinClassPopup, setShowJoinClassPopup] = useState(false);
-  const [showInfoPopup, setShowInfoPopup] = useState(false);
+  const userRole = user?.role?.name || "guest";
 
-  const fetchClasses = async () => {
-    try {
-      const params = new URLSearchParams({
-        ...(searchQuery && { Title: searchQuery }),
-        ...(userRole === "Student" && searchQuery && { InstructorName: searchQuery }),   // test
-        ...(selectedFilter !== "همه" && {
-          isActive: selectedFilter === "فعال" ? "true" : "false",
-        }),
-        Page: page,
-        PageSize: pageSize,
-      });
+  const {
+    classes,
+    loading,
+    error,
+    setError,
+    selectedFilter,
+    setSelectedFilter,
+    searchQuery,
+    setSearchQuery,
+    page,
+    setPage,
+    totalPages,
+    showJoinClassPopup,
+    setShowJoinClassPopup,
+    handleJoinClassSubmit: joinClassSubmitFromHook,
+    handleNewClassClick,
+    handleManageClassClick,
+    handleEditClassClick,
+    filterOptions,
+    formatNumber,
+  } = useClassesData(userRole);
 
-      let apiEndpoint;
-      if (userRole === "Instructor") {
-        apiEndpoint = `${apiBaseUrl}/api/Classes/instructor?${params.toString()}`;
-      } else if (userRole === "Student") {
-        apiEndpoint = `${apiBaseUrl}/api/studentclass/student?${params.toString()}`;
-      } else {
-        throw new Error("نقش کاربر پشتیبانی نمی‌شود!");
-      }
-
-      console.log("Fetching from:", apiEndpoint);
-      const response = await fetch(apiEndpoint, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("API response:", data);
-      setClasses(data.items || []);
-      setTotalPages(data.totalPages || 1);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching classes:", err);
-      setError("خطایی در دریافت لیست کلاس‌ها رخ داد!");
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchClasses();
-  }, [searchQuery, selectedFilter, page, pageSize, userRole]);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleJoinClassSubmit = async (formData) => {
     try {
-      const requestBody = {
-        classCode: formData.classCode,
-        password: formData.classPassword,
-      };
-
-      const response = await fetch(`${apiBaseUrl}/api/StudentClass/join`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("Join class response:", result);
-
-      if (result.success) {
-        setShowJoinClassPopup(false);
-        setError(null);
-        await fetchClasses();
-      } else {
-        throw new Error(result.message || "خطایی در ورود به کلاس رخ داد!");
-      }
-    } catch (err) {
-      console.error("Error joining class:", err);
-      setError(err.message || "خطایی در ورود به کلاس رخ داد!");
-      setShowJoinClassPopup(false);
+      await joinClassSubmitFromHook(formData);
+    } catch {
+       setErrorMessage("خطا در اضافه شدن به کلاس");
     }
   };
 
-  const handleNewClassClick = () => {
-    if (userRole === "Instructor") {
-      // create class form
-   } else if (userRole === "Student") {
-     setShowJoinClassPopup(true);
-   }
+  const handleErrorClose = () => {
+    setError(null);
   };
 
-  const formatNumber = (number) => {
-    return Number(number).toLocaleString("fa-IR");
+  const handleAlertClose = () => {
+    setAlertMessage("");
   };
 
   return (
-    <div className="main-content">
-      <div className="page-title">
-        <h2>لیست کلاس‌ها</h2>
-        <img src={classesIcon} alt="آیکون کلاس" />
-      </div>
-      <div className="search-filter-addbtn-div">
-        <SearchBox
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={
-            userRole === "Instructor"
-              ? "جست‌وجو نام کلاس"
-              : "جست‌وجو نام کلاس، نام استاد"
-          }
+    <div dir="rtl" className="w-full max-w-[90rem] mx-auto my-10 px-10 text-bg-blue">
+      {/* Alerts */}
+      {alertMessage && (
+        <Alert
+          message={alertMessage}
+          type="success"
+          duration={4000}
+          onClose={handleAlertClose}
         />
-        <div className="filter-addbtn-div">
-          <FilterBox
-            selected={selectedFilter}
-            onChange={setSelectedFilter}
-            options={["همه", "فعال", "غیرفعال"]}
-          />
-          <Button
-            buttonText={"کلاس جدید"}
-            textShow={true}
-            leftIcon={false}
-            className="w-30"
-            rightIconComponent={<Add size="20" variant="bold" />}
-            onClick={handleNewClassClick}
-          />
-        </div>
-      </div>
+      )}
+      {error && (
+        <Alert
+          message={error}
+          type="error"
+          duration={4000}
+          onClose={handleErrorClose}
+        />
+      )}
 
-      {loading ? (
-        <div>...در حال بارگذاری</div>
-      ) : error ? (
-        <div className="text-center text-red-500 mt-4">{error}</div>
-      ) : classes.length > 0 ? (
-        <>
-          <div className="class-list">
-            {classes.map((classItem) => {
-              const imageUrl = classItem.profileImageUrl
-                ? `${apiBaseUrl}${classItem.profileImageUrl.startsWith('/') ? '' : '/'}${classItem.profileImageUrl}`
-                : "./assets/download.png";
-              console.log("Image URL for", classItem.title, ":", imageUrl);
-              return (
+      <div className="w-full">
+        <h2 className="text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-start">
+          <div className="flex items-start gap-[0.625rem] self-stretch z-10 relative">
+            <img src={classesPageIcon} alt="آیکون کلاس" className="w-9 h-9" />
+          </div>
+          <span>لیست کلاس‌ها</span>
+        </h2>
+
+        <div className="w-full max-w-screen-xl mx-auto flex flex-wrap justify-between items-center mb-10 gap-3 px-15 relative z-20">
+          <SearchBox
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={
+              userRole === "Instructor"
+                ? "جست‌وجو نام کلاس"
+                : "جست‌وجو نام کلاس، نام استاد"
+            }
+          />
+          <div className="flex gap-4 items-center">
+            <FilterBox
+              selected={selectedFilter}
+              onChange={setSelectedFilter}
+              options={filterOptions}
+            />
+            <Button
+              buttonText={userRole === "Instructor" ? "کلاس جدید" : "پیوستن به کلاس"}
+              textShow={true}
+              leftIcon={false}
+              className="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 px-5 rounded-md flex items-center gap-2 transition-colors duration-200 shadow-md"
+              rightIconComponent={<Add size="20" color="white" />}
+              onClick={userRole === "Instructor" ? handleNewClassClick : () => setShowJoinClassPopup(true)}
+            />
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-6 text-gray-400">در حال بارگذاری...</div>
+        ) : error ? null : classes && classes.length > 0 ? (
+          <>
+            <div className="class-list w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 px-15 auto-rows-fr justify-items-center">
+              {classes.map((classItem) => (
                 <ProductCard
                   key={classItem.id}
                   title={classItem.title}
                   studentCount={classItem.studentCount}
-                  instructorName={classItem.instructorFullName || "نام استاد نامشخص"}
-                  imageUrl={imageUrl}
+                  instructorName={classItem.instructorName}
+                  imageUrl={classItem.imageUrl}
                   userRole={userRole}
+                  onManageClick={() => handleManageClassClick(classItem.id)}
+                  onEditClick={() => handleEditClassClick(classItem.id)}
+                  onCardClick={() => handleManageClassClick(classItem.id)}
                 />
-              );
-            })}
+              ))}
+            </div>
+
+            <div className="flex justify-center items-center gap-10 mt-10">
+              <Button
+                rightIcon={false}
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+                className="pagination-btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 py-2 rounded-md transition-colors"
+                leftIconComponent={<ArrowRight2 size="20" variant="Bold" color="#4A5568" />}
+              />
+              <span className="page-indicator text-lg font-semibold text-gray-700">{`صفحه ${formatNumber(page)} از ${formatNumber(totalPages)}`}</span>
+              <Button
+                leftIcon={false}
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages}
+                className="pagination-btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 py-2 rounded-md transition-colors"
+                rightIconComponent={<ArrowLeft2 size="20" variant="Bold" color="#4A5568" />}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-8 px-4 text-center rounded-xl mt-4">
+            <img src="/Animation - 1750148058142.gif" alt="No results" className="w-80 h-80 mb-6" />
+            <p className="text-gray-600 mb-4 font-bold text-lg">کلاسی یافت نشد!</p>
+            <p className="text-gray-500 mb-6 text-sm">
+              {userRole === "Instructor"
+                ? "برای شروع، یک کلاس جدید ایجاد کنید."
+                : "کدهای کلاس‌های جدید را وارد کنید و به آن‌ها بپیوندید."}
+            </p>
+            {userRole === "Student" && (
+              <Button
+                buttonText={"پیوستن به کلاس"}
+                textShow={true}
+                leftIcon={false}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full flex items-center gap-2 transition-colors duration-200 shadow-md"
+                rightIconComponent={<Add size="20" variant="Outline" color="white" />}
+                onClick={() => setShowJoinClassPopup(true)}
+              />
+            )}
           </div>
-          <div className="pagination">
-            <Button
-              onClick={() => setPage(page + 1)}
-              disabled={page >= totalPages}
-              className="pagination-btn"
-              leftIcon={false}
-              rightIconComponent={<ArrowLeft2 size="20" variant="bold" />}
-            />
-            <span className="page-indicator">{`صفحه ${formatNumber(page)} از ${formatNumber(totalPages)}`}</span>
-            <Button
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-              className="pagination-btn"
-              rightIcon={false}
-              leftIconComponent={<ArrowRight2 size="20" variant="bold" />}
-            />
-          </div>
-        </>
-      ) : (
-        <div className="text-center text-gray-500 mt-8">!کلاسی یافت نشد</div>
-      )}
+        )}
+      </div>
 
       {showJoinClassPopup && (
         <JoinClass
@@ -208,6 +178,4 @@ const ClassesPage = () => {
       )}
     </div>
   );
-};
-
-export default ClassesPage;
+}

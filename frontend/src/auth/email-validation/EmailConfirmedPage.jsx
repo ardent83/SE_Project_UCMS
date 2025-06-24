@@ -31,14 +31,14 @@ const EmailConfirmedPage = () => {
                     <h1 className="text-xl text-[#021257] font-bold mt-0 mb-2">
                         سلام😃
                     </h1>
-                    <p className="text-sm text-gray-700 leading-loose">
-                        به سامانه‌ی UCMS خوش اومدی
+                    <p className="text-l text-gray-700 leading-loose">
+                        به سامانه‌ی UCMS خوش اومدین
                     </p>
                     <p className="text-sm text-gray-700 leading-loose mt-1">
                         ثبت‌نام شما با موفقیت انجام شد!
                     </p>
                     <button
-                        className="bg-[#021257] hover:bg-[#03186d] text-white text-sm py-2 px-6 rounded-lg mt-10 transition cursor-pointer"
+                        className="bg-[#021257] hover:bg-[#03186d] text-white text-sm py-3 px-5 rounded-lg mt-10 transition cursor-pointer"
                         onClick={() => window.location.href = '/auth'}
                     >
                         بازگشت به سامانه
