@@ -4,7 +4,6 @@ const timeFormatRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
 
 const timeStringToMinutes = (timeString) => {
-  if (!timeString || !timeFormatRegex.test(timeString)) return -1;
   const [hours, minutes] = timeString.split(":").map(Number);
   return hours * 60 + minutes;
 };
@@ -56,7 +55,6 @@ export const classFormValidationSchema = (formType) =>
         "dateFormat",
         "فرمت تاریخ شروع نامعتبر است (مثال: YYYY-MM-DD)",
         (value) => {
-          if (value === null || value === "") return true;
           return dateFormatRegex.test(value);
         }
       ),
@@ -66,7 +64,6 @@ export const classFormValidationSchema = (formType) =>
         "dateFormat",
         "فرمت تاریخ پایان نامعتبر است (مثال: YYYY-MM-DD)",
         (value) => {
-          if (value === null || value === "") return true;
           return dateFormatRegex.test(value);
         }
       ),
@@ -113,18 +110,13 @@ export const classFormValidationSchema = (formType) =>
             "endTimeAfterStartTime",
             "ساعت پایان جلسه باید بعد از ساعت شروع باشد.",
             (schedule) => {
-              if (!schedule || !schedule.startTime || !schedule.endTime)
-                return true;
-              if (
-                !timeFormatRegex.test(schedule.startTime) ||
-                !timeFormatRegex.test(schedule.endTime)
-              )
-                return true;
-
               const startMinutes = timeStringToMinutes(schedule.startTime);
               const endMinutes = timeStringToMinutes(schedule.endTime);
 
-              return endMinutes > startMinutes;
+              return (!schedule || !schedule.startTime || !schedule.endTime) || 
+                (!timeFormatRegex.test(schedule.startTime) ||
+                !timeFormatRegex.test(schedule.endTime)) || 
+                endMinutes > startMinutes;
             }
           )
       )
@@ -154,7 +146,7 @@ export const classFormValidationSchema = (formType) =>
         }
       ),
 
-    currentScheduleDayOfWeek: Yup.string().optional(),
+    currentScheduleDayOfWeek: Yup.string().optional().oneOf(["0", "1", "2", "3", "4", "5", "6"], "روز هفته نامعتبر است"),
     currentScheduleStartTime: Yup.string()
       .matches(timeFormatRegex, "فرمت زمان شروع نامعتبر است (مثال: 10:30)")
       .optional(),

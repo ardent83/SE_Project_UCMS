@@ -64,7 +64,7 @@ export const ProjectList = ({ userRoleId }) => {
             />
             <table className="w-full text-center table-auto">
                 <thead className="bg-white">
-                    <tr className="border-b border-neutralgray-3 text-neutralgray-7 text-body-04">
+                    <tr className="border-b border-neutralgray-3 text-neutralgray-9 text-body-04 font-bold">
                         <th className="p-2 font-medium w-[15%]">وضعیت</th>
                         <th className="p-2 font-medium w-[20%]">تاریخ تحویل</th>
                         <th className="p-2 font-medium w-[10%]">زمان</th>
@@ -72,7 +72,7 @@ export const ProjectList = ({ userRoleId }) => {
                         <th className="p-2 font-medium w-[30%] text-wrap break-words">نام پروژه</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody data-testid="project-list-section">
                     {renderTableBody()}
                 </tbody>
             </table>

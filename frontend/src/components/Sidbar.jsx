@@ -8,9 +8,7 @@ import {
     ProfileCircle,
     Notepad2,
     Chart,
-    MessageQuestion,
     ClipboardText,
-    Notification,
     TaskSquare,
     ArrowLeft2,
     ArrowRight2
@@ -74,7 +72,7 @@ function Sidebar() {
     return (
         <aside className={`h-screen ${collapsed ? 'w-18' : 'w-72'} transition-all duration-300 flex flex-col justify-start items-end py-2 px-1 bg-redp text-white text-body-04 overflow-y-scroll scrollbar-thin scroll-smooth`}>
             <div className="w-full flex justify-start items-center pr-2">
-                <span onClick={() => setCollapsed(!collapsed)} className="text-white cursor-pointer">
+                <span onClick={() => setCollapsed(!collapsed)} className="w-full text-white cursor-pointer">
                     {collapsed ? <ArrowLeft2 size={22} color='var(--color-white)' /> : <ArrowRight2 size={22} color='var(--color-white)' />}
                 </span>
             </div>
@@ -97,13 +95,10 @@ function Sidebar() {
                         <Frame to="/exercises" label={"تکالیف"} icon={<TaskSquare variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
                     </li>
                     <li>
+                        <Frame to="/exams" label={"امتحانات"} icon={<ClipboardText variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
+                    </li>
+                    <li>
                         <Frame to="/grade-reports" label={"گزارش نمرات"} icon={<Chart variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
-                    </li>
-                    <li>
-                        <Frame to="/surveys" label={"نظرسنجی"} icon={<MessageQuestion variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
-                    </li>
-                    <li>
-                        <Frame to="/exams" label={"امتحان‌ها"} icon={<ClipboardText variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
                     </li>
                 </ul>
                 <div className="w-full h-px bg-gray-600 my-4 mx-auto" />
@@ -113,9 +108,6 @@ function Sidebar() {
                     </li>
                     <li>
                         <Frame to="/profile" label={"پروفایل"} icon={<ProfileCircle variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
-                    </li>
-                    <li>
-                        <Frame to="/notifications" label={"اعلان‌ها"} icon={<Notification variant='Bold' color='var(--color-white)' size={24} />} collapsed={collapsed} />
                     </li>
                 </ul>
             </div>

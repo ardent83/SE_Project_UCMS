@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import MainLayout from './main/MainLayout';
+import NotFound from './components/NotFound';
 
 // Pages & Forms
 import AuthPage from './auth/AuthPage';
@@ -17,14 +18,18 @@ import ClassesPage from './classes/ClassesPage';
 import ClassPage from './class-page/ClassPage';
 import ProjectsPage from './project-list/ProjectsPage';
 import ProjectManagementPage from './project-management-page/ProjectManagementPage';
+import ExamsPage from './exam-list/ExamsPage';
+import ExercisesPage from "./exercise-list/ExercisesPage.jsx";
+import ExercisePage from './exercise-page/ExercisePage';
 import ClassForm from './class-form/ClassForm';
 import ProjectForm from './project-form/ProjectForm';
 import GroupForm from './group-form/GroupForm';
 import PhaseForm from './phase-form/PhaseForm';
 import ExamForm from './exam-form/ExamForm';
 import ExerciseForm from './exercise-form/ExerciseForm';
+
 import TestPage from './Test';
-import NotFound from './components/NotFound';
+
 
 function App() {
   return (
@@ -52,8 +57,8 @@ function App() {
             {/* --- Resource List Pages --- */}
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
-            <Route path='/exams' element={<div><h1>Exams</h1></div>} />
-            <Route path='/exercises' element={<div><h1>Exercises</h1></div>} />
+            <Route path='/exams' element={<ExamsPage/>} />
+            <Route path='/exercises' element={<ExercisesPage />} />
 
             {/* --- Class Routes (Correct Order) --- */}
             <Route path="/class/create" element={<ClassForm />} />
@@ -80,7 +85,7 @@ function App() {
 
             {/* --- Exercise Routes (Correct Order) --- */}
             <Route path="/exercise/edit/:exerciseId" element={<ExerciseForm formType='edit' />} />
-            <Route path="/exercise/:exerciseId" element={<div><h1>Exercise Detail</h1></div>} />
+            <Route path="/exercise/:exerciseId" element={<ExercisePage/>} />
 
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -33,7 +33,7 @@ const Members = ({ members }) => {
                     <span>{members.length.toLocaleString("fa-IR")}</span>
                 </div>
                 <div className="w-fit flex justify-between items-center gap-1">
-                    <span className="text-caption-03 text-sm text-right text-[#292D32]">اعضای کلاس</span>
+                    <span className="text-caption-02 text-sm text-right text-[#292D32]">اعضای کلاس</span>
                     <Profile2User color={"#292D32"} variant="Bold" size={"16"} />
                 </div>
             </div>
@@ -43,7 +43,7 @@ const Members = ({ members }) => {
                     members.map((member, index) => (
                         <div
                             key={index}
-                            onClick={() => handleMemberClick(member.id)}
+                            onClick={() => handleMemberClick(member.userId)}
                             className="cursor-pointer hover:bg-neutralgray-1 transition-colors"
                         >
                             <MemberItem

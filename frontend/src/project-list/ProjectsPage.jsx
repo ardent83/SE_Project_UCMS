@@ -3,7 +3,7 @@ import { Notepad2, ArrowSwapVertical } from "iconsax-react";
 import FilterBox from "./components/FilterBox";
 import SearchBox from "./components/SearchBox";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-import { fetchProjects } from "./utils/ProjectListApi.js";
+import { fetchProjectsForInstructor, fetchProjectsForStudent } from "./utils/ProjectListApi.js";
 import { useNavigate } from "react-router-dom";
 
 const statusColors = {
@@ -19,16 +19,29 @@ export default function ProjectsPage() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("همه");
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loadProjects = async () => {
-            const data = await fetchProjects();
-            setProjectsData(data);
-        };
+        async function loadProjects() {
+            try {
+                setLoading(true);
+                const data = userRole === "Student"
+                    ? await fetchProjectsForStudent()
+                    : await fetchProjectsForInstructor();
+                setProjectsData(data);
+                setError(null);
+            } catch (err) {
+                setError("خطا در بارگذاری داده‌ها");
+            } finally {
+                setLoading(false);
+            }
+        }
+
         loadProjects();
-    }, []);
+    }, [userRole]);
 
     const handleSort = (key) => {
         setSortConfig((prevConfig) => {
@@ -100,13 +113,15 @@ export default function ProjectsPage() {
             </div>
 
             <div className="w-full">
-                {filteredProjects.length > 0 ? (
+                {loading ? (
+                    <div className="text-center py-6 text-gray-400">در حال بارگذاری...</div>
+                ) : error ? (
+                    <div className="text-center py-6 text-red-500">{error}</div>
+                ) : filteredProjects.length > 0 ? (
                     <div
                         className="overflow-y-auto max-h-[380px] relative z-10"
                         data-testid="projects-table-container"
                     >
-                        {" "}
-                        {/* Added data-testid */}
                         <table className="w-full border-collapse text-center">
                             <thead className="sticky top-0 bg-white z-10">
                                 <tr className="border-b border-gray-300 text-gray-400 text-sm">
@@ -115,12 +130,11 @@ export default function ProjectsPage() {
                                         data-testid="projects-table-header-status"
                                     >
                                         وضعیت
-                                    </th>{" "}
-                                    {/* Added data-testid */}
+                                    </th>
                                     <th
                                         className="py-3 px-4 cursor-pointer select-none"
                                         onClick={() => handleSort("deliveryDate")}
-                                        data-testid="projects-table-header-deliveryDate" // Added data-testid
+                                        data-testid="projects-table-header-deliveryDate"
                                     >
                                         <ArrowSwapVertical
                                             size={16}
@@ -132,19 +146,18 @@ export default function ProjectsPage() {
                                                     : ""
                                                 }`}
                                         />
-                                        تاریخ تحویل{" "}
+                                        تاریخ تحویل
                                     </th>
                                     <th
                                         className="py-3 px-4"
                                         data-testid="projects-table-header-time"
                                     >
                                         زمان
-                                    </th>{" "}
-                                    {/* Added data-testid */}
+                                    </th>
                                     <th
                                         className="py-3 px-4 cursor-pointer select-none"
                                         onClick={() => handleSort("lesson")}
-                                        data-testid="projects-table-header-lesson" // Added data-testid
+                                        data-testid="projects-table-header-lesson"
                                     >
                                         <ArrowSwapVertical
                                             size={16}
@@ -156,12 +169,12 @@ export default function ProjectsPage() {
                                                     : ""
                                                 }`}
                                         />
-                                        درس{" "}
+                                        درس
                                     </th>
                                     <th
                                         className="py-3 px-4 cursor-pointer select-none"
                                         onClick={() => handleSort("name")}
-                                        data-testid="projects-table-header-name" // Added data-testid
+                                        data-testid="projects-table-header-name"
                                     >
                                         <ArrowSwapVertical
                                             size={16}
@@ -173,7 +186,7 @@ export default function ProjectsPage() {
                                                     : ""
                                                 }`}
                                         />
-                                        نام پروژه{" "}
+                                        نام پروژه
                                     </th>
                                 </tr>
                             </thead>
@@ -183,13 +196,13 @@ export default function ProjectsPage() {
                                         key={project.id}
                                         onClick={() => navigate(`/project/${project.id}`)}
                                         className="border-b border-gray-100 hover:bg-gray-100 transition cursor-pointer"
-                                        data-testid={`project-row-${project.id}`} // Added data-testid
+                                        data-testid={`project-row-${project.id}`}
                                     >
                                         <td className="py-3 px-4">
                                             <span
                                                 className={`inline-block px-3 py-2 rounded-md text-xs font-semibold ${statusColors[project.status]
                                                     }`}
-                                                data-testid={`project-status-${project.id}`} // Added data-testid
+                                                data-testid={`project-status-${project.id}`}
                                             >
                                                 {project.status}
                                             </span>
@@ -199,29 +212,25 @@ export default function ProjectsPage() {
                                             data-testid={`project-deliveryDate-${project.id}`}
                                         >
                                             {project.deliveryDate}
-                                        </td>{" "}
-                                        {/* Added data-testid */}
+                                        </td>
                                         <td
                                             className="py-3 px-4"
                                             data-testid={`project-time-${project.id}`}
                                         >
                                             {project.time}
-                                        </td>{" "}
-                                        {/* Added data-testid */}
+                                        </td>
                                         <td
                                             className="py-3 px-4"
                                             data-testid={`project-lesson-${project.id}`}
                                         >
                                             {project.lesson}
-                                        </td>{" "}
-                                        {/* Added data-testid */}
+                                        </td>
                                         <td
                                             className="py-3 px-4 text-gray-600"
                                             data-testid={`project-name-${project.id}`}
                                         >
                                             {project.name}
-                                        </td>{" "}
-                                        {/* Added data-testid */}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -229,17 +238,15 @@ export default function ProjectsPage() {
                     </div>
                 ) : (
                     <div
-                        className="flex flex-col items-center justify-center text-gray-400"
+                        className="flex flex-col items-center justify-center text-gray-400 mt-12"
                         data-testid="no-projects-message"
                     >
-                        {" "}
-                        {/* Added data-testid */}
                         <img
-                            src="/not%20found.png"
+                            src="/Animation - 1750148058142.gif"
                             alt="No results"
                             className="w-80 h-80 mb-6"
                         />
-                        <p className="text-lg mt-0">نتیجه‌ای یافت نشد</p>
+                        <p className="text-lg">نتیجه‌ای یافت نشد</p>
                     </div>
                 )}
             </div>
