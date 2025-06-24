@@ -120,7 +120,7 @@ export default function ClassHeader({
                                 color="#082c85"
                                 size={24}
                                 variant="Linear"
-                                className="cursor-pointer rotate-90 absolute left-0 top-0"
+                                className="cursor-pointer rotate-90 absolute left-5 top-0"
                                 onClick={() => setShowLeaveMenu(!showLeaveMenu)}
                             />
                             {showLeaveMenu && (
@@ -149,8 +149,8 @@ export default function ClassHeader({
                         </span>
                     </div>
 
-                    <div className="w-fit h-[3.64rem] flex flex-col items-end gap-1">
-                        <span className="text-heading-h5 text-white text-3xl text-right">{title}</span>
+                    <div className="w-fit h-[5rem] flex flex-col items-end gap-1">
+                        <span className="text-heading-h5 text-white text-3xl text-right mb-3">{title}</span>
                         <div className="flex justify-end items-center gap-1 self-stretch">
                             {instructor && (
                                 <>
