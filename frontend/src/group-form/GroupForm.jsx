@@ -70,7 +70,7 @@ export default function GroupForm({ formType = 'create' }) {
                 {formType === 'create' ?
                     (
                         <>
-                            <span>
+                            <span data-testid="create-group-form-title">
                                 ایجاد گروه جدید
                             </span>
                             <Add size={32} color="var(--color-redp)" />
@@ -171,6 +171,7 @@ export default function GroupForm({ formType = 'create' }) {
                     className="w-fit"
                     disabled={formik.isSubmitting}
                     onClick={onClose}
+                    data-testid="create-group-cancel-button"
                 />
             </div>
         </form>

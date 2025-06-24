@@ -70,7 +70,7 @@ export default function ProjectForm({ formType = 'create' }) {
                     </>
                 ) : (
                     <>
-                        <span>ویرایش اطلاعات پروژه</span>
+                        <span data-testid="edit-project-form-title">ویرایش اطلاعات پروژه</span>
                         <Edit2 variant={'Bold'} size={32} color="var(--color-redp)" />
                     </>
                 )}
