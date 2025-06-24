@@ -24,17 +24,21 @@ export const ClassList = ({ userRoleId, userFullName }) => {
             )}
 
             {!loading && !error && (
-                <div  className="w-full flex justify-between flex-row-reverse items-start flex-wrap">
+                <div
+                    dir="rtl"
+                    className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-fr"
+                >
                     {classes.map((detail) => (
-                        <ClassCard
-                            key={detail.id}
-                            id={detail.id}
-                            color={detail.color}
-                            title={detail.title}
-                            instructor={detail.instructor}
-                            days={detail.days}
-                            times={detail.times}
-                        />
+                        <div key={detail.id} className="flex justify-center">
+                            <ClassCard
+                                id={detail.id}
+                                color={detail.color}
+                                title={detail.title}
+                                instructor={detail.instructor}
+                                days={detail.days}
+                                times={detail.times}
+                            />
+                        </div>
                     ))}
                 </div>
             )}

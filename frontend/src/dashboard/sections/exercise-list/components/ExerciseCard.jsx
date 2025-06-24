@@ -1,4 +1,4 @@
-import React, { useRef, } from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const ExerciseCard = ({ exercise }) => {
@@ -18,7 +18,9 @@ export const ExerciseCard = ({ exercise }) => {
     return (
         <div
             onClick={() => navigate(`/exercise/${exercise.id}`)}
-            ref={containerRef} className="relative w-full max-w-64 rounded-lg bg-white border border-neutral-200 cursor-pointer">
+            ref={containerRef}
+            className="relative min-w-56 rounded-lg bg-white border border-neutral-200 cursor-pointer"
+        >
             <svg
                 className="absolute top-0 left-0 w-full h-full"
                 fill="none"
