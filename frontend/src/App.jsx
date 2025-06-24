@@ -18,6 +18,8 @@ import ClassesPage from './classes/ClassesPage';
 import ClassPage from './class-page/ClassPage';
 import ProjectsPage from './project-list/ProjectsPage';
 import ProjectManagementPage from './project-management-page/ProjectManagementPage';
+import ExamsPage from './exam-list/ExamsPage';
+import ExercisesPage from "./exercise-list/ExercisesPage.jsx";
 import ExercisePage from './exercise-page/ExercisePage';
 import ClassForm from './class-form/ClassForm';
 import ProjectForm from './project-form/ProjectForm';
@@ -27,8 +29,7 @@ import ExamForm from './exam-form/ExamForm';
 import ExerciseForm from './exercise-form/ExerciseForm';
 
 import TestPage from './Test';
-import ExamsPage from "./exam-list/ExamsPage.jsx";
-import ExercisesPage from "./exercise-list/ExercisesPage.jsx";
+
 
 function App() {
   return (

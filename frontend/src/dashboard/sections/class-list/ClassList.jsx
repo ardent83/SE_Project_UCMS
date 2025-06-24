@@ -20,11 +20,11 @@ export const ClassList = ({ userRoleId, userFullName }) => {
             {error && <div className="text-body-04 text-stateerror mt-4">{error}</div>}
 
             {classes.length === 0 && (
-                <div className="text-center py-6 text-neutralgray-4">.کلاسی برای نمایش وجود ندارد</div>
+                <div data-testid="class-list-section" className="text-center py-6 text-neutralgray-4">.کلاسی برای نمایش وجود ندارد</div>
             )}
 
             {!loading && !error && (
-                <div data-testid="class-list-section" className="w-full flex justify-between flex-row-reverse items-start flex-wrap">
+                <div  className="w-full flex justify-between flex-row-reverse items-start flex-wrap">
                     {classes.map((detail) => (
                         <ClassCard
                             key={detail.id}
