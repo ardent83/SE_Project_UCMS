@@ -121,15 +121,15 @@ export default function ClassesPage() {
                         {/* --- End of Pagination --- */}
                     </>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-8 px-4 text-center rounded-xl mt-4 bg-gray-50 border border-gray-200">
+                    <div className="flex flex-col items-center justify-center py-8 px-4 text-center rounded-xl mt-4">  {/* bg-gray-50 border border-gray-200 */}
                         <img src="/Animation - 1750148058142.gif" alt="No results" className="w-80 h-80 mb-6" />
                         <p className="text-gray-600 mb-4 font-bold text-lg">
-                            !کلاسی یافت نشد
+                             کلاسی یافت نشد!
                         </p>
                         <p className="text-gray-500 mb-6 text-sm">
                             {userRole === "Instructor"
-                                ? ".برای شروع، یک کلاس جدید ایجاد کنید"
-                                : ".کدهای کلاس‌های جدید را وارد کنید و به آن‌ها بپیوندید"
+                                ? "برای شروع، یک کلاس جدید ایجاد کنید."
+                                : "کدهای کلاس‌های جدید را وارد کنید و به آن‌ها بپیوندید."
                             }
                         </p>
                         {userRole === "Student" && (
