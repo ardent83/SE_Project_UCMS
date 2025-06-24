@@ -8,9 +8,7 @@ import {
     ProfileCircle,
     Notepad2,
     Chart,
-    MessageQuestion,
     ClipboardText,
-    Notification,
     TaskSquare,
     ArrowLeft2,
     ArrowRight2
@@ -74,7 +72,7 @@ function Sidebar() {
     return (
         <aside className={`h-screen ${collapsed ? 'w-18' : 'w-72'} transition-all duration-300 flex flex-col justify-start items-end py-2 px-1 bg-redp text-white text-body-04 overflow-y-scroll scrollbar-thin scroll-smooth`}>
             <div className="w-full flex justify-start items-center pr-2">
-                <span onClick={() => setCollapsed(!collapsed)} className="text-white cursor-pointer">
+                <span onClick={() => setCollapsed(!collapsed)} className="w-full text-white cursor-pointer">
                     {collapsed ? <ArrowLeft2 size={22} color='var(--color-white)' /> : <ArrowRight2 size={22} color='var(--color-white)' />}
                 </span>
             </div>
