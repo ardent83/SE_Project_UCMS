@@ -8,17 +8,11 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
  */
 export const fetchClassesApi = async (params, userRole) => {
     let apiEndpoint;
+
     const queryParams = new URLSearchParams({
         ...(params.searchQuery && { Title: params.searchQuery }),
-        ...(userRole === "Student" && params.searchQuery && { InstructorName: params.searchQuery }),
-        ...(params.selectedFilter !== "همه" && userRole === "Instructor" && {
+        ...(params.selectedFilter !== "همه" && {
             isActive: params.selectedFilter === "فعال" ? "true" : "false",
-        }),
-        ...(userRole === "Student" && params.selectedFilter === "کلاس‌های من" && {
-            myClasses: "true",
-        }),
-        ...(userRole === "Student" && params.selectedFilter === "کلاس‌های دیگر" && {
-            otherClasses: "true",
         }),
         Page: params.page,
         PageSize: params.pageSize,
@@ -32,7 +26,7 @@ export const fetchClassesApi = async (params, userRole) => {
         throw new Error("نقش کاربر پشتیبانی نمی‌شود!");
     }
 
-    console.log("Fetching classes from:", apiEndpoint);
+    console.log("📡 Fetching classes from:", apiEndpoint);
     const response = await fetch(apiEndpoint, {
         method: "GET",
         credentials: "include",
@@ -43,7 +37,7 @@ export const fetchClassesApi = async (params, userRole) => {
         error.status = response.status;
         throw error;
     }
-    
+
     return await response.json();
 };
 
@@ -58,6 +52,8 @@ export const joinClassApi = async (formData) => {
         Password: formData.Password,   
     };
 
+    console.log("🚀 Sending join class request with:", requestBody);
+
     const response = await fetch(`${API_BASE_URL}/api/StudentClass/join`, {
         method: "POST",
         headers: {
@@ -68,9 +64,11 @@ export const joinClassApi = async (formData) => {
     });
 
     if (!response.ok) {
-        const error = new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text();
+        const error = new Error(`HTTP error! Status: ${response.status}\n${errorText}`);
         error.status = response.status;
         throw error;
     }
+
     return await response.json();
 };

@@ -14,7 +14,7 @@ export const useClassesData = (userRole) => {
     const [selectedFilter, setSelectedFilter] = useState("همه");
     const [searchQuery, setSearchQuery] = useState("");
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(6); 
+    const [pageSize] = useState(8); 
     const [totalPages, setTotalPages] = useState(1);
 
     const [showJoinClassPopup, setShowJoinClassPopup] = useState(false);
@@ -83,9 +83,7 @@ export const useClassesData = (userRole) => {
         navigate(`/class/edit/${classId}`);
     }, [navigate]);
 
-    const filterOptions = userRole === "Instructor"
-        ? ["همه", "فعال", "غیرفعال"]
-        : ["همه", "کلاس‌های من", "کلاس‌های دیگر"];
+    const filterOptions = ["همه", "فعال", "غیرفعال"];
 
     return {
         classes,
