@@ -89,6 +89,7 @@ export const useClassesData = (userRole) => {
         classes,
         loading,
         error,
+        setError,   
         selectedFilter,
         setSelectedFilter,
         searchQuery,
