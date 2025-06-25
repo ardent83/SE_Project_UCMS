@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {
     Calendar,
     Edit2,
@@ -33,6 +33,7 @@ const PhasePage = () => {
     const [submittedGroups, setSubmittedGroups] = useState({});
     const [readOnly, setReadOnly] = useState(false);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const groupMembers = {
         1: ["عضو ۱", "عضو ۲"],
@@ -60,7 +61,6 @@ const PhasePage = () => {
             fetchPhase();
         }
     }, [numericPhaseId]);
-    console.log(phaseInfo);
 
     const handleOpenGradeForm = (groupId) => {
         const existing = submittedGroups[groupId];
@@ -118,7 +118,6 @@ const PhasePage = () => {
         }
     }, [phaseId, userRole, phaseInfo]);
 
-
     return (
         <div className="w-full max-w-270 p-6" dir="rtl">
             <div className="w-full flex flex-col items-center">
@@ -136,7 +135,7 @@ const PhasePage = () => {
                                 <Trash size="30" variant="Bulk" color="#08146f" data-testid="delete-phase-icon" />
                             </div>
                             <div title="ویرایش" className="cursor-pointer">
-                                <Edit2 size="30" variant="Bulk" color="#08146f" data-testid="edit-phase-icon" />
+                                <Edit2 size="30" variant="Bulk" color="#08146f" onClick={() => navigate(`/phase/edit/${phaseId}`)} data-testid="edit-phase-icon" />
                             </div>
                         </div>
                     )}
@@ -171,8 +170,11 @@ const PhasePage = () => {
                         </div>
                         <div className="flex items-start gap-2 mb-6">
                             <Information size="25" variant="Linear" color="#495D72" />
-                            <p className="leading-relaxed">{phaseInfo.description}</p>
+                            <p className="leading-relaxed">
+                                {phaseInfo.description ? phaseInfo.description : "توضیحی ثبت نشده است."}
+                            </p>
                         </div>
+
                     </div>
                 )}
             </div>
