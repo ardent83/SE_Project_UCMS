@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import {
     Calendar,
@@ -15,7 +15,11 @@ import DropdownSection from "./components/DropdownSection.jsx";
 import GradeUpload from "./components/GradeDropdownSection.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-import {getPhaseInformationForInstructor, getPhaseInformationForStudent, downloadFileForStudent, downloadFileForInstructor} from "./utils/PhasePageApi.js";
+import {
+    getPhaseInformationForInstructor,
+    getPhaseInformationForStudent,
+    downloadPhaseFileApi
+} from "./utils/PhasePageApi.js";
 
 const PhasePage = () => {
     const { user } = useAuth();
@@ -51,10 +55,12 @@ const PhasePage = () => {
                 setError(err.message);
             }
         };
+
         if (!isNaN(numericPhaseId)) {
             fetchPhase();
         }
     }, [numericPhaseId]);
+    console.log(phaseInfo);
 
     const handleOpenGradeForm = (groupId) => {
         const existing = submittedGroups[groupId];
@@ -94,17 +100,23 @@ const PhasePage = () => {
         setError("");
     };
 
-    const handleDownloadFile = async () => {
+    const handleDownloadFile = useCallback(async () => {
+        let filePath=phaseInfo?.phaseFilePath;
+        const lastDotIndex = filePath.lastIndexOf('.');
+        const extension = lastDotIndex !== -1 ? filePath.substring(lastDotIndex + 1) : '';
+        filePath="application/"+extension;
         try {
-            if (userRole === "Student") {
-                await downloadFileForStudent(numericPhaseId);
-            } else if (userRole === "Instructor") {
-                await downloadFileForInstructor(numericPhaseId);
-            }
-        } catch (error) {
-            setError("خطا در دانلود فایل: " + error.message);
+            await downloadPhaseFileApi(
+                phaseId,
+                userRole,
+                filePath,
+                phaseInfo?.title
+            );
+        } catch (err) {
+            console.error("Error downloading file:", err);
+            setError("خطایی در دانلود فایل رخ داد!");
         }
-    };
+    }, [phaseId, userRole, phaseInfo]);
 
 
     return (
@@ -117,14 +129,14 @@ const PhasePage = () => {
 
                     {userRole === "Instructor" && (
                         <div className="flex gap-4 text-gray-600 mt-5">
-                            <div title="دانلود فایل" className="cursor-pointer" onClick={handleDownloadFile}>
+                            <div title="دانلود فایل" className="cursor-pointer" onClick={handleDownloadFile} data-testid="download-phase-icon">
                                 <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
                             </div>
                             <div title="حذف" className="cursor-pointer">
-                                <Trash size="30" variant="Bulk" color="#08146f" />
+                                <Trash size="30" variant="Bulk" color="#08146f" data-testid="delete-phase-icon" />
                             </div>
                             <div title="ویرایش" className="cursor-pointer">
-                                <Edit2 size="30" variant="Bulk" color="#08146f" />
+                                <Edit2 size="30" variant="Bulk" color="#08146f" data-testid="edit-phase-icon" />
                             </div>
                         </div>
                     )}
