@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowSwapVertical } from "iconsax-react";
 import SearchBox from "./components/SearchBox.jsx";
 import Button from "../components/Button.jsx";
+import Alert from "../components/Alert.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
 import { useInstructorGradesData } from "./hooks/useInstructorGradesData";
 import { formatToPersianNumber } from "./utils/formatters";
@@ -25,7 +26,11 @@ export default function GradeReportPageInstructor() {
         entrySaveError,
         setEditedEntries,
         totalScore,
+        saveSuccess,
     } = useInstructorGradesData(classId);
+
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [alertType, setAlertType] = React.useState("info");
 
     const handleEntryChange = React.useCallback(
         (entryType, entryId, field, value) => {
@@ -47,8 +52,31 @@ export default function GradeReportPageInstructor() {
         console.log("Printing grade report...");
     };
 
+    React.useEffect(() => {
+        if (entrySaveError) {
+            setAlertMessage(entrySaveError);
+            setAlertType("error");
+        }
+    }, [entrySaveError]);
+
+    React.useEffect(() => {
+        if (saveSuccess) {
+            setAlertMessage("ذخیره با موفقیت انجام شد.");
+            setAlertType("success");
+        }
+    }, [saveSuccess]);
+
     return (
         <>
+            {alertMessage && (
+                <Alert
+                    message={alertMessage}
+                    type={alertType}
+                    duration={4000}
+                    onClose={() => setAlertMessage("")}
+                />
+            )}
+
             <div className="flex flex-wrap justify-between items-center mb-12 gap-6 relative z-20">
                 <SearchBox
                     value={searchQuery}
@@ -154,7 +182,6 @@ export default function GradeReportPageInstructor() {
                             </tbody>
                         </table>
                         <div className="flex justify-end mt-6 items-center gap-4">
-                            {/* فیلد نمره کل قابل ویرایش */}
                             <div className="flex items-center gap-2">
                                 <label
                                     htmlFor="totalScoreInput"
@@ -191,10 +218,6 @@ export default function GradeReportPageInstructor() {
                                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors shadow-sm"
                                 />
                             </div>
-
-                            {entrySaveError && (
-                                <span className="text-red-500">{entrySaveError}</span>
-                            )}
                         </div>
                     </div>
 
@@ -203,10 +226,7 @@ export default function GradeReportPageInstructor() {
                         <h3 className="text-2xl font-bold mb-6 text-gray-800 text-right">
                             گزارش نمرات دانشجویان
                         </h3>
-                        <div
-                            className="overflow-y-auto max-h-[380px] relative z-10"
-                            dir="ltr"
-                        >
+                        <div className="overflow-y-auto max-h-[380px] relative z-10" dir="ltr">
                             <table className="w-full border-collapse text-center">
                                 <thead className="sticky top-0 bg-white z-10">
                                     <tr className="border-b border-gray-300 text-gray-400 text-sm">

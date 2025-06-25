@@ -17,10 +17,10 @@ export const useInstructorGradesData = (classId) => {
     const [editedEntries, setEditedEntries] = useState({});
     const [isSavingEntries, setIsSavingEntries] = useState(false);
     const [entrySaveError, setEntrySaveError] = useState(null);
+    const [saveSuccess, setSaveSuccess] = useState(false);
 
     const [totalScore, setTotalScore] = useState(20);
 
-    // Load student grades
     const loadStudentsGrades = useCallback(async () => {
         try {
             const data = await fetchInstructorStudentsGrades(classId);
@@ -31,7 +31,6 @@ export const useInstructorGradesData = (classId) => {
         }
     }, [classId]);
 
-    // Load class entries
     const loadClassEntries = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -49,7 +48,6 @@ export const useInstructorGradesData = (classId) => {
 
             setClassEntries(data);
             setEditedEntries({});
-
         } catch (err) {
             setError(err.message || "خطا در بارگذاری جزئیات نمره‌دهی.");
             setClassEntries([]);
@@ -58,7 +56,6 @@ export const useInstructorGradesData = (classId) => {
         }
     }, [classId]);
 
-    // Handle input changes in table
     const handleEntryChange = useCallback((entryType, entryId, field, value) => {
         const key = `${entryType}-${entryId}`;
         const numericValue = value === "" ? "" : Number(value);
@@ -74,10 +71,10 @@ export const useInstructorGradesData = (classId) => {
         }));
     }, []);
 
-    // Save changes
     const handleSaveEntries = useCallback(async () => {
         setIsSavingEntries(true);
         setEntrySaveError(null);
+        setSaveSuccess(false);
 
         try {
             const entriesToUpdate = classEntries.map((entry) => {
@@ -105,6 +102,10 @@ export const useInstructorGradesData = (classId) => {
             if (result.success) {
                 await loadClassEntries();
                 await loadStudentsGrades();
+
+                setSaveSuccess(true);
+
+                setTimeout(() => setSaveSuccess(false), 3000);
             } else {
                 setEntrySaveError(result.message || "خطا در ذخیره تغییرات نمره‌دهی.");
             }
@@ -115,7 +116,6 @@ export const useInstructorGradesData = (classId) => {
         }
     }, [classId, classEntries, editedEntries, loadClassEntries, loadStudentsGrades]);
 
-    // Initial load
     useEffect(() => {
         if (classId) {
             loadStudentsGrades();
@@ -126,7 +126,6 @@ export const useInstructorGradesData = (classId) => {
         }
     }, [classId, loadStudentsGrades, loadClassEntries]);
 
-    // Sorting
     const handleSort = useCallback((key) => {
         setSortConfig((prevConfig) => {
             if (prevConfig.key === key) {
@@ -139,7 +138,6 @@ export const useInstructorGradesData = (classId) => {
         });
     }, []);
 
-    // Filtered and sorted student grades
     const finalFilteredAndSortedGrades = [...studentsGradesData]
         .filter((grade) => {
             const lowerSearch = searchQuery.trim().toLowerCase();
@@ -161,7 +159,6 @@ export const useInstructorGradesData = (classId) => {
                     : -1;
         });
 
-    // Optional fixed labels for displaying headers
     const fixedDetailedGradesLabels = [
         { label: "کوییز ۳", entryType: 0, score: 20, weight: 20 },
         { label: "فاز اول", entryType: 1, score: 20, weight: 20 },
@@ -187,7 +184,8 @@ export const useInstructorGradesData = (classId) => {
         isSavingEntries,
         entrySaveError,
         fixedDetailedGradesLabels,
-        totalScore,         
-        setTotalScore,   
+        totalScore,
+        setTotalScore,
+        saveSuccess,
     };
 };
