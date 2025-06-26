@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { fetchPhaseSubmissionsApi, setFinalSubmission,downloadSubmissionFileApi  } from "../../utils/PhaseSubmissionForStudentApi.js";
+import {
+    fetchPhaseSubmissionsApi,
+    setFinalSubmission,
+    downloadSubmissionFileApi
+} from "../../utils/PhaseSubmissionForStudentApi.js";
 import { useParams } from "react-router-dom";
+import { ArrowSwapVertical } from "iconsax-react";
 
 export default function PhaseSubmissionsTab({ phaseTitle }) {
     const { phaseId } = useParams();
     const [selectedId, setSelectedId] = useState(null);
     const [submissions, setSubmissions] = useState([]);
     const [error, setError] = useState(null);
+    const [sortBy, setSortBy] = useState(null);
+    const [sortOrder, setSortOrder] = useState(null);
 
     const fetchSubmissions = async () => {
         try {
-            const data = await fetchPhaseSubmissionsApi(phaseId, "Student", {});
-            let items = data.items || [];
+            const sortDto = {};
+            if (sortBy !== null && sortOrder !== null) {
+                sortDto.SortBy = sortBy;
+                sortDto.SortOrder = sortOrder;
+            }
 
-            items = items.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+            const data = await fetchPhaseSubmissionsApi(phaseId, "Student", sortDto);
+            const items = data.items || [];
+
             setSubmissions(items);
+
             const final = items.find((s) => s.isFinal === true);
             if (final) {
                 setSelectedId(final.id);
@@ -29,19 +42,12 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
     };
 
     const handleDownload = async (submission) => {
-
         try {
-            await downloadSubmissionFileApi(submission.id, "Student", "/"+submission.fileType);
+            await downloadSubmissionFileApi(submission.id, "Student", "/" + submission.fileType);
         } catch (err) {
             console.error(err);
         }
     };
-
-
-
-    useEffect(() => {
-        fetchSubmissions();
-    }, [phaseId]);
 
     const handleCheckboxChange = async (id) => {
         try {
@@ -53,6 +59,22 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
         }
     };
 
+    const handleSortClick = () => {
+        if (sortBy === null) {
+            setSortBy(1);
+            setSortOrder(1);
+        } else if (sortOrder === 1) {
+            setSortOrder(2);
+        } else {
+            setSortBy(null);
+            setSortOrder(null);
+        }
+    };
+
+    useEffect(() => {
+        fetchSubmissions();
+    }, [phaseId, sortBy, sortOrder]);
+
     return (
         <div className="w-full max-w-[90rem] mx-auto mt-8 px-10 text-bg-blue" dir="rtl">
             {error && <div className="text-red-500 my-2">{error}</div>}
@@ -62,7 +84,21 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
                     <tr className="border-b border-gray-300 text-gray-500 text-sm">
                         <th className="py-3 px-4">ارسال نهایی</th>
                         <th className="py-3 px-4">نام فاز</th>
-                        <th className="py-3 px-4">زمان ارسال</th>
+                        <th className="py-3 px-4">
+                            <div
+                                className="flex items-center justify-center gap-1 cursor-pointer select-none"
+                                onClick={handleSortClick}
+                                title="مرتب‌سازی بر اساس زمان ارسال"
+                            >
+                                <span>زمان ارسال</span>
+                                <ArrowSwapVertical
+                                    size={16}
+                                    variant="Bulk"
+                                    color={sortBy === 1 ? "#1D4ED8" : "#0C1E33"}
+                                    className={`${sortOrder === 2 ? "rotate-180" : ""} transition-transform duration-200`}
+                                />
+                            </div>
+                        </th>
                         <th className="py-3 px-4">نوع فایل</th>
                         <th className="py-3 px-4">نمره</th>
                         <th className="py-3 px-4">فایل</th>
@@ -79,9 +115,7 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
                         submissions.map((submission) => (
                             <tr
                                 key={submission.id}
-                                className={`border-b border-gray-100 transition ${
-                                    selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"
-                                }`}
+                                className={`border-b border-gray-100 transition ${selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"}`}
                             >
                                 <td className="py-3 px-4">
                                     <input
@@ -115,7 +149,6 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
                         ))
                     )}
                     </tbody>
-
                 </table>
             </div>
         </div>
