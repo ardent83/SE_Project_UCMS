@@ -14,7 +14,7 @@ export default function GradeReportPageInstructor() {
     const userRole = user?.data?.role?.name || "guest";
 
     const {
-        studentsGradesData: sortedAndFilteredGrades,
+        studentsGradesData,
         classEntries,
         loading,
         error,
@@ -163,7 +163,7 @@ export default function GradeReportPageInstructor() {
                                                     type="number"
                                                     min="0"
                                                     max="100"
-                                                    value={currentValue}
+                                                    value={formatToPersianNumber(currentValue)}
                                                     onChange={(e) =>
                                                         handleEntryChange(
                                                             entry.entryType,
@@ -211,7 +211,9 @@ export default function GradeReportPageInstructor() {
                                     leftIcon={false}
                                     rightIcon={false}
                                     buttonText={
-                                        isSavingEntries ? "در حال ذخیره..." : "ذخیره جزئیات نمره‌دهی"
+                                        isSavingEntries
+                                            ? "در حال ذخیره..."
+                                            : "ذخیره جزئیات نمره‌دهی"
                                     }
                                     onClick={handleSaveEntries}
                                     disabled={isSavingEntries}
@@ -222,61 +224,60 @@ export default function GradeReportPageInstructor() {
                     </div>
 
                     {/* Students Grades Table */}
-                    <div className="bg-white p-7 rounded-xl shadow-xl overflow-x-auto border border-gray-100 mt-12">
+                    <div className="bg-white p-7 rounded-xl shadow-xl overflow-x-auto border border-gray-100 mt-12" dir="ltr">
                         <h3 className="text-2xl font-bold mb-6 text-gray-800 text-right">
                             گزارش نمرات دانشجویان
                         </h3>
-                        <div className="overflow-y-auto max-h-[380px] relative z-10" dir="ltr">
-                            <table className="w-full border-collapse text-center">
+                        <div className="overflow-y-auto max-h-[380px] relative z-10">
+                            <table className="w-full border-collapse text-center" dir="rtl">
                                 <thead className="sticky top-0 bg-white z-10">
                                     <tr className="border-b border-gray-300 text-gray-400 text-sm">
+                                        <th className="py-3 px-4">نام خانوادگی و نام</th>
+                                        <th className="py-3 px-4">شماره دانشجویی</th>
+                                        {classEntries.map((entry) => (
+                                            <th
+                                                key={`${entry.entryType}-${entry.entryId}`}
+                                                className="py-3 px-4"
+                                            >
+                                                {entry.entryName}
+                                            </th>
+                                        ))}
                                         <th className="py-3 px-4">نهایی</th>
-                                        <th className="py-3 px-4">پایان ترم</th>
-                                        <th className="py-3 px-4">میان ترم</th>
-                                        <th className="py-3 px-4">فاز دوم</th>
-                                        <th className="py-3 px-4">فاز اول</th>
-                                        <th className="py-3 px-4">کوییز ۳</th>
-                                        <th className="py-3 px-4">نام خانوادگی</th>
-                                        <th className="py-3 px-4">نام</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedAndFilteredGrades.length > 0 ? (
-                                        sortedAndFilteredGrades.map((student) => (
+                                    {studentsGradesData.length > 0 ? (
+                                        studentsGradesData.map((student) => (
                                             <tr
-                                                key={student.id}
+                                                key={student.studentId}
                                                 className="border-b border-gray-100 hover:bg-gray-100 transition"
                                             >
-                                                <td className="py-3 px-4 font-bold text-blue-700">
-                                                    {formatToPersianNumber(student.overall)}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {formatToPersianNumber(student.finalTerm)}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {formatToPersianNumber(student.midterm)}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {formatToPersianNumber(student.phase2)}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {formatToPersianNumber(student.phase1)}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {formatToPersianNumber(student.quiz3)}
-                                                </td>
                                                 <td className="py-3 px-4 text-gray-700">
-                                                    {student.lastName}
+                                                    {student.fullName}
                                                 </td>
                                                 <td className="py-3 px-4 font-medium text-gray-900">
-                                                    {student.firstName}
+                                                    {formatToPersianNumber(student.studentId)}
+                                                </td>
+                                                {classEntries.map((entry) => {
+                                                    const key = `${entry.entryType}-${entry.entryId}`;
+                                                    const score = student.scoresByEntry?.[key];
+                                                    return (
+                                                        <td key={key} className="py-3 px-4">
+                                                            {formatToPersianNumber(
+                                                                score !== undefined && score !== null ? score : ""
+                                                            )}
+                                                        </td>
+                                                    );
+                                                })}
+                                                <td className="py-3 px-4 font-bold text-blue-700">
+                                                    {formatToPersianNumber(student.total)}
                                                 </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
                                             <td
-                                                colSpan={8}
+                                                colSpan={classEntries.length + 3}
                                                 className="text-center py-8 text-gray-500 text-lg"
                                             >
                                                 نتیجه‌ای یافت نشد
