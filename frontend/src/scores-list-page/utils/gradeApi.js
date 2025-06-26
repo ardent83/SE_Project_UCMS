@@ -191,3 +191,44 @@ export const fetchStudentClassScores = async (classId) => {
     }
 };
 
+/**
+ * Fetches export file (Excel/PDF) of students' scores for a specific class.
+ * URL: GET /api/StudentClass/{classId}/students/scores/export
+ * @param {string} classId - The ID of the class.
+ * @returns {Promise<Blob>} Blob of the exported file.
+ */
+export const fetchStudentClassScoresExport = async (classId) => {
+  if (!classId) {
+    throw new Error("شناسه کلاس معتبر نیست!");
+  }
+  const apiEndpoint = `${API_BASE_URL}/api/StudentClass/${classId}/students/scores/export`;
+  console.log(`Fetching export file for class ${classId} from: ${apiEndpoint}`);
+
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        'Accept': '*/*',
+      },
+    });
+
+    if (!response.ok) {
+      const error = new Error(`HTTP error! Status: ${response.status}`);
+      error.status = response.status;
+      try {
+        const errorData = await response.json();
+        error.message = errorData.message || error.message;
+      } catch (jsonError) { /* ignore */ }
+      throw error;
+    }
+
+    const blob = await response.blob();
+    return blob;
+  } catch (err) {
+    console.error(`Error fetching export file for class ${classId}:`, err);
+    throw err;
+  }
+};
+
+

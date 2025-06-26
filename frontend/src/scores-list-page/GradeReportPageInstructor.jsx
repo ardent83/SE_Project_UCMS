@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 export default function GradeReportPageInstructor() {
     const { classId } = useParams();
     const { user } = useAuth();
-    const userRole = user?.data?.role?.name || "guest";
+    const userRole = user?.role?.name || "guest";
 
     const {
         studentsGradesData,
@@ -27,6 +27,7 @@ export default function GradeReportPageInstructor() {
         setEditedEntries,
         totalScore,
         saveSuccess,
+        downloadScoresExport
     } = useInstructorGradesData(classId);
 
     const [alertMessage, setAlertMessage] = React.useState("");
@@ -47,10 +48,6 @@ export default function GradeReportPageInstructor() {
         },
         [setEditedEntries]
     );
-
-    const handlePrintClick = () => {
-        console.log("Printing grade report...");
-    };
 
     React.useEffect(() => {
         if (entrySaveError) {
@@ -87,7 +84,7 @@ export default function GradeReportPageInstructor() {
                     <Button
                         leftIcon={false}
                         buttonText={"دریافت گزارش"}
-                        onClick={handlePrintClick}
+                        onClick={downloadScoresExport}
                         className="bg-gray-100 hover:bg-gray-200 text-gray-700 w-auto border border-gray-300 shadow-sm"
                         rightIconComponent={
                             <svg

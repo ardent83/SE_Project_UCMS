@@ -3,6 +3,7 @@ import {
   fetchClassEntries,
   updateClassEntries,
   fetchStudentClassScores,
+  fetchStudentClassScoresExport 
 } from "../utils/GradeApi";
 import { formatToPersianNumber } from "../utils/formatters";
 
@@ -79,6 +80,27 @@ export const useInstructorGradesData = (classId) => {
     }
   }, [classId]);
 
+const downloadScoresExport = async () => {
+  try {
+    const blob = await fetchStudentClassScoresExport(classId);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+
+    // نام فایل مناسب با فرمت واقعی
+    a.download = `Scores_Report_Class_${classId}.xlsx`;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error(err);
+    alert('خطا در دانلود فایل گزارش');
+  }
+};
+
+
   // Handle input changes in table
   const handleEntryChange = useCallback((entryType, entryId, field, value) => {
     const key = `${entryType}-${entryId}`;
@@ -129,7 +151,7 @@ export const useInstructorGradesData = (classId) => {
 
       if (result.success) {
         await loadClassEntries();
-        await loadStudentClassScores(); // بروزرسانی API جدید بعد از ذخیره
+        await loadStudentClassScores(); 
       } else {
         setEntrySaveError(result.message || "خطا در ذخیره تغییرات نمره‌دهی.");
       }
@@ -250,5 +272,6 @@ export const useInstructorGradesData = (classId) => {
     totalScore,
     setTotalScore,
     studentScores,
+    downloadScoresExport
   };
 };
