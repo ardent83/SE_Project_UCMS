@@ -32,14 +32,14 @@ const GroupList = ({ teams, userRole, currentUserId, onAddGroupClick, onDeleteTe
                             با ایجاد گروه‌ها، اعضا را سازماندهی و وظایف را تقسیم‌بندی کنید.
                         </p>
                         {userRole === "Instructor" && (
-                            <button
+                            <Button
+                                rightIcon={false}
+                                buttonText={"ایجاد گروه جدید"}
                                 onClick={onAddGroupClick}
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full flex items-center gap-2 transition-colors duration-200 shadow-md"
+                                className="w-35 border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
+                                leftIconComponent={<Add size="20" variant="Linear" />}
                                 data-testid="create-group-empty-state-button" // Added data-testid
-                            >
-                                <Add size="20" variant="Outline" />
-                                <span>ایجاد گروه جدید</span>
-                            </button>
+                            />
                         )}
                     </div>
                 ) : (
