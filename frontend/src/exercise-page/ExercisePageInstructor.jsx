@@ -108,6 +108,16 @@ const ExercisePageForInstructor = () => {
                                 }
                             />
                         </div>
+                        <div title="ویرایش تمرین" className="cursor-pointer">
+                            <Edit2
+                                size="30"
+                                variant="Bulk"
+                                color="#08146f"
+                                onClick={() =>
+                                    handleEditExerciseClick(currentExercise.exerciseId)
+                                }
+                            />
+                        </div>
                         <div title="حذف تمرین" className="cursor-pointer">
                             <Trash
                                 size="30"
@@ -118,16 +128,6 @@ const ExercisePageForInstructor = () => {
                                         currentExercise.exerciseId,
                                         currentExercise.title
                                     )
-                                }
-                            />
-                        </div>
-                        <div title="ویرایش تمرین" className="cursor-pointer">
-                            <Edit2
-                                size="30"
-                                variant="Bulk"
-                                color="#08146f"
-                                onClick={() =>
-                                    handleEditExerciseClick(currentExercise.exerciseId)
                                 }
                             />
                         </div>
