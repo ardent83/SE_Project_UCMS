@@ -36,14 +36,37 @@ const PhasePage = () => {
     const navigate = useNavigate();
 
     const groupMembers = {
-        1: ["عضو ۱", "عضو ۲"],
-        2: ["عضو ۱", "عضو ۲", "عضو ۳"],
-        3: ["عضو ۱", "عضو ۲"],
-        4: ["عضو ۱"],
-        5: ["عضو ۱", "عضو ۲", "عضو ۳", "عضو ۴"],
-        6: ["عضو ۱", "عضو ۲"],
-        7: ["عضو ۱"],
+        1: [
+            { id: "401234567", firstName: "علی", lastName: "رضایی" },
+            { id: "401234568", firstName: "زهرا", lastName: "کاظمی" },
+        ],
+        2: [
+            { id: "401234569", firstName: "حسین", lastName: "کریمی" },
+            { id: "401234570", firstName: "مریم", lastName: "نوری" },
+            { id: "401234571", firstName: "سارا", lastName: "احمدی" },
+        ],
+        3: [
+            { id: "401234572", firstName: "محمد", lastName: "محمدی" },
+            { id: "401234573", firstName: "عاطفه", lastName: "صادقی" },
+        ],
+        4: [
+            { id: "401234574", firstName: "رضا", lastName: "حسینی" },
+        ],
+        5: [
+            { id: "401234575", firstName: "لیلا", lastName: "میرزایی" },
+            { id: "401234576", firstName: "امیر", lastName: "کوهستانی" },
+            { id: "401234577", firstName: "ندا", lastName: "جعفری" },
+            { id: "401234578", firstName: "مهسا", lastName: "رستمی" },
+        ],
+        6: [
+            { id: "401234579", firstName: "رضا", lastName: "علیزاده" },
+            { id: "401234580", firstName: "نگار", lastName: "قاسمی" },
+        ],
+        7: [
+            { id: "401234581", firstName: "سعید", lastName: "کریمی" },
+        ],
     };
+
 
     useEffect(() => {
         const fetchPhase = async () => {
@@ -259,10 +282,10 @@ const PhasePage = () => {
                         <GradeUpload />
                     </DropdownSection>
 
-                    {selectedGroup && (
+                    {selectedGroup !== null && (
                         <GradeForm
-                            groupId={selectedGroup}
-                            members={groupMembers[selectedGroup] || []}
+                            groupId={Number(selectedGroup)}  // تبدیل به عدد
+                            members={groupMembers[Number(selectedGroup)] || []}
                             grades={grades}
                             onChange={handleGradeChange}
                             onSubmit={handleSubmitGrades}
@@ -271,6 +294,7 @@ const PhasePage = () => {
                             error={error}
                         />
                     )}
+
                 </div>
             )}
         </div>

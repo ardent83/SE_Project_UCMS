@@ -48,7 +48,6 @@ export const getPhaseInformationForStudent = async (phaseId) => {
  * @param {string} phaseTitle - The title of the project for naming the downloaded file.
  * @returns {Promise<void>}
  */
-
 export const downloadPhaseFileApi = async (phaseId,userRole,phaseFileContentType,phaseTitle) => {
     let downloadEndpoint;
     if (userRole === "Instructor") {
