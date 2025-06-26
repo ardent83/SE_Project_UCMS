@@ -1,3 +1,4 @@
+// src/hooks/useStudentGradesData.js
 import { useState, useEffect, useCallback } from "react";
 import { fetchStudentOverallScores, fetchStudentDetailedScoresByClassId } from "../utils/GradeApi";
 import { formatToPersianNumber } from '../utils/formatters'; // Corrected import path from global utils
@@ -44,10 +45,8 @@ export const useStudentGradesData = () => {
     const loadDetailedScores = useCallback(async (classId) => {
         if (!classId) {
             setDetailedScores([]); // Clear if no class selected
-            // setLoading(false); // Optional: if you want loading specific to detailed grades
             return;
         }
-        // setLoading(true); // Optional: if you want loading specific to detailed grades
         setError(null); // Clear previous errors for detailed scores
         try {
             const data = await fetchStudentDetailedScoresByClassId(classId);
@@ -57,7 +56,9 @@ export const useStudentGradesData = () => {
             setError(err.message || "خطا در بارگذاری جزئیات نمرات درس.");
             setDetailedScores([]); // Clear detailed scores on error
         } finally {
-            // setLoading(false); // Optional: if you want loading specific to detailed grades
+            // Optional: You might want to manage a separate loading state for detailed scores
+            // if their loading time is significant and you want to show a spinner
+            // specifically for that section. For now, we'll rely on the global 'loading'.
         }
     }, []); // No external dependencies needed for this callback
 
@@ -76,7 +77,7 @@ export const useStudentGradesData = () => {
         score.classTitle.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // No need to filter detailedScores unless there's specific UI filtering for them
+    // detailedScores is already filtered by selectedClassId via the API call
     const currentDetailedScores = detailedScores;
 
     return {
@@ -84,8 +85,8 @@ export const useStudentGradesData = () => {
         detailedScores: currentDetailedScores, // Return current detailed scores
         selectedClassId,
         setSelectedClassId,
-        loading, // Return loading state
-        error,   // Return error state
+        loading, // Return global loading state
+        error,   // Return global error state
         searchQuery,
         setSearchQuery,
         formatToPersianNumber, // Re-export for use in component
