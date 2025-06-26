@@ -139,6 +139,7 @@ function App() {
 
             {/* --- Grade reports Routes (Correct Order) --- */}
             <Route path="/grade-reports" element={<GradeReportPage />} />
+            <Route path="/grade-reports/:classId" element={<GradeReportPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Route>
