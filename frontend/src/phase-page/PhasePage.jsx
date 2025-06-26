@@ -15,6 +15,7 @@ import DropdownSection from "./components/DropdownSection.jsx";
 import GradeSection from "./components/UploadGradeDropdown.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
+import { getStudentsOfTeam,setScoreForEachStudent } from "./utils/PhaseSubmissionForInstructorApi.js";
 import {
     getPhaseInformationForInstructor,
     getPhaseInformationForStudent,
@@ -42,36 +43,8 @@ const PhasePage = () => {
     const [error, setError] = useState("");
     const [submissionsError, setSubmissionsError] = useState(null);
     const [loadingSubmissions, setLoadingSubmissions] = useState(false);
-
+    const [groupMembers, setGroupMembers] = useState({});
     const navigate = useNavigate();
-
-    const groupMembers = {
-        1: [
-            { id: "401234567", firstName: "علی", lastName: "رضایی" },
-            { id: "401234568", firstName: "زهرا", lastName: "کاظمی" },
-        ],
-        2: [
-            { id: "401234569", firstName: "حسین", lastName: "کریمی" },
-            { id: "401234570", firstName: "مریم", lastName: "نوری" },
-            { id: "401234571", firstName: "سارا", lastName: "احمدی" },
-        ],
-        3: [
-            { id: "401234572", firstName: "علی", lastName: "احمدی" },
-            { id: "401234573", firstName: "مهسا", lastName: "محمدی" },
-        ],
-        4: [{ id: "401234574", firstName: "رضا", lastName: "حسینی" }],
-        5: [
-            { id: "401234575", firstName: "لیلا", lastName: "میرزایی" },
-            { id: "401234576", firstName: "امیر", lastName: "کوهستانی" },
-            { id: "401234577", firstName: "ندا", lastName: "جعفری" },
-            { id: "401234578", firstName: "مهسا", lastName: "رستمی" },
-        ],
-        6: [
-            { id: "401234579", firstName: "رضا", lastName: "علیزاده" },
-            { id: "401234580", firstName: "نگار", lastName: "قاسمی" },
-        ],
-        7: [{ id: "401234581", firstName: "سعید", lastName: "کریمی" }],
-    };
 
     useEffect(() => {
         const fetchPhase = async () => {
@@ -120,19 +93,51 @@ const PhasePage = () => {
         fetchSubmissions();
     }, [numericPhaseId, userRole]);
 
-    const handleOpenGradeForm = (groupId) => {
-        const existing = submittedGroups[groupId];
+    const handleOpenGradeForm = async (groupId) => {
         setSelectedGroup(groupId);
-        setReadOnly(!!existing?.submitted);
-        setGrades(existing?.grades || {});
+        setReadOnly(false);
         setError("");
+
+        try {
+            if (!groupMembers[groupId]) {
+                const result = await getStudentsOfTeam(phaseId, groupId);
+
+                const fetchedMembers = result.data.map((student) => ({
+                    id: student.id,
+                    studentNumber: student.studentNumber,
+                    firstName: student.studentName.split(" ")[1] || "",
+                    lastName: student.studentName.split(" ")[0] || "",
+                    score: student.score,
+                }));
+
+                setGroupMembers((prev) => ({ ...prev, [groupId]: fetchedMembers }));
+
+                const initialGrades = {};
+                fetchedMembers.forEach((member) => {
+                    initialGrades[member.id] = grades[member.id] !== undefined ? grades[member.id] : member.score;
+                });
+                setGrades(initialGrades);
+            } else {
+                const existingMembers = groupMembers[groupId];
+                const existingGrades = {};
+                existingMembers.forEach((member) => {
+                    existingGrades[member.id] = grades[member.id] !== undefined ? grades[member.id] : member.score;
+                });
+                setGrades(existingGrades);
+            }
+
+            const existing = submittedGroups[groupId];
+            setReadOnly(!!existing?.submitted);
+        } catch (err) {
+            setError("خطا در دریافت اعضای گروه");
+        }
     };
 
     const handleGradeChange = (memberId, value) => {
         setGrades((prev) => ({ ...prev, [memberId]: value }));
     };
 
-    const handleSubmitGrades = () => {
+    const handleSubmitGrades = async () => {
         const members = groupMembers[selectedGroup] || [];
         const allGraded = members.every(
             (member) => grades[member.id] !== undefined && grades[member.id] !== ""
@@ -143,15 +148,51 @@ const PhasePage = () => {
             return;
         }
 
-        setSubmittedGroups((prev) => ({
-            ...prev,
-            [selectedGroup]: { grades, submitted: true },
-        }));
-
-        setSelectedGroup(null);
-        setReadOnly(false);
         setError("");
+
+        try {
+            for (const member of members) {
+                const score = Number(grades[member.id]);
+                if (isNaN(score)) {
+                    throw new Error(`نمره ${member.id} معتبر نیست.`);
+                }
+                const response = await setScoreForEachStudent(member.id, score);
+                if (!response.success) {
+                    throw new Error(response.message || "خطا در ثبت نمره.");
+                }
+            }
+            setGroupMembers((prev) => {
+                const updatedMembers = prev[selectedGroup].map((member) => ({
+                    ...member,
+                    score: grades[member.id] !== undefined ? Number(grades[member.id]) : member.score,
+                }));
+                return {
+                    ...prev,
+                    [selectedGroup]: updatedMembers,
+                };
+            });
+
+            setGrades((prevGrades) => {
+                const updatedGrades = { ...prevGrades };
+                members.forEach((member) => {
+                    updatedGrades[member.id] = Number(grades[member.id]);
+                });
+                return updatedGrades;
+            });
+
+            setSubmittedGroups((prev) => ({
+                ...prev,
+                [selectedGroup]: { grades, submitted: true },
+            }));
+
+            setSelectedGroup(null);
+            setReadOnly(false);
+            setError("");
+        } catch (err) {
+            setError(err.message || "خطایی در ثبت نمرات رخ داد.");
+        }
     };
+
 
     const handleCancel = () => {
         setSelectedGroup(null);
@@ -326,6 +367,7 @@ const PhasePage = () => {
                             readOnly={readOnly}
                             error={error}
                         />
+
                     )}
                 </div>
             )}

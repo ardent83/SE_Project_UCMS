@@ -24,7 +24,7 @@ const SubmissionTable = ({ submissions, handleOpenGradeForm, phaseId, handleDown
         <div className="overflow-y-auto max-h-72">
             <div
                 title="دانلود همه فایل‌ها"
-                className="cursor-pointer inline-block mr-230"
+                className="cursor-pointer inline-block mr-230 mt-5"
                 onClick={() => handleDownloadAllSubmissionFiles(phaseId)}
                 data-testid="download-phase-icon"
             >
@@ -55,25 +55,12 @@ const SubmissionTable = ({ submissions, handleOpenGradeForm, phaseId, handleDown
                             <td className="px-4 py-2">{formatDate(item.submittedAt)}</td>
                             <td className="px-4 py-2">{item.fileType}</td>
                             <td className="px-4 py-2">
-                                <div className="flex items-center gap-2 justify-center">
-                                    {item.score !== null ? (
-                                        <button
-                                            className="text-green-500 hover:text-green-700 font-semibold cursor-pointer underline"
-                                            title="مشاهده نمرات ثبت شده"
-                                            onClick={() => handleOpenGradeForm(item.id)}
-                                        >
-                                            {item.score}
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="bg-red-400 hover:bg-red-600 border border-none text-white px-2 py-1 rounded cursor-pointer"
-                                            title="ثبت نمره"
-                                            onClick={() => handleOpenGradeForm(item.id)}
-                                        >
-                                            ثبت نشده
-                                        </button>
-                                    )}
-                                </div>
+                                <button
+                                    onClick={() => handleOpenGradeForm(item.teamId)}
+                                    className="text-red-600 hover:text-red-700 cursor-pointer"
+                                >
+                                    ثبت نمره
+                                </button>
                             </td>
                             <td className="py-2 px-4 text-sm">
                                 <button
