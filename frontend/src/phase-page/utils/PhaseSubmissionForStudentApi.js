@@ -79,7 +79,7 @@ export const setFinalSubmission = async (submissionId, isFinalStatus) => {
     try {
         const response = await fetch(apiEndpoint, {
             method: "PATCH",
-            credentials: "include", // اگر کوکی یا auth داری
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchPhaseSubmissionsApi, setFinalSubmission,downloadSubmissionFileApi  } from "../../utils/PhaseSubmissionApi.js";
+import { fetchPhaseSubmissionsApi, setFinalSubmission,downloadSubmissionFileApi  } from "../../utils/PhaseSubmissionForStudentApi.js";
 import { useParams } from "react-router-dom";
 
 export default function PhaseSubmissionsTab({ phaseTitle }) {
@@ -25,7 +25,6 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
             }
         } catch (err) {
             console.error(err);
-            setError("خطا در بارگیری ارسال‌ها");
         }
     };
 
@@ -35,7 +34,6 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
             await downloadSubmissionFileApi(submission.id, "Student", "/"+submission.fileType);
         } catch (err) {
             console.error(err);
-            setError("خطا در دانلود فایل ارسال شده");
         }
     };
 
@@ -71,45 +69,53 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
                     </tr>
                     </thead>
                     <tbody>
-                    {submissions.map((submission) => (
-                        <tr
-                            key={submission.id}
-                            className={`border-b border-gray-100 transition ${
-                                selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"
-                            }`}
-                        >
-                            <td className="py-3 px-4">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedId === submission.id}
-                                    onChange={() => handleCheckboxChange(submission.id)}
-                                    className="cursor-pointer"
-                                />
+                    {submissions.length === 0 ? (
+                        <tr>
+                            <td colSpan="10" className="py-6 text-gray-400 text-sm">
+                                فایلی آپلود نشده است
                             </td>
-                            <td className="py-3 px-4 text-sm text-big-stone-600">{phaseTitle}</td>
-                            <td className="py-3 px-4 text-sm">
-                                {new Date(submission.submittedAt).toLocaleString("fa-IR")}
-                            </td>
-                            <td className="py-3 px-4 text-gray-700 text-sm">{submission.fileType}</td>
-                            <td className="py-3 px-4 text-sm">
-                                {submission.score !== null ? (
-                                    <span className="text-green-700 font-semibold">{submission.score}</span>
-                                ) : (
-                                    <span className="text-gray-400">–</span>
-                                )}
-                            </td>
-                            <td className="py-3 px-4 text-sm">
-                                <button
-                                    onClick={() => handleDownload(submission)}
-                                    className="text-big-stone-600 hover:underline cursor-pointer"
-                                >
-                                    دانلود
-                                </button>
-                            </td>
-
                         </tr>
-                    ))}
+                    ) : (
+                        submissions.map((submission) => (
+                            <tr
+                                key={submission.id}
+                                className={`border-b border-gray-100 transition ${
+                                    selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"
+                                }`}
+                            >
+                                <td className="py-3 px-4">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedId === submission.id}
+                                        onChange={() => handleCheckboxChange(submission.id)}
+                                        className="cursor-pointer"
+                                    />
+                                </td>
+                                <td className="py-3 px-4 text-sm text-big-stone-600">{phaseTitle}</td>
+                                <td className="py-3 px-4 text-sm">
+                                    {new Date(submission.submittedAt).toLocaleString("fa-IR")}
+                                </td>
+                                <td className="py-3 px-4 text-gray-700 text-sm">{submission.fileType}</td>
+                                <td className="py-3 px-4 text-sm">
+                                    {submission.score !== null ? (
+                                        <span className="text-green-700 font-semibold">{submission.score}</span>
+                                    ) : (
+                                        <span className="text-gray-400">–</span>
+                                    )}
+                                </td>
+                                <td className="py-3 px-4 text-sm">
+                                    <button
+                                        onClick={() => handleDownload(submission)}
+                                        className="text-big-stone-600 hover:underline cursor-pointer"
+                                    >
+                                        دانلود
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                     </tbody>
+
                 </table>
             </div>
         </div>

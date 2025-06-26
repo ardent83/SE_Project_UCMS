@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { submitStudentSubmissionApi } from "../../utils/PhaseSubmissionApi.js";
+import { submitStudentSubmissionApi } from "../../utils/PhaseSubmissionForStudentApi.js";
 
 const PhaseSubmitTab = () => {
     const { phaseId } = useParams();
@@ -11,6 +11,7 @@ const PhaseSubmitTab = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        console.log(file);
         if (file) {
             setSelectedFile(file);
             setStatusMessage("");
@@ -33,7 +34,7 @@ const PhaseSubmitTab = () => {
             if (err?.message === "FileIsNeeded") {
                 setStatusMessage("❌ لطفاً یک فایل انتخاب کنید.");
             } else {
-                setStatusMessage(`❌ خطا در ارسال فایل: ${err.message || "نامشخص"}`);
+                setStatusMessage(` خطا در ارسال فایل: ${err.message || "نامشخص"}`);
             }
         } finally {
             setIsSubmitting(false);
@@ -54,7 +55,7 @@ const PhaseSubmitTab = () => {
                     آپلود فایل
                     <input
                         type="file"
-                        accept=".pdf,.zip"
+                        accept=".pdf,.zip,.rar,.txt"
                         className="hidden"
                         onChange={handleFileChange}
                     />
