@@ -8,7 +8,7 @@ import {
     DirectboxNotif,
     PresentionChart,
     TickCircle,
-    ArrowSwapVertical
+    ArrowSwapVertical,
 } from "iconsax-react";
 import { useExerciseDataForInstructor } from "./hooks/useExerciseDataForInstructor";
 
@@ -16,7 +16,6 @@ import DropdownSection from "./components/DropdownSection.jsx";
 import GradeUpload from "./components/GradeDropdownSection.jsx";
 import Modal from "../components/Modal";
 import DeleteConfirmModalContent from "../components/DeleteConfirmPopover";
-
 
 const ExercisePageForInstructor = () => {
     const { exerciseId } = useParams();
@@ -51,15 +50,22 @@ const ExercisePageForInstructor = () => {
         setSortOrder,
         formatPersianDate,
         formatPersianTime,
-    } = useExerciseDataForInstructor(exerciseId, 'Instructor');
+    } = useExerciseDataForInstructor(exerciseId, "Instructor");
 
-    if (loading) return <div className="text-center mt-10">در حال بارگذاری تمرین...</div>;
-    if (error) return <div className="text-center text-red-500 mt-10">خطا: {error}</div>;
-    if (!currentExercise) return <div className="text-center text-gray-500 mt-10">تمرین مورد نظر یافت نشد یا وجود ندارد.</div>;
+    if (loading)
+        return <div className="text-center mt-10">در حال بارگذاری تمرین...</div>;
+    if (error)
+        return <div className="text-center text-red-500 mt-10">خطا: {error}</div>;
+    if (!currentExercise)
+        return (
+            <div className="text-center text-gray-500 mt-10">
+                تمرین مورد نظر یافت نشد یا وجود ندارد.
+            </div>
+        );
 
     const handleSortClick = (columnValue) => {
         if (sortBy === columnValue) {
-            setSortOrder(prev => (prev === 1 ? 2 : 1));
+            setSortOrder((prev) => (prev === 1 ? 2 : 1));
         } else {
             setSortBy(columnValue);
             setSortOrder(1);
@@ -78,17 +84,17 @@ const ExercisePageForInstructor = () => {
     };
 
     return (
-        <div className="w-full max-w-270 p-6">
+        <div className="w-full max-w-[90rem] mx-auto px-10 text-bg-blue">
             <div className="w-full flex flex-col items-center">
                 {/* Exercise Title and Actions */}
                 <div
-                    className="w-full flex justify-between items-center px-10 pb-10"
+                    className="w-full flex justify-between items-center pb-10"
                     dir="rtl"
                 >
                     <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">
                         {currentExercise.title}
                     </h2>
-                    <div className="flex gap-4 text-gray-600 mt-5">
+                    <div className="flex gap-4 text-gray-600 mt-15">
                         <div title="دانلود فایل تمرین" className="cursor-pointer">
                             <DirectboxNotif
                                 size="30"
@@ -130,25 +136,30 @@ const ExercisePageForInstructor = () => {
 
                 {/* Exercise Details */}
                 <div
-                    className="w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 border-b-1 border-[#CED8E5F8]"
+                    className="w-full pt-4 space-y-4 text-body-01 text-gray-700 border-b-1 border-[#CED8E5F8]"
                     dir="rtl"
                 >
-                    <div className="text-xl flex items-center gap-2">
+                    <div className="text-lg flex items-center gap-2">
                         <Calendar size="25" variant="Linear" color="#495D72" />
                         <span>
                             زمان شروع: {formatPersianDate(currentExercise.startDate)} -{" "}
                             {formatPersianTime(currentExercise.startDate)}
                         </span>
                     </div>
-                    <div className="text-xl flex items-center gap-2">
+                    <div className="text-lg flex items-center gap-2">
                         <PresentionChart size="25" variant="Linear" color="#495D72" />
                         <span>
                             مهلت ارسال: {formatPersianDate(currentExercise.endDate)} -{" "}
                             {formatPersianTime(currentExercise.endDate)}
                         </span>
                     </div>
-                    <div className="flex items-start gap-2 mb-10">
-                        <Information size="25" variant="Linear" color="#495D72" />
+                    <div className="text-lg flex items-start gap-2 mb-10">
+                        <Information
+                            size="25"
+                            variant="Linear"
+                            color="#495D72"
+                            className="flex-shrink-0 mt-1"
+                        />
                         <p className="leading-relaxed">{currentExercise.description}</p>
                     </div>
                 </div>
@@ -221,9 +232,7 @@ const ExercisePageForInstructor = () => {
                                                 <td className="px-4 py-2">
                                                     {submission.formattedSubmissionTime}
                                                 </td>
-                                                <td className="px-4 py-2">
-                                                    {submission.fileType}
-                                                </td>
+                                                <td className="px-4 py-2">{submission.fileType}</td>
                                                 <td className="px-4 py-2">
                                                     <div className="flex items-center justify-center gap-2">
                                                         <div className="flex items-center gap-1 border border-gray-300 rounded-md overflow-hidden bg-white">
@@ -232,9 +241,8 @@ const ExercisePageForInstructor = () => {
                                                                 min="0"
                                                                 max={currentExercise.exerciseScore}
                                                                 value={
-                                                                    (inlineScores &&
-                                                                        inlineScores[submission.id] !==
-                                                                            undefined)
+                                                                    inlineScores &&
+                                                                        inlineScores[submission.id] !== undefined
                                                                         ? inlineScores[submission.id]
                                                                         : ""
                                                                 }
@@ -244,34 +252,28 @@ const ExercisePageForInstructor = () => {
                                                                         e.target.value
                                                                     )
                                                                 }
-                                                                className={`w-16 px-1 py-1 text-center text-sm border-none focus:outline-none ${
-                                                                    submission.grade !== null &&
-                                                                    submission.grade !== undefined
-                                                                        ? 'text-gray-500 bg-gray-50'
-                                                                        : 'text-gray-800' // Default text color
-                                                                }`}
+                                                                className={`w-16 px-1 py-1 text-center text-sm border-none focus:outline-none ${submission.grade !== null &&
+                                                                        submission.grade !== undefined
+                                                                        ? "text-gray-500 bg-gray-50"
+                                                                        : "text-gray-800" // Default text color
+                                                                    }`}
                                                                 placeholder="نمره"
                                                             />
                                                             <button
                                                                 // <-- تغییرات استایل دکمه ثبت -->
-                                                                className={`px-2 py-1 flex items-center justify-center gap-1 rounded-md text-white font-semibold transition-all duration-300 transform ${
-                                                                    inlineSavingSubmissionId === submission.id
-                                                                        ? 'bg-gray-500 cursor-not-allowed' // در حال ذخیره (خاکستری‌تر و غیرفعال)
-                                                                        : 'bg-blue-800 hover:bg-blue-900 active:scale-95 shadow-md hover:shadow-lg' // حالت عادی (آبی تیره، با هاور و سایه)
-                                                                }`}
+                                                                className={`px-2 py-1 flex items-center justify-center gap-1 rounded-md text-white font-semibold transition-all duration-300 transform ${inlineSavingSubmissionId === submission.id
+                                                                        ? "bg-gray-500 cursor-not-allowed" // در حال ذخیره (خاکستری‌تر و غیرفعال)
+                                                                        : "bg-blue-800 hover:bg-blue-900 active:scale-95 shadow-md hover:shadow-lg" // حالت عادی (آبی تیره، با هاور و سایه)
+                                                                    }`}
                                                                 onClick={() =>
                                                                     handleSubmitInlineScore(submission.id)
                                                                 }
                                                                 disabled={
-                                                                    inlineSavingSubmissionId ===
-                                                                    submission.id
+                                                                    inlineSavingSubmissionId === submission.id
                                                                 }
                                                             >
-                                                                {inlineSavingSubmissionId ===
-                                                                submission.id ? (
-                                                                    <span className="animate-pulse">
-                                                                        ...
-                                                                    </span>
+                                                                {inlineSavingSubmissionId === submission.id ? (
+                                                                    <span className="animate-pulse">...</span>
                                                                 ) : (
                                                                     <>
                                                                         <TickCircle
@@ -307,7 +309,7 @@ const ExercisePageForInstructor = () => {
                         </div>
                     </DropdownSection>
 
-                    <DropdownSection title="ثبت نمره کلی / ارسال" bgColor="#5C6BC0">
+                    <DropdownSection title="ثبت نمره کلی" bgColor="#5C6BC0">
                         <GradeUpload
                             onDownloadTemplate={handleDownloadScoreTemplate}
                             onFileChange={handleScoreFileChange}
