@@ -121,7 +121,7 @@ export const setFinalSubmission = async (submissionId, isFinalStatus) => {
 export const downloadSubmissionFileApi = async (phaseSubmissionId ,userRole,submissionContentType) => {
     let downloadEndpoint;
     if (userRole === "Instructor") {
-        downloadEndpoint = `${apiBaseUrl}/api/PhaseSubmissions/instructor${phaseSubmissionId}`;
+        downloadEndpoint = `${apiBaseUrl}/api/PhaseSubmissions/instructor/${phaseSubmissionId}`;
     } else if (userRole === "Student") {
         downloadEndpoint = `${apiBaseUrl}/api/PhaseSubmissions/student/${phaseSubmissionId}`;
     } else {

@@ -1,12 +1,17 @@
 import React from "react";
-import {downloadSubmissionFileApi} from "../utils/PhaseSubmissionForStudentApi.js";
+import { downloadSubmissionFileApi } from "../utils/PhaseSubmissionForStudentApi.js";
+import { DocumentDownload } from "iconsax-react";
 
 const formatDate = (isoString) => {
     const date = new Date(isoString);
-    return date.toLocaleDateString("fa-IR") + " – ساعت " + date.toLocaleTimeString("fa-IR", { hour: '2-digit', minute: '2-digit' });
+    return (
+        date.toLocaleDateString("fa-IR") +
+        " – ساعت " +
+        date.toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" })
+    );
 };
 
-const handleDownload = async (item) => {
+const handleDownloadSubmissionFile = async (item) => {
     try {
         await downloadSubmissionFileApi(item.id, "Instructor", "/" + item.fileType);
     } catch (err) {
@@ -14,10 +19,19 @@ const handleDownload = async (item) => {
     }
 };
 
-const SubmissionTable = ({ submissions, handleOpenGradeForm }) => {
+const SubmissionTable = ({ submissions, handleOpenGradeForm, phaseId, handleDownloadAllSubmissionFiles }) => {
     return (
         <div className="overflow-y-auto max-h-72">
-            <table className="w-full text-center border-collapse text-sm">
+            <div
+                title="دانلود همه فایل‌ها"
+                className="cursor-pointer inline-block mr-230"
+                onClick={() => handleDownloadAllSubmissionFiles(phaseId)}
+                data-testid="download-phase-icon"
+            >
+                <DocumentDownload size="30" variant="Bulk" color="#08146f" />
+            </div>
+
+            <table className="w-full text-center border-collapse text-sm mt-4">
                 <thead className="bg-gray-100 sticky top-0 z-10">
                 <tr>
                     <th className="px-4 py-2">نام گروه</th>
@@ -30,7 +44,9 @@ const SubmissionTable = ({ submissions, handleOpenGradeForm }) => {
                 <tbody>
                 {submissions.length === 0 ? (
                     <tr>
-                        <td colSpan={5} className="py-4 text-gray-500">هیچ ارسال فازی وجود ندارد.</td>
+                        <td colSpan={5} className="py-4 text-gray-500">
+                            هیچ ارسال فازی وجود ندارد.
+                        </td>
                     </tr>
                 ) : (
                     submissions.map((item) => (
@@ -61,7 +77,7 @@ const SubmissionTable = ({ submissions, handleOpenGradeForm }) => {
                             </td>
                             <td className="py-2 px-4 text-sm">
                                 <button
-                                    onClick={() => handleDownload(item)}
+                                    onClick={() => handleDownloadSubmissionFile(item)}
                                     className="text-big-stone-600 hover:underline cursor-pointer"
                                 >
                                     دانلود
