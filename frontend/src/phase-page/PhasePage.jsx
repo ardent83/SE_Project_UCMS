@@ -127,7 +127,7 @@ const PhasePage = () => {
         let filePath=phaseInfo?.phaseFilePath;
         const lastDotIndex = filePath.lastIndexOf('.');
         const extension = lastDotIndex !== -1 ? filePath.substring(lastDotIndex + 1) : '';
-        filePath="application/"+extension;
+        filePath="/"+extension;
         try {
             await downloadPhaseFileApi(
                 phaseId,
@@ -165,8 +165,7 @@ const PhasePage = () => {
 
                     {userRole === "Student" && (
                         <div className="flex gap-4 text-gray-600 mt-5">
-                            <div title="دانلود فایل" className="cursor-pointer" onClick={() => console.log("Download icon clicked!")}
-                            >
+                            <div title="دانلود فایل" className="cursor-pointer" onClick={handleDownloadFile} data-testid="download-phase-icon">
                                 <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
                             </div>
                         </div>
@@ -221,7 +220,7 @@ const PhasePage = () => {
                     </div>
 
                     {activeTab === "ارسال پاسخ" && <PhaseSubmitTab />}
-                    {activeTab === "ارسال‌ها" && <PhaseSubmissionsTab />}
+                    {activeTab === "ارسال‌ها" && <PhaseSubmissionsTab phaseTitle={phaseInfo?.title} />}
                 </>
             )}
 
