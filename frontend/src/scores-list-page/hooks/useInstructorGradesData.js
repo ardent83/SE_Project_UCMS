@@ -3,7 +3,7 @@ import {
   fetchClassEntries,
   updateClassEntries,
   fetchStudentClassScores,
-  fetchStudentClassScoresExport 
+  fetchStudentClassScoresExport
 } from "../utils/GradeApi";
 import { formatToPersianNumber } from "../utils/formatters";
 
@@ -80,25 +80,25 @@ export const useInstructorGradesData = (classId) => {
     }
   }, [classId]);
 
-const downloadScoresExport = async () => {
-  try {
-    const blob = await fetchStudentClassScoresExport(classId);
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
+  const downloadScoresExport = async () => {
+    try {
+      const blob = await fetchStudentClassScoresExport(classId);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
 
-    // نام فایل مناسب با فرمت واقعی
-    a.download = `Scores_Report_Class_${classId}.xlsx`;
+      // نام فایل مناسب با فرمت واقعی
+      a.download = `Scores_Report_Class_${classId}.xlsx`;
 
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error(err);
-    alert('خطا در دانلود فایل گزارش');
-  }
-};
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('خطا در دانلود فایل گزارش');
+    }
+  };
 
 
   // Handle input changes in table
@@ -151,7 +151,7 @@ const downloadScoresExport = async () => {
 
       if (result.success) {
         await loadClassEntries();
-        await loadStudentClassScores(); 
+        await loadStudentClassScores();
       } else {
         setEntrySaveError(result.message || "خطا در ذخیره تغییرات نمره‌دهی.");
       }
@@ -225,23 +225,27 @@ const downloadScoresExport = async () => {
   }, []);
 
   // Filtered and sorted student grades
-  const finalFilteredAndSortedGrades = [...studentsGradesData]
-    .filter((grade) => {
-      const lowerSearch = searchQuery.trim().toLowerCase();
-      return grade.fullName.toLowerCase().includes(lowerSearch);
-    })
-    .sort((a, b) => {
-      if (!sortConfig.key) return 0;
-      const aValue = a[sortConfig.key] || "";
-      const bValue = b[sortConfig.key] || "";
-      return sortConfig.direction === "asc"
-        ? aValue > bValue
-          ? 1
-          : -1
-        : aValue < bValue
+const finalFilteredAndSortedGrades = [...studentsGradesData]
+  .filter((grade) => {
+    const lowerSearch = searchQuery.trim().toLowerCase();
+    return (
+      grade.fullName?.toLowerCase().includes(lowerSearch) ||
+      String(grade.studentId).toLowerCase().includes(lowerSearch)
+    );
+  })
+  .sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    const aValue = a[sortConfig.key] || "";
+    const bValue = b[sortConfig.key] || "";
+    return sortConfig.direction === "asc"
+      ? aValue > bValue
         ? 1
-        : -1;
-    });
+        : -1
+      : aValue < bValue
+      ? 1
+      : -1;
+  });
+
 
   // Optional fixed labels for displaying headers
   const fixedDetailedGradesLabels = [
