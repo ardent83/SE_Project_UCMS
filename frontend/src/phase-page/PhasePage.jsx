@@ -12,7 +12,7 @@ import {
 import PhaseSubmitTab from "./components/Tabs/PhaseSubmitTab.jsx";
 import PhaseSubmissionsTab from "./components/Tabs/PhaseSubmissionTab.jsx";
 import DropdownSection from "./components/DropdownSection.jsx";
-import GradeUpload from "./components/GradeDropdownSection.jsx";
+import GradeSection from "./components/GradeDropdownSection.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
 import {
@@ -278,12 +278,12 @@ const PhasePage = () => {
                     </DropdownSection>
 
                     <DropdownSection title="ثبت نمره" bgColor="#5C6BC0">
-                        <GradeUpload />
+                        <GradeSection phaseId={phaseId} />
                     </DropdownSection>
 
                     {selectedGroup !== null && (
                         <GradeForm
-                            groupId={Number(selectedGroup)}  // تبدیل به عدد
+                            groupId={Number(selectedGroup)}
                             members={groupMembers[Number(selectedGroup)] || []}
                             grades={grades}
                             onChange={handleGradeChange}
