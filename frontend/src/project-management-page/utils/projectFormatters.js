@@ -22,7 +22,7 @@ const formatDateTime = (dateObj) => {
         hour: "2-digit",
         minute: "2-digit",
     });
-    return `${formattedDate}، ${formattedTime}`;
+    return `${formattedTime}، ${formattedDate}`;
 };
 
 /**
@@ -40,7 +40,7 @@ export const formatProjectData = (rawProject) => {
     const formattedEndDate = formatDateTime(endDate);
 
     const formattedDateRange = rawProject.startDate && rawProject.endDate
-        ? `${formattedStartDate} - ${formattedEndDate}`
+        ? `${formattedEndDate} - ${formattedStartDate}`
         : "تاریخ نامشخص";
 
 
