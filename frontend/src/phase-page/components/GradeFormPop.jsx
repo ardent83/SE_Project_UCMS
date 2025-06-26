@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { setScoreForEachStudent } from "../utils/PhaseSubmissionForInstructorApi.js"; // مسیر درست رو وارد کن
 
 const GradeForm = ({
                        groupId,
-                       members = [], // array of { id, firstName, lastName }
+                       members = [],
                        grades,
                        onChange,
                        onCancel,
@@ -15,7 +16,7 @@ const GradeForm = ({
     const handleSubmitMemberGrade = async (memberId) => {
         const grade = grades[memberId];
 
-        if (!grade && grade !== 0) {
+        if (grade === "" || grade === undefined || grade === null) {
             setSubmitErrors((prev) => ({
                 ...prev,
                 [memberId]: "نمره وارد نشده است.",
@@ -24,13 +25,11 @@ const GradeForm = ({
         }
 
         try {
-            const res = await fetch("/api/submit-grade", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ groupId, member: memberId, grade }),
-            });
+            const res = await setScoreForEachStudent(memberId, Number(grade));
 
-            if (!res.ok) throw new Error("خطا در ارسال نمره");
+            if (!res.success) {
+                throw new Error(res.message || "خطا در ثبت نمره");
+            }
 
             setSubmitted((prev) => ({ ...prev, [memberId]: true }));
             setSubmitErrors((prev) => ({ ...prev, [memberId]: "" }));
@@ -41,7 +40,7 @@ const GradeForm = ({
         } catch (err) {
             setSubmitErrors((prev) => ({
                 ...prev,
-                [memberId]: "ارسال نمره با خطا مواجه شد.",
+                [memberId]: err.message || "ارسال نمره با خطا مواجه شد.",
             }));
         }
     };
@@ -61,45 +60,57 @@ const GradeForm = ({
                 </div>
 
                 <div className="overflow-auto">
-                    <table className="w-full text-sm text-center text-white ">
-                        <thead className="bg-gray-700 text-gray-200 ">
+                    <table className="w-full text-sm text-center text-white">
+                        <thead className="bg-gray-700 text-gray-200">
                         <tr>
-                            <th className="px-4 py-2 ">شماره دانشجویی</th>
-                            <th className="px-4 py-2 ">نام و نام خانوداگی</th>
-                            <th className="px-4 py-2 ">نمره</th>
-                            {!readOnly && <th className="px-4 py-2 ">عملیات</th>}
+                            <th className="px-4 py-2">شماره دانشجویی</th>
+                            <th className="px-4 py-2">نام و نام خانوادگی</th>
+                            <th className="px-4 py-2">نمره</th>
+                            {!readOnly && <th className="px-4 py-2">عملیات</th>}
                         </tr>
                         </thead>
                         <tbody>
                         {members.map((member) => (
-                            <tr key={member.id} className="">
-                                <td className="px-4 py-2 border-b border-b-gray-600">{member.id}</td>
-                                <td className="px-4 py-2 border-b border-b-gray-600">{member.firstName} {member.lastName}</td>
+                            <tr key={member.id}>
+                                <td className="px-4 py-2 border-b border-b-gray-600">
+                                    {member.id}
+                                </td>
+                                <td className="px-4 py-2 border-b border-b-gray-600">
+                                    {member.firstName} {member.lastName}
+                                </td>
                                 <td className="px-4 py-2 border-b border-b-gray-600">
                                     <input
                                         type="number"
                                         min="0"
                                         max="100"
-                                        value={grades[member.id] || ""}
-                                        onChange={(e) => onChange(member.id, e.target.value)}
+                                        value={grades[member.id] ?? ""}
+                                        onChange={(e) =>
+                                            onChange(member.id, e.target.value)
+                                        }
                                         disabled={readOnly}
                                         className="bg-gray-100 border border-gray-300 rounded px-2 py-1 text-black w-20 text-center"
                                     />
                                     {submitErrors[member.id] && (
-                                        <div className="text-red-400 text-xs mt-1">{submitErrors[member.id]}</div>
+                                        <div className="text-red-400 text-xs mt-1">
+                                            {submitErrors[member.id]}
+                                        </div>
                                     )}
                                 </td>
                                 {!readOnly && (
                                     <td className="px-4 py-2 border-b border-b-gray-600">
                                         <button
                                             type="button"
-                                            onClick={() => handleSubmitMemberGrade(member.id)}
+                                            onClick={() =>
+                                                handleSubmitMemberGrade(member.id)
+                                            }
                                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
                                         >
                                             ثبت نمره
                                         </button>
                                         {submitted[member.id] && (
-                                            <span className="text-green-400 text-sm ml-2">✔ ثبت شد</span>
+                                            <span className="text-green-400 text-sm ml-2">
+                                                ✔
+                                            </span>
                                         )}
                                     </td>
                                 )}
@@ -108,7 +119,9 @@ const GradeForm = ({
                         </tbody>
                     </table>
 
-                    {error && <div className="text-red-500 text-sm mt-4 text-right">{error}</div>}
+                    {error && (
+                        <div className="text-red-500 text-sm mt-4 text-right">{error}</div>
+                    )}
                 </div>
             </div>
         </div>
