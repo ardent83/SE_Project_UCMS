@@ -96,7 +96,7 @@ export default function GradeReportPageStudent() {
       <div className="flex flex-col lg:flex-row gap-6 lg:items-start">
         {/* Overall Grades Table (Visual Left in RTL - Smaller width: 35%) */}
         <div className="flex-none bg-white p-7 rounded-xl shadow-xl overflow-x-auto border border-gray-100 lg:order-first lg:w-[calc(35%-0.75rem)] lg:max-w-[calc(35%-0.75rem)]">
-          <h3 className="text-2xl font-bold mb-6 text-gray-800 text-right">
+          <h3 className="text-xl font-bold mb-6 text-gray-800 text-right">
             گزارش نمرات من
           </h3>
 
@@ -154,7 +154,7 @@ export default function GradeReportPageStudent() {
         {/* Grade Details Card (Visual Right in RTL - Larger width: 65%) */}
         {overallScores.length > 0 && (
           <div className="flex-none bg-white p-7 rounded-xl shadow-xl border border-gray-100 lg:order-last lg:w-[calc(65%-0.75rem)] lg:max-w-[calc(65%-0.75rem)]">
-            <h3 className="text-2xl font-bold mb-6 text-gray-800 text-right">
+            <h3 className="text-xl font-bold mb-6 text-gray-800 text-right">
               جزئیات نمره
             </h3>
 
