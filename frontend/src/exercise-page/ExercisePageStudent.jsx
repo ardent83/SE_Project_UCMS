@@ -74,20 +74,23 @@ const ExercisePageForStudent = () => {
       size={16}
       variant="Bulk"
       color="#0C1E33"
-      className={`inline-block transition-transform duration-800 ${
-        sortOrder === 2 ? "rotate-180" : ""
-      }`}
+      className={`inline-block transition-transform duration-800 ${sortOrder === 2 ? "rotate-180" : ""
+        }`}
     />
   );
 
   return (
-    <div className="w-full max-w-270 p-6" dir="rtl">
+    <div className="w-full max-w-[90rem] mx-auto px-10 text-bg-blue">
       <div className="w-full flex flex-col items-center">
-        <div className="w-full flex justify-between items-center px-10 pb-10">
+        {/* Exercise Title and Actions */}
+        <div
+          className="w-full flex justify-between items-center pb-10"
+          dir="rtl"
+        >
           <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">
             {currentExercise.title}
           </h2>
-          <div className="flex gap-4 text-gray-600 mt-5">
+          <div className="flex gap-4 text-gray-600 mt-15">
             <div title="دانلود فایل تمرین" className="cursor-pointer">
               <DirectboxNotif
                 size="30"
@@ -96,48 +99,54 @@ const ExercisePageForStudent = () => {
                 onClick={() =>
                   handleDownloadExerciseFile(
                     currentExercise.exerciseId,
-                    `تمرین_${currentExercise.id}.${
-                      currentExercise.fileFormats || "pdf"
-                    }`
+                    `تمرین_${currentExercise.id}.${currentExercise.fileFormats}`
                   )
                 }
               />
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5">
-          <div className="text-xl flex items-center gap-2">
-            <Calendar size="25" variant="Linear" color="#495D72" />
-            <span>
-              زمان شروع: {formatPersianDate(currentExercise.startDate)} -{" "}
-              {formatPersianTime(currentExercise.startDate)}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <PresentionChart size="25" variant="Linear" color="#495D72" />
-            <span>
-              مهلت ارسال: {formatPersianDate(currentExercise.endDate)} -{" "}
-              {formatPersianTime(currentExercise.endDate)}
-            </span>
-          </div>
-          <div className="flex items-start gap-2 mb-6">
-            <Information size="25" variant="Linear" color="#495D72" />
-            <p className="leading-relaxed">{currentExercise.description}</p>
-          </div>
+      {/* Exercise Details */}
+      <div
+        className="w-full pt-4 space-y-4 text-body-01 text-gray-700"
+        dir="rtl"
+      >
+        <div className="text-lg flex items-center gap-2">
+          <Calendar size="25" variant="Linear" color="#495D72" />
+          <span>
+            زمان شروع: {formatPersianDate(currentExercise.startDate)} -{" "}
+            {formatPersianTime(currentExercise.startDate)}
+          </span>
+        </div>
+        <div className="text-lg flex items-center gap-2">
+          <PresentionChart size="25" variant="Linear" color="#495D72" />
+          <span>
+            مهلت ارسال: {formatPersianDate(currentExercise.endDate)} -{" "}
+            {formatPersianTime(currentExercise.endDate)}
+          </span>
+        </div>
+        <div className="text-lg flex items-start gap-2 mb-10">
+          <Information
+            size="25"
+            variant="Linear"
+            color="#495D72"
+            className="flex-shrink-0 mt-1"
+          />
+          <p className="leading-relaxed">{currentExercise.description}</p>
         </div>
       </div>
 
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 mt-6 border-b border-gray-200" dir="rtl">
         {["ارسال پاسخ", "ارسال‌ها"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`relative px-5 py-2 rounded-t-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
-              activeTab === tab
-                ? "bg-big-stone-900 border-x border-t border-gray-200 -mb-px text-white shadow-sm"
-                : "bg-gray-300 text-gray-700 hover:bg-gray-200"
-            }`}
+            className={`relative px-5 py-2 rounded-t-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${activeTab === tab
+              ? "bg-big-stone-900 border-x border-t border-gray-200 -mb-px text-white shadow-sm"
+              : "bg-gray-300 text-gray-700 hover:bg-gray-200"
+              }`}
           >
             {tab}
           </button>
