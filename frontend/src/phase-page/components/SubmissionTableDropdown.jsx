@@ -19,14 +19,26 @@ const handleDownloadSubmissionFile = async (item) => {
     }
 };
 
+const SortIcon = ({ field, sortBy, sortOrder, onClick }) => (
+    <ArrowSwapVertical
+        size={16}
+        variant="Bold"
+        color={sortBy === field ? "#0C1E33" : "#0C1E33"}
+        onClick={onClick}
+        className={`cursor-pointer transition-transform duration-200 ${
+            sortBy === field ? (sortOrder === 2 ? "rotate-180" : "") : "opacity-50"
+        }`}
+    />
+);
+
 const SubmissionTable = ({
                              submissions,
                              handleOpenGradeForm,
                              phaseId,
                              handleDownloadAllSubmissionFiles,
                          }) => {
-    const [sortBy, setSortBy] = useState(null); // "date" | "teamName" | null
-    const [sortOrder, setSortOrder] = useState(1); // 1 = asc, 2 = desc
+    const [sortBy, setSortBy] = useState(null);
+    const [sortOrder, setSortOrder] = useState(1);
     const [sortedSubmissions, setSortedSubmissions] = useState([]);
 
     const toggleSort = (field) => {
@@ -75,24 +87,22 @@ const SubmissionTable = ({
                     <th className="px-4 py-2">
                         <div className="flex justify-center items-center gap-1">
                             <span>نام گروه</span>
-                            <ArrowSwapVertical
-                                size={16}
-                                variant="Bulk"
-                                color={sortBy === "teamName" ? "#1D4ED8" : "#0C1E33"}
+                            <SortIcon
+                                field="teamName"
+                                sortBy={sortBy}
+                                sortOrder={sortOrder}
                                 onClick={() => toggleSort("teamName")}
-                                className={`cursor-pointer transition-transform duration-200 ${sortBy === "teamName" && sortOrder === 2 ? "rotate-180" : ""}`}
                             />
                         </div>
                     </th>
                     <th className="px-4 py-2">
                         <div className="flex justify-center items-center gap-1">
                             <span>زمان ارسال</span>
-                            <ArrowSwapVertical
-                                size={16}
-                                variant="Bulk"
-                                color={sortBy === "date" ? "#1D4ED8" : "#0C1E33"}
+                            <SortIcon
+                                field="date"
+                                sortBy={sortBy}
+                                sortOrder={sortOrder}
                                 onClick={() => toggleSort("date")}
-                                className={`cursor-pointer transition-transform duration-200 ${sortBy === "date" && sortOrder === 2 ? "rotate-180" : ""}`}
                             />
                         </div>
                     </th>
