@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { ArrowSwapVertical, TaskSquare} from "iconsax-react";
+import React, {useState, useEffect} from "react";
+import {ArrowSwapVertical, TaskSquare} from "iconsax-react";
 import FilterBox from "./components/FilterBox";
 import SearchBox from "./components/SearchBox";
-import { useAuth } from "../auth/context/AuthContext.jsx";
+import {useAuth} from "../auth/context/AuthContext.jsx";
 import {fetchExercisesForInstructor, fetchExercisesForStudent} from "./utils/ExerciseListApi.js";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const statusColors = {
     "تکمیل": "bg-green-200 text-green-800",
     "در حال انجام": "bg-sky-200 text-sky-700",
     "شروع نشده": "bg-orange-200 text-orange-700",
-    "نامشخص": "bg-gray-200 text-gray-700",
 };
 
+
 export default function ExercisesPage() {
-    const { user } = useAuth();
+    const {user} = useAuth();
     const userRole = user?.role?.name || "guest";
     const [exercisesData, setExercisesData] = useState([]);
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("همه");
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [sortConfig, setSortConfig] = useState({key: null, direction: "asc"});
 
     const navigate = useNavigate();
 
@@ -52,7 +52,7 @@ export default function ExercisesPage() {
                     direction: prevConfig.direction === "asc" ? "desc" : "asc",
                 };
             }
-            return { key, direction: "asc" };
+            return {key, direction: "asc"};
         });
     };
 
@@ -88,12 +88,12 @@ export default function ExercisesPage() {
             <h2 className="text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-end">
                 <span>تکالیف</span>
                 <div className="flex items-start gap-[0.625rem] self-stretch z-10 relative">
-                    <TaskSquare color="#0C1E33" size={35} variant="Bold" />
+                    <TaskSquare color="#0C1E33" size={35} variant="Bold"/>
                 </div>
             </h2>
 
             <div className="flex flex-wrap justify-between items-center mb-15 gap-4 relative z-20">
-                <FilterBox selected={filter} onChange={setFilter} />
+                <FilterBox selected={filter} onChange={setFilter}/>
                 <SearchBox
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -169,13 +169,13 @@ export default function ExercisesPage() {
                                     className="border-b border-gray-100 hover:bg-gray-100 transition cursor-pointer"
                                 >
                                     <td className="py-3 px-4">
-                      <span
-                          className={`inline-block px-3 py-2 rounded-md text-xs font-semibold ${
-                              statusColors[exercise.status] || "bg-gray-200 text-gray-700"
-                          }`}
-                      >
-                        {exercise.status}
-                      </span>
+                                        <span
+                                            className={`inline-block px-3 py-2 rounded-md text-xs font-semibold ${statusColors[exercise.status]
+                                            }`}
+                                            data-testid={`exercise-status-${exercise.id}`}
+                                        >
+                                                {exercise.status}
+                                        </span>
                                     </td>
                                     <td className="py-3 px-4">
                                         {new Date(exercise.endDate).toLocaleDateString("fa-IR")}
@@ -189,7 +189,7 @@ export default function ExercisesPage() {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center text-gray-400">
-                        <img src="/Animation - 1750148058142.gif" alt="No results" className="w-80 h-80 mb-6" />
+                        <img src="/Animation - 1750148058142.gif" alt="No results" className="w-80 h-80 mb-6"/>
                         <p className="text-lg mt-0">نتیجه‌ای یافت نشد</p>
                     </div>
                 )}

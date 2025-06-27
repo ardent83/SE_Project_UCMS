@@ -377,7 +377,7 @@ const PhasePage = () => {
                         )}
                     </DropdownSection>
 
-                    <DropdownSection title="ثبت نمره" bgColor="#5C6BC0">
+                    <DropdownSection title="ثبت نمره کلی" bgColor="#5C6BC0">
                         <GradeSection phaseId={phaseId} />
                     </DropdownSection>
 
