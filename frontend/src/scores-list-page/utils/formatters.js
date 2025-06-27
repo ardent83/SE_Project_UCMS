@@ -26,6 +26,8 @@ export const formatPersianTime = (dateInput) => {
  */
 export const formatToPersianNumber = (num) => {
     if (num === null || num === undefined || num === '') return '-';
-    // Ensure it's a number before formatting to locale string
-    return Number(num).toLocaleString('fa-IR');
+
+    const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return String(num).replace(/\d/g, d => persianDigits[d]);
 };
+
