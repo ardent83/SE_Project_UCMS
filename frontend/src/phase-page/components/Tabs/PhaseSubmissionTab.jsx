@@ -40,6 +40,10 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
             console.error(err);
         }
     };
+    function toPersianNumber(number) {
+        return number.toString().replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    }
+
 
     const handleDownload = async (submission) => {
         try {
@@ -76,7 +80,7 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
     }, [phaseId, sortBy, sortOrder]);
 
     return (
-        <div className="w-full max-w-[90rem] mx-auto mt-8 px-10 text-bg-blue" dir="rtl">
+        <div className="w-full max-w-[80rem] mx-auto mt-8 px-10 text-bg-blue" dir="rtl">
             {error && <div className="text-red-500 my-2">{error}</div>}
             <div className="overflow-y-auto max-h-[380px] bg-white rounded-lg shadow-sm">
                 <table className="w-full border-collapse text-center">
@@ -132,7 +136,7 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
                                 <td className="py-3 px-4 text-gray-700 text-sm">{submission.fileType}</td>
                                 <td className="py-3 px-4 text-sm">
                                     {submission.score !== null ? (
-                                        <span className="text-green-700 font-semibold">{submission.score}</span>
+                                        <span className="text-green-700 font-semibold">{toPersianNumber(submission.score)}</span>
                                     ) : (
                                         <span className="text-gray-400">–</span>
                                     )}

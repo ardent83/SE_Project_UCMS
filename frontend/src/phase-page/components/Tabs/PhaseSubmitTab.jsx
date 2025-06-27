@@ -54,10 +54,9 @@ const PhaseSubmitTab = ({ phaseFormats }) => {
     };
 
     return (
-        <div className="w-full max-w-[60rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">ارسال فایل تمرین</h3>
+        <div className="w-full max-w-[80rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
+            <h3 className="text-lg font-bold text-gray-800 mb-4">ارسال فایل فاز</h3>
 
-            {/* باکس انتخاب فرمت */}
             <div className="flex items-center gap-3 mb-4">
                 <label className="text-gray-700 font-medium">نوع فایل:</label>
                 <select
