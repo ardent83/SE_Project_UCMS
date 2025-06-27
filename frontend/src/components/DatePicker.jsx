@@ -17,7 +17,7 @@ export default function MyDatePicker({
     disabled,
     storageFormat = "isoString",
     displayFormat = "YYYY/MM/DD",
-    showTime=false,
+    showTime = false,
     ...props
 }) {
     const [dateValue, setDateValue] = useState(null);
@@ -39,10 +39,15 @@ export default function MyDatePicker({
 
         if (!gregorianDateObject || !gregorianDateObject.isValid) return null;
 
-        if (storageFormat === "isoString") {
+        if (showTime) {
             return gregorianDateObject.toDate().toISOString();
         } else {
-            return gregorianDateObject.format(storageFormat);
+            const utcDate = new Date(Date.UTC(
+                gregorianDateObject.year,
+                gregorianDateObject.month.index,
+                gregorianDateObject.day
+            ));
+            return utcDate.toISOString();
         }
     };
 
