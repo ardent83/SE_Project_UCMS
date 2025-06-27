@@ -1,6 +1,6 @@
 // src/hooks/useStudentGradesData.js
 import { useState, useEffect, useCallback } from "react";
-import { fetchStudentOverallScores, fetchStudentDetailedScoresByClassId } from "../utils/GradeApi";
+import { fetchStudentOverallScores, fetchStudentDetailedScoresByClassId } from "../utils/gradeApi";
 import { formatToPersianNumber } from '../utils/formatters'; // Corrected import path from global utils
 
 export const useStudentGradesData = () => {
