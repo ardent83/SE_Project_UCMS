@@ -26,7 +26,7 @@ const AssignmentProject = ({projects, classId}) => {
                         alt="No members"
                         className="w-35 h-30 "
                     />
-                    <span className="text-caption-02 text-[0.9rem] text-neutral-400 mt-5 mb-10">! پروژه‌ای وجود ندارد</span>
+                    <span className="text-caption-02 text-[0.8rem] text-neutral-400 mt-5 mb-10">! پروژه‌ای وجود ندارد</span>
                 </div>
             ) : (
                 <div className="w-full max-h-150 overflow-y-auto flex flex-col gap-2 pr-5 relative">
