@@ -94,7 +94,7 @@ const ExercisePageForInstructor = () => {
           className="w-full flex justify-between items-center pb-10"
           dir="rtl"
         >
-          <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">
+          <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15" data-testid="exercise-title">
             {currentExercise.title}
           </h2>
           <div className="flex gap-4 text-gray-600 mt-15">
@@ -109,6 +109,7 @@ const ExercisePageForInstructor = () => {
                     `تمرین_${currentExercise.id}.${currentExercise.fileFormats}`
                   )
                 }
+                data-testid="exercise-download-icon"
               />
             </div>
             <div title="ویرایش تمرین" className="cursor-pointer">
@@ -119,6 +120,7 @@ const ExercisePageForInstructor = () => {
                 onClick={() =>
                   handleEditExerciseClick(currentExercise.exerciseId)
                 }
+                data-testid="exercise-edit-icon"
               />
             </div>
             <div title="حذف تمرین" className="cursor-pointer">
@@ -132,6 +134,7 @@ const ExercisePageForInstructor = () => {
                     currentExercise.title
                   )
                 }
+                data-testid="exercise-delete-icon"
               />
             </div>
           </div>
@@ -142,21 +145,21 @@ const ExercisePageForInstructor = () => {
           className="w-full pt-4 space-y-4 text-body-01 text-gray-700 border-b-1 border-[#CED8E5F8]"
           dir="rtl"
         >
-          <div className="text-lg flex items-center gap-2">
+          <div className="text-lg flex items-center gap-2" data-testid="exercise-start-time">
             <Calendar size="25" variant="Linear" color="#495D72" />
             <span>
               زمان شروع: {formatPersianDate(currentExercise.startDate)} -{" "}
               {formatPersianTime(currentExercise.startDate)}
             </span>
           </div>
-          <div className="text-lg flex items-center gap-2">
+          <div className="text-lg flex items-center gap-2" data-testid="exercise-end-time">
             <PresentionChart size="25" variant="Linear" color="#495D72" />
             <span>
               مهلت ارسال: {formatPersianDate(currentExercise.endDate)} -{" "}
               {formatPersianTime(currentExercise.endDate)}
             </span>
           </div>
-          <div className="text-lg flex items-start gap-2 mb-10">
+          <div className="text-lg flex items-start gap-2 mb-10" data-testid="exercise-information">
             <Information
               size="25"
               variant="Linear"

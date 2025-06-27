@@ -170,6 +170,7 @@ export default function ProjectForm({ formType = 'create' }) {
                     rightIcon={false}
                     className="w-fit"
                     disabled={formik.isSubmitting}
+                    data-testid="submit-project-button"
                 />
                 <Button
                     buttonText={"انصراف"}
@@ -179,6 +180,7 @@ export default function ProjectForm({ formType = 'create' }) {
                     className="w-fit"
                     disabled={formik.isSubmitting}
                     onClick={onClose}
+                    data-testid="cancel-project-button"
                 />
             </div>
         </form>
