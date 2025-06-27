@@ -21,6 +21,7 @@ import ProjectManagementPage from "./project-management-page/ProjectManagementPa
 import ExamsPage from "./exam-list/ExamsPage";
 import ExercisesPage from "./exercise-list/ExercisesPage.jsx";
 import ExercisePage from "./exercise-page/ExercisePage";
+import PhasePage from "./phase-page/PhasePage.jsx";
 import ClassForm from "./class-form/ClassForm";
 import ProjectForm from "./project-form/ProjectForm";
 import GroupForm from "./group-form/GroupForm";
@@ -114,9 +115,7 @@ function App() {
             <Route
               path="/phase/:phaseId"
               element={
-                <div>
-                  <h1>Phase Detail</h1>
-                </div>
+                <PhasePage />
               }
             />
 
