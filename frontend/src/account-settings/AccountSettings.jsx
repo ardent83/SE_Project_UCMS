@@ -59,6 +59,9 @@ export default function AccountSettings() {
         const educationLevelId = educationLevelRes.data.find(e => e.name === specializedData.educationLevel)?.id ?? null;
         const instructorRankId = instructorRankRes.data.find(r => r.name === specializedData.rank)?.id ?? null;
 
+        const dateOfBirthFromApi = generalData.dateOfBirth;
+        const isDefaultDate = dateOfBirthFromApi === "0001-01-01T00:00:00";
+
         const combinedUserData = {
           ...generalData,
           ...specializedData,
@@ -66,6 +69,7 @@ export default function AccountSettings() {
           university: universityId,
           educationLevel: educationLevelId,
           rank: instructorRankId,
+          dateOfBirth: isDefaultDate ? null : dateOfBirthFromApi,
         };
         setUserData(combinedUserData);
       } catch (err) {
