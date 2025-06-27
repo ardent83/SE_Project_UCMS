@@ -41,11 +41,11 @@ export const getPhaseInformationForStudent = async (phaseId) => {
 
 
 /**
- * Downloads the project file.
- * @param {string} phaseId - The ID of the project.
+ * Downloads the phase file.
+ * @param {string} phaseId - The ID of the phase.
  * @param {string} userRole - The role of the current user.
  * @param {string} phaseFileContentType - The content type of the file (e.g., 'application/pdf').
- * @param {string} phaseTitle - The title of the project for naming the downloaded file.
+ * @param {string} phaseTitle - The title of the phase for naming the downloaded file.
  * @returns {Promise<void>}
  */
 export const downloadPhaseFileApi = async (phaseId,userRole,phaseFileContentType,phaseTitle) => {
@@ -73,8 +73,7 @@ export const downloadPhaseFileApi = async (phaseId,userRole,phaseFileContentType
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const fileExtension = phaseFileContentType ? phaseFileContentType.split("/")[1] : "bin";
-    a.download = `${phaseTitle || 'project'}_${phaseId}.${fileExtension}`;
+    a.download = `${phaseTitle || 'phase'}_${phaseId}.${phaseFileContentType}`;
     document.body.appendChild(a);
     a.click();
     a.remove();
