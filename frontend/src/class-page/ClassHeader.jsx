@@ -58,19 +58,23 @@ export default function ClassHeader({
         try {
             await deleteClassById(id);
             console.log(`Class ${id} deleted successfully.`);
-            navigate(`/classes`, {state: {message: "پروژه با موفقیت حذف شد."}});
+            navigate(`/classes`, {state: {message: "کلاس با موفقیت حذف شد."}});
         } catch (err) {
             console.error("Error deleting class:", err);
             setError("خطایی در حذف کلاس رخ داد!");
         }
     }, [id, navigate]);
 
-    const handleLeaveClass = async () => {
-        const success = await leaveClassById(id);
-        if (success) {
-            navigate("/classes");
+    const handleLeaveClass = useCallback(async () => {
+        try {
+            await leaveClassById(id);
+            console.log(`Class ${id} leaved successfully.`);
+            navigate(`/classes`, {state: {message: " با موفقیت از کلاس خارج شد."}});
+        } catch (err) {
+            console.error("Error leaving class:", err);
+            setError("خطایی در خروح از کلاس رخ داد!");
         }
-    };
+    }, [id, navigate]);
 
     return (<>
         <div className="relative w-full h-48 p-4 pr-6 flex flex-col justify-between items-center self-stretch">
@@ -160,7 +164,7 @@ export default function ClassHeader({
             <Modal
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
-                data-testid="delete-phase-modal"
+                data-testid="delete-class-modal"
             >
                 {" "}
                 {/* Added data-testid */}
@@ -170,8 +174,8 @@ export default function ClassHeader({
                         setShowDeleteModal(false);
                     }}
                     onCancel={() => setShowDeleteModal(false)}
-                    message="آیا از حذف این فاز مطمئن هستید؟"
-                    data-testid="delete-phase-confirm-content" // Added data-testid
+                    message="آیا از حذف این کلاس مطمئن هستید؟"
+                    data-testid="delete-class-confirm-content" // Added data-testid
                 />
             </Modal>
         </div>
