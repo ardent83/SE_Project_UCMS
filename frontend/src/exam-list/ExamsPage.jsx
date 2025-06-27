@@ -13,7 +13,6 @@ export default function ExamsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    console.log(userRole);
     useEffect(() => {
         async function fetchExams() {
             try {
@@ -52,7 +51,7 @@ export default function ExamsPage() {
     };
 
     const handleDeleteExam = (deletedId) => {
-        setExams((prev) => prev.filter((exam) => exam.examId !== deletedId));
+        setExams((prevExams) => prevExams.filter((exam) => exam.examId !== deletedId));
     };
 
     return (

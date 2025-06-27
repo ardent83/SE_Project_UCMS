@@ -51,8 +51,6 @@ const PhasePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("idinuse:"+projectId);
-
         const fetchPhase = async () => {
             try {
                 const data =
@@ -229,8 +227,6 @@ const PhasePage = () => {
     }, []);
 
     const handleDeletePhase = useCallback(async () => {
-        console.log("id:"+projectId);
-
         try {
             await deletePhaseApi(phaseId);
             console.log(`Phase ${phaseId} deleted successfully.`);
@@ -402,7 +398,7 @@ const PhasePage = () => {
             <Modal
                 show={showDeletePhaseModal}
                 onClose={() => setShowDeletePhaseModal(false)}
-                data-testid="delete-project-modal"
+                data-testid="delete-phase-modal"
             >
                 {" "}
                 {/* Added data-testid */}
@@ -412,8 +408,8 @@ const PhasePage = () => {
                         setShowDeletePhaseModal(false);
                     }}
                     onCancel={() => setShowDeletePhaseModal(false)}
-                    message="آیا از حذف این پروژه مطمئن هستید؟"
-                    data-testid="delete-project-confirm-content" // Added data-testid
+                    message="آیا از حذف این فاز مطمئن هستید؟"
+                    data-testid="delete-phase-confirm-content" // Added data-testid
                 />
             </Modal>
         </div>

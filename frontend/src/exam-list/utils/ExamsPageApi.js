@@ -32,23 +32,21 @@ export const getExamsForStudent = async () => {
     return response.json();
 };
 
+/**
+ * Deletes an exam.
+ * @param {string} examId - The ID of the exam to delete.
+ * @returns {Promise<void>}
+ */
 export const deleteExamById = async (examId) => {
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/Exam/${examId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+    const response = await fetch(`${apiBaseUrl}/api/Exam/${examId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    });
 
-        if (!response.ok) {
-            throw new Error("Failed to delete exam");
-        }
-
-        return true;
-    } catch (error) {
-        console.error("Error deleting exam:", error);
-        return false;
+    if (!response.ok) {
+        const error = new Error(`HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
     }
 };
 
