@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { downloadSubmissionFileApi } from "../utils/PhaseSubmissionForStudentApi.js";
 import { DocumentDownload, ArrowSwapVertical } from "iconsax-react";
+import Button from "../../components/Button.jsx";
 
 const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -72,13 +73,22 @@ const SubmissionTable = ({
 
     return (
         <div className="overflow-y-auto max-h-72">
-            <div
-                title="دانلود همه فایل‌ها"
-                className="cursor-pointer inline-block mr-230 mt-5"
-                onClick={() => handleDownloadAllSubmissionFiles(phaseId)}
-                data-testid="download-phase-icon"
-            >
-                <DocumentDownload size="30" variant="Bulk" color="#08146f" />
+            <div className="flex gap-4 relative z-20 mb-2" dir="ltr">
+                <Button
+                    leftIcon={false}
+                    buttonText={"دانلود همه‌ی ارسال‌ها"}
+                    onClick={() =>
+                        handleDownloadAllSubmissionFiles(phaseId)
+                    }
+                    className="bg-gray-100 hover:bg-blue-800 text-gray-700 w-auto border border-gray-300 shadow-sm"
+                    rightIconComponent={
+                        <DocumentDownload
+                            size="30"
+                            variant="Bold"
+                            color="#ffffff"
+                        />
+                    }
+                />
             </div>
 
             <table className="w-full text-center border-collapse text-sm mt-4">

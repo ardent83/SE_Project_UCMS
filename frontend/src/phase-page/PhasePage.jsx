@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {
     Calendar,
@@ -16,8 +16,8 @@ import GradeSection from "./components/UploadGradeDropdown.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
 import Modal from "../components/Modal.jsx";
 import DeleteConfirmModalContent from "../components/DeleteConfirmPopover.jsx";
-import { useAuth } from "../auth/context/AuthContext.jsx";
-import { getStudentsOfTeam,setScoreForEachStudent } from "./utils/PhaseSubmissionForInstructorApi.js";
+import {useAuth} from "../auth/context/AuthContext.jsx";
+import {getStudentsOfTeam, setScoreForEachStudent} from "./utils/PhaseSubmissionForInstructorApi.js";
 import {
     getPhaseInformationForInstructor,
     getPhaseInformationForStudent,
@@ -31,9 +31,9 @@ import SubmissionTable from "./components/SubmissionTableDropdown.jsx";
 import {downloadAllSubmissionFilesApi} from "./utils/PhaseSubmissionForInstructorApi.js";
 
 const PhasePage = () => {
-    const { user } = useAuth();
+    const {user} = useAuth();
     const userRole = user?.role?.name || "guest";
-    const { phaseId } = useParams();
+    const {phaseId} = useParams();
     const numericPhaseId = parseInt(phaseId, 10);
     const projectId = sessionStorage.getItem("projectId");
     const [phaseInfo, setPhaseInfo] = useState(null);
@@ -114,7 +114,7 @@ const PhasePage = () => {
                     score: student.score,
                 }));
 
-                setGroupMembers((prev) => ({ ...prev, [groupId]: fetchedMembers }));
+                setGroupMembers((prev) => ({...prev, [groupId]: fetchedMembers}));
 
                 const initialGrades = {};
                 fetchedMembers.forEach((member) => {
@@ -138,7 +138,7 @@ const PhasePage = () => {
     };
 
     const handleGradeChange = (memberId, value) => {
-        setGrades((prev) => ({ ...prev, [memberId]: value }));
+        setGrades((prev) => ({...prev, [memberId]: value}));
     };
 
     const handleSubmitGrades = async () => {
@@ -177,7 +177,7 @@ const PhasePage = () => {
             });
 
             setGrades((prevGrades) => {
-                const updatedGrades = { ...prevGrades };
+                const updatedGrades = {...prevGrades};
                 members.forEach((member) => {
                     updatedGrades[member.id] = Number(grades[member.id]);
                 });
@@ -186,7 +186,7 @@ const PhasePage = () => {
 
             setSubmittedGroups((prev) => ({
                 ...prev,
-                [selectedGroup]: { grades, submitted: true },
+                [selectedGroup]: {grades, submitted: true},
             }));
 
             setSelectedGroup(null);
@@ -209,8 +209,10 @@ const PhasePage = () => {
         const lastDotIndex = filePath.lastIndexOf(".");
         const extension =
             lastDotIndex !== -1 ? filePath.substring(lastDotIndex + 1) : "";
+        console.log(extension);
+
         try {
-            await downloadPhaseFileApi(phaseId, userRole, filePath, phaseInfo?.title);
+            await downloadPhaseFileApi(phaseId, userRole, extension, phaseInfo?.title);
         } catch (err) {
             console.error("Error downloading file:", err);
             setError("خطایی در دانلود فایل رخ داد!");
@@ -230,16 +232,16 @@ const PhasePage = () => {
         try {
             await deletePhaseApi(phaseId);
             console.log(`Phase ${phaseId} deleted successfully.`);
-            navigate(`/project/${projectId}`, { state: { message: "پروژه با موفقیت حذف شد." } });
+            navigate(`/project/${projectId}`, {state: {message: "پروژه با موفقیت حذف شد."}});
         } catch (err) {
             console.error("Error deleting project:", err);
             setError("خطایی در حذف پروژه رخ داد!");
         } finally {
         }
-    }, [phaseId,projectId, navigate]);
+    }, [phaseId, projectId, navigate]);
 
     return (
-        <div className="w-full max-w-[90rem] mx-auto px-10 text-bg-blue" dir="rtl">
+        <div className="w-full max-w-[90rem] mx-auto px-10 text-bg-blue">
             <div className="w-full flex flex-col items-center">
                 <div
                     className="w-full flex justify-between items-center pb-10"
@@ -252,31 +254,32 @@ const PhasePage = () => {
                     {userRole === "Instructor" && (
                         <div className="flex gap-4 text-gray-600 mt-15">
                             <div
-                                title="دانلود فایل"
+                                title="دانلود فایل فاز"
                                 className="cursor-pointer"
                                 onClick={handleDownloadFile}
                                 data-testid="download-phase-icon"
                             >
-                                <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
+                                <DirectboxNotif size="30" variant="Bulk" color="#08146f"/>
                             </div>
-                            <div title="حذف پروژه" className="cursor-pointer">
+                            <div
+                                title="ویرایش فاز"
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/phase/edit/${phaseId}`)}
+                                data-testid="edit-phase-icon"
+                            >
+                                <Edit2 size="30" variant="Bulk" color="#08146f"/>
+                            </div>
+                            <div title="حذف فاز" className="cursor-pointer">
                                 <Trash
                                     size="30"
                                     variant="Bulk"
                                     color="#08146f"
                                     onClick={() => setShowDeletePhaseModal(true)}
-                                    style={{ cursor: "pointer" }}
+                                    style={{cursor: "pointer"}}
                                     data-testid="delete-project-icon" // Added data-testid
                                 />
                             </div>
-                            <div
-                                title="ویرایش"
-                                className="cursor-pointer"
-                                onClick={() => navigate(`/phase/edit/${phaseId}`)}
-                                data-testid="edit-phase-icon"
-                            >
-                                <Edit2 size="30" variant="Bulk" color="#08146f" />
-                            </div>
+
                         </div>
                     )}
 
@@ -288,7 +291,7 @@ const PhasePage = () => {
                                 onClick={handleDownloadFile}
                                 data-testid="download-phase-icon"
                             >
-                                <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
+                                <DirectboxNotif size="30" variant="Bulk" color="#08146f"/>
                             </div>
                         </div>
                     )}
@@ -297,33 +300,33 @@ const PhasePage = () => {
                 {phaseInfo && (
                     <div
 
-                        className={`w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5' ${
-                            userRole === "Instructor" ? "border-b border-[#CED8E5F8]" : ""
-                            }`}
+                        className={`w-full pt-4 space-y-4 text-body-01 text-gray-700 ' ${
+                            userRole === "Instructor" ? "border-b-1 border-[#CED8E5F8]" : ""
+                        }`}
                         dir="rtl"
                     >
-                        <div className="text-xl flex items-center gap-2">
-                            <Calendar size="25" variant="Linear" color="#495D72" />
+                        <div className="text-lg flex items-center gap-2">
+                            <Calendar size="25" variant="Linear" color="#495D72"/>
                             <span>
-                {new Date(phaseInfo.startDate).toLocaleTimeString("fa-IR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                })}{" "}
+                              زمان شروع:  {new Date(phaseInfo.startDate).toLocaleTimeString("fa-IR", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })}{" "}
                                 -{" "}
                                 {new Date(phaseInfo.startDate).toLocaleDateString("fa-IR")}
-              </span>
+                            </span>
                         </div>
-                        <div className="text-xl flex items-center gap-2">
-                            <PresentionChart size="25" variant="Linear" color="#495D72" />
+                        <div className="text-lg flex items-center gap-2">
+                            <PresentionChart size="25" variant="Linear" color="#495D72"/>
                             <span>
-                {new Date(phaseInfo.endDate).toLocaleTimeString("fa-IR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                })}{" "}
+                                   مهلت ارسال:  {new Date(phaseInfo.endDate).toLocaleTimeString("fa-IR", {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    })}{" "}
                                 - {new Date(phaseInfo.endDate).toLocaleDateString("fa-IR")}
-              </span>
+                            </span>
                         </div>
-                        <div className="text-xl flex items-start gap-2 mb-10">
+                        <div className="text-lg flex items-start gap-2 mb-10">
                             <Information size="25" variant="Linear" color="#495D72" className="flex-shrink-0 mt-1"/>
                             <p className="leading-relaxed">
                                 {phaseInfo.description
@@ -353,15 +356,15 @@ const PhasePage = () => {
                         ))}
                     </div>
 
-                    {activeTab === "ارسال پاسخ" && <PhaseSubmitTab phaseFormats={phaseInfo?.fileFormats} />}
+                    {activeTab === "ارسال پاسخ" && <PhaseSubmitTab phaseFormats={phaseInfo?.fileFormats}/>}
                     {activeTab === "ارسال‌ها" && (
-                        <PhaseSubmissionsTab phaseTitle={phaseInfo?.title} />
+                        <PhaseSubmissionsTab phaseTitle={phaseInfo?.title}/>
                     )}
                 </>
             )}
 
             {userRole === "Instructor" && (
-                <div className="w-full mt-8">
+                <div className="w-full mt-14" dir="rtl">
                     <DropdownSection title="ارسال‌ها" bgColor="#1E2B4F">
                         {loadingSubmissions ? (
                             <p className="text-white">در حال بارگذاری ارسال‌ها...</p>
@@ -378,7 +381,7 @@ const PhasePage = () => {
                     </DropdownSection>
 
                     <DropdownSection title="ثبت نمره کلی" bgColor="#5C6BC0">
-                        <GradeSection phaseId={phaseId} />
+                        <GradeSection phaseId={phaseId}/>
                     </DropdownSection>
 
                     {selectedGroup !== null && (
