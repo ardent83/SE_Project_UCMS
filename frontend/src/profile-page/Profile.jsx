@@ -63,7 +63,7 @@ function ProfilePage() {
                 <div className="pt-30 pb-20 px-6 md:px-16 grid grid-cols-1 md:grid-cols-[1fr_1px_300px] gap-6 rtl text-right">
                     <div className="text-sm text-gray-700 leading-6 pt-10">
                         <h3 className="text-blue-950 text-xl font-medium mb-6  object-cover transition-transform duration-300 hover:scale-105">درباره من 📝</h3>
-                        <p className="mr-8">{bio}</p>
+                        <p className="mr-8" dir="rtl">{bio}</p>
                     </div>
 
                     <div className="bg-gray-300 w-[1px] mx-auto hidden md:block ml-5 mt-10" />
