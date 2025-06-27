@@ -41,7 +41,7 @@ function ProfilePage() {
 
 
     return (
-        <div className="w-full max-w-[1000px] max-h-[700px] px-6 py-10 flex flex-col gap-6 text-right mx-auto">
+        <div className="w-full max-w-[80rem] max-h-[700px] px-6 py-10 flex flex-col gap-6 text-right mx-auto">
             <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 ">
                 <div
                     className="relative h-40 bg-cover bg-center rounded-t-2xl"
