@@ -34,7 +34,7 @@ const GradeUpload = ({
                 />
             )}
 
-            <div class="w-full max-w-[80rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-0" dir="rtl">
+            <div className="w-full max-w-[80rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-0" dir="rtl">
                 <div className="flex items-center justify-between w-full" dir="rtl">
                     <p className="text-right m-0">
                         لطفا فایل مربوطه را دانلود کرده و پس از تکمیل آن، بارگذاری کنید.
@@ -49,11 +49,11 @@ const GradeUpload = ({
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3 justify-end mt-5">
-                    <div className="border border-gray-300 rounded-xl text-right px-10 py-1 text-gray-600 min-w-[200px]">
+                <div className="flex items-center gap-3 justify-end ml-5 mt-10">
+                    <div className="border border-gray-300 rounded-xl bg-gray-50 text-right px-10 py-1 text-gray-600 min-w-[200px] truncate">
                         {fileName}
                     </div>
-                    <label className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-1.5 rounded-xl cursor-pointer">
+                    <label className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-1.5 rounded-xl cursor-pointer">
                         <span>آپلود فایل</span>
                         <input
                             type="file"
@@ -65,10 +65,10 @@ const GradeUpload = ({
                     </label>
                 </div>
 
-                <div className="flex gap-3 justify-end mt-5">
+                <div className="flex gap-3 justify-end ml-5 mb-5 mt-10 items-center">
                     <button
                         onClick={onCancel}
-                        className="px-6 py-1.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                        className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-1.5 rounded-xl cursor-pointer"
                         disabled={isUploading}
                     >
                         انصراف
@@ -76,7 +76,11 @@ const GradeUpload = ({
                     <button
                         onClick={onUpload}
                         disabled={isUploading || !selectedFile || isDownloadTemplateButtonDisabled}
-                        className="bg-blue-800 hover:bg-blue-900 text-white px-6 py-1.5 rounded-xl cursor-pointer"
+                        className={`px-6 py-1.5 rounded-xl text-white ${
+                            isUploading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-big-stone-900 hover:bg-big-stone-800 cursor-pointer"
+                        }`}
                     >
                         {isUploading ? "در حال ارسال..." : "ثبت"}
                     </button>
