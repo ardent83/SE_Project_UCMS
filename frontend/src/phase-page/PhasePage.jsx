@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     Calendar,
     Edit2,
@@ -12,65 +12,135 @@ import {
 import PhaseSubmitTab from "./components/Tabs/PhaseSubmitTab.jsx";
 import PhaseSubmissionsTab from "./components/Tabs/PhaseSubmissionTab.jsx";
 import DropdownSection from "./components/DropdownSection.jsx";
-import GradeUpload from "./components/GradeDropdownSection.jsx";
+import GradeSection from "./components/UploadGradeDropdown.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
-import {getPhaseInformationForInstructor, getPhaseInformationForStudent, downloadFileForStudent, downloadFileForInstructor} from "./utils/PhasePageApi.js";
+import { getStudentsOfTeam,setScoreForEachStudent } from "./utils/PhaseSubmissionForInstructorApi.js";
+import {
+    getPhaseInformationForInstructor,
+    getPhaseInformationForStudent,
+    downloadPhaseFileApi,
+} from "./utils/PhasePageApi.js";
+import {
+    fetchPhaseSubmissionsApi,
+} from "./utils/PhaseSubmissionForStudentApi.js";
+import SubmissionTable from "./components/SubmissionTableDropdown.jsx";
+import {downloadAllSubmissionFilesApi} from "./utils/PhaseSubmissionForInstructorApi.js";
 
 const PhasePage = () => {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
     const { phaseId } = useParams();
     const numericPhaseId = parseInt(phaseId, 10);
+
     const [phaseInfo, setPhaseInfo] = useState(null);
     const [activeTab, setActiveTab] = useState("ارسال پاسخ");
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [grades, setGrades] = useState({});
     const [submittedGroups, setSubmittedGroups] = useState({});
+    const [phaseSubmissions, setPhaseSubmissions] = useState([]);
     const [readOnly, setReadOnly] = useState(false);
     const [error, setError] = useState("");
-
-    const groupMembers = {
-        1: ["عضو ۱", "عضو ۲"],
-        2: ["عضو ۱", "عضو ۲", "عضو ۳"],
-        3: ["عضو ۱", "عضو ۲"],
-        4: ["عضو ۱"],
-        5: ["عضو ۱", "عضو ۲", "عضو ۳", "عضو ۴"],
-        6: ["عضو ۱", "عضو ۲"],
-        7: ["عضو ۱"],
-    };
+    const [submissionsError, setSubmissionsError] = useState(null);
+    const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+    const [groupMembers, setGroupMembers] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPhase = async () => {
             try {
-                const data = userRole === "Student"
-                    ? await getPhaseInformationForStudent(numericPhaseId)
-                    : await getPhaseInformationForInstructor(numericPhaseId);
+                const data =
+                    userRole === "Student"
+                        ? await getPhaseInformationForStudent(numericPhaseId)
+                        : await getPhaseInformationForInstructor(numericPhaseId);
                 setPhaseInfo(data);
             } catch (err) {
                 setError(err.message);
             }
         };
+
         if (!isNaN(numericPhaseId)) {
             fetchPhase();
         }
-    }, [numericPhaseId]);
+    }, [numericPhaseId, userRole]);
 
-    const handleOpenGradeForm = (groupId) => {
-        const existing = submittedGroups[groupId];
+    useEffect(() => {
+        const fetchSubmissions = async () => {
+            if (!numericPhaseId) return;
+
+            setLoadingSubmissions(true);
+            setSubmissionsError(null);
+
+            try {
+                const result = await fetchPhaseSubmissionsApi(numericPhaseId, userRole);
+                setPhaseSubmissions(result.items);
+                const submittedGroupsData = {};
+                result.items.forEach((item) => {
+                    submittedGroupsData[item.id] = {
+                        submitted: item.score !== null,
+                        grades: {},
+                        score: item.score,
+                    };
+                });
+                setSubmittedGroups(submittedGroupsData);
+            } catch (err) {
+                setSubmissionsError(err.message);
+            } finally {
+                setLoadingSubmissions(false);
+            }
+        };
+
+        fetchSubmissions();
+    }, [numericPhaseId, userRole]);
+
+    const handleOpenGradeForm = async (groupId) => {
         setSelectedGroup(groupId);
-        setReadOnly(!!existing?.submitted);
-        setGrades(existing?.grades || {});
+        setReadOnly(false);
+        setError("");
+
+        try {
+            if (!groupMembers[groupId]) {
+                const result = await getStudentsOfTeam(phaseId, groupId);
+
+                const fetchedMembers = result.data.map((student) => ({
+                    id: student.id,
+                    studentNumber: student.studentNumber,
+                    firstName: student.studentName.split(" ")[1] || "",
+                    lastName: student.studentName.split(" ")[0] || "",
+                    score: student.score,
+                }));
+
+                setGroupMembers((prev) => ({ ...prev, [groupId]: fetchedMembers }));
+
+                const initialGrades = {};
+                fetchedMembers.forEach((member) => {
+                    initialGrades[member.id] = grades[member.id] !== undefined ? grades[member.id] : member.score;
+                });
+                setGrades(initialGrades);
+            } else {
+                const existingMembers = groupMembers[groupId];
+                const existingGrades = {};
+                existingMembers.forEach((member) => {
+                    existingGrades[member.id] = grades[member.id] !== undefined ? grades[member.id] : member.score;
+                });
+                setGrades(existingGrades);
+            }
+
+            const existing = submittedGroups[groupId];
+            setReadOnly(!!existing?.submitted);
+        } catch (err) {
+            setError("خطا در دریافت اعضای گروه");
+        }
     };
 
-    const handleGradeChange = (member, value) => {
-        setGrades((prev) => ({ ...prev, [member]: value }));
+    const handleGradeChange = (memberId, value) => {
+        setGrades((prev) => ({ ...prev, [memberId]: value }));
     };
 
-    const handleSubmitGrades = () => {
+    const handleSubmitGrades = async () => {
         const members = groupMembers[selectedGroup] || [];
         const allGraded = members.every(
-            (member) => grades[member] !== undefined && grades[member] !== ""
+            (member) => grades[member.id] !== undefined && grades[member.id] !== ""
         );
 
         if (!allGraded) {
@@ -78,15 +148,51 @@ const PhasePage = () => {
             return;
         }
 
-        setSubmittedGroups((prev) => ({
-            ...prev,
-            [selectedGroup]: { grades, submitted: true },
-        }));
-
-        setSelectedGroup(null);
-        setReadOnly(false);
         setError("");
+
+        try {
+            for (const member of members) {
+                const score = Number(grades[member.id]);
+                if (isNaN(score)) {
+                    throw new Error(`نمره ${member.id} معتبر نیست.`);
+                }
+                const response = await setScoreForEachStudent(member.id, score);
+                if (!response.success) {
+                    throw new Error(response.message || "خطا در ثبت نمره.");
+                }
+            }
+            setGroupMembers((prev) => {
+                const updatedMembers = prev[selectedGroup].map((member) => ({
+                    ...member,
+                    score: grades[member.id] !== undefined ? Number(grades[member.id]) : member.score,
+                }));
+                return {
+                    ...prev,
+                    [selectedGroup]: updatedMembers,
+                };
+            });
+
+            setGrades((prevGrades) => {
+                const updatedGrades = { ...prevGrades };
+                members.forEach((member) => {
+                    updatedGrades[member.id] = Number(grades[member.id]);
+                });
+                return updatedGrades;
+            });
+
+            setSubmittedGroups((prev) => ({
+                ...prev,
+                [selectedGroup]: { grades, submitted: true },
+            }));
+
+            setSelectedGroup(null);
+            setReadOnly(false);
+            setError("");
+        } catch (err) {
+            setError(err.message || "خطایی در ثبت نمرات رخ داد.");
+        }
     };
+
 
     const handleCancel = () => {
         setSelectedGroup(null);
@@ -94,36 +200,59 @@ const PhasePage = () => {
         setError("");
     };
 
-    const handleDownloadFile = async () => {
+    const handleDownloadFile = useCallback(async () => {
+        let filePath = phaseInfo?.phaseFilePath || "";
+        const lastDotIndex = filePath.lastIndexOf(".");
+        const extension =
+            lastDotIndex !== -1 ? filePath.substring(lastDotIndex + 1) : "";
         try {
-            if (userRole === "Student") {
-                await downloadFileForStudent(numericPhaseId);
-            } else if (userRole === "Instructor") {
-                await downloadFileForInstructor(numericPhaseId);
-            }
-        } catch (error) {
-            setError("خطا در دانلود فایل: " + error.message);
+            await downloadPhaseFileApi(phaseId, userRole, filePath, phaseInfo?.title);
+        } catch (err) {
+            console.error("Error downloading file:", err);
+            setError("خطایی در دانلود فایل رخ داد!");
         }
-    };
+    }, [phaseId, userRole, phaseInfo]);
+
+    const handleDownloadAllSubmissionFiles = useCallback(async (phaseId) => {
+        try {
+            await downloadAllSubmissionFilesApi(phaseId);
+        } catch (err) {
+            console.error("Error downloading all submission files:", err);
+            setError("خطایی در دانلود همه فایل‌های ارسالی رخ داد!");
+        }
+    }, []);
 
 
     return (
         <div className="w-full max-w-270 p-6" dir="rtl">
             <div className="w-full flex flex-col items-center">
-                <div className="w-full flex justify-between items-center px-10 pb-10" dir="rtl">
+                <div
+                    className="w-full flex justify-between items-center px-10 pb-10"
+                    dir="rtl"
+                >
                     <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">
                         {phaseInfo?.title || "در حال بارگذاری..."}
                     </h2>
 
                     {userRole === "Instructor" && (
                         <div className="flex gap-4 text-gray-600 mt-5">
-                            <div title="دانلود فایل" className="cursor-pointer" onClick={handleDownloadFile}>
+                            <div
+                                title="دانلود فایل"
+                                className="cursor-pointer"
+                                onClick={handleDownloadFile}
+                                data-testid="download-phase-icon"
+                            >
                                 <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
                             </div>
                             <div title="حذف" className="cursor-pointer">
                                 <Trash size="30" variant="Bulk" color="#08146f" />
                             </div>
-                            <div title="ویرایش" className="cursor-pointer">
+                            <div
+                                title="ویرایش"
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/phase/edit/${phaseId}`)}
+                                data-testid="edit-phase-icon"
+                            >
                                 <Edit2 size="30" variant="Bulk" color="#08146f" />
                             </div>
                         </div>
@@ -131,7 +260,11 @@ const PhasePage = () => {
 
                     {userRole === "Student" && (
                         <div className="flex gap-4 text-gray-600 mt-5">
-                            <div title="دانلود فایل" className="cursor-pointer" onClick={() => console.log("Download icon clicked!")}
+                            <div
+                                title="دانلود فایل"
+                                className="cursor-pointer"
+                                onClick={handleDownloadFile}
+                                data-testid="download-phase-icon"
                             >
                                 <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
                             </div>
@@ -140,26 +273,38 @@ const PhasePage = () => {
                 </div>
 
                 {phaseInfo && (
-                    <div className="w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5 border-b border-[#CED8E5F8]" dir="rtl">
+                    <div
+                        className="w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5 border-b border-[#CED8E5F8]"
+                        dir="rtl"
+                    >
                         <div className="text-xl flex items-center gap-2">
                             <Calendar size="25" variant="Linear" color="#495D72" />
                             <span>
-                                {new Date(phaseInfo.startDate).toLocaleTimeString("fa-IR", { hour: '2-digit', minute: '2-digit' })} -{" "}
+                {new Date(phaseInfo.startDate).toLocaleTimeString("fa-IR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                })}{" "}
+                                -{" "}
                                 {new Date(phaseInfo.startDate).toLocaleDateString("fa-IR")}
-
-                            </span>
+              </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <PresentionChart size="25" variant="Linear" color="#495D72" />
                             <span>
-                                {new Date(phaseInfo.endDate).toLocaleTimeString("fa-IR", { hour: '2-digit', minute: '2-digit' })} -{" "}
-                                {new Date(phaseInfo.endDate).toLocaleDateString("fa-IR")}
-
-                            </span>
+                {new Date(phaseInfo.endDate).toLocaleTimeString("fa-IR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                })}{" "}
+                                - {new Date(phaseInfo.endDate).toLocaleDateString("fa-IR")}
+              </span>
                         </div>
                         <div className="flex items-start gap-2 mb-6">
                             <Information size="25" variant="Linear" color="#495D72" />
-                            <p className="leading-relaxed">{phaseInfo.description}</p>
+                            <p className="leading-relaxed">
+                                {phaseInfo.description
+                                    ? phaseInfo.description
+                                    : "توضیحی ثبت نشده است."}
+                            </p>
                         </div>
                     </div>
                 )}
@@ -184,71 +329,37 @@ const PhasePage = () => {
                     </div>
 
                     {activeTab === "ارسال پاسخ" && <PhaseSubmitTab />}
-                    {activeTab === "ارسال‌ها" && <PhaseSubmissionsTab />}
+                    {activeTab === "ارسال‌ها" && (
+                        <PhaseSubmissionsTab phaseTitle={phaseInfo?.title} />
+                    )}
                 </>
             )}
 
             {userRole === "Instructor" && (
                 <div className="w-full mt-8">
                     <DropdownSection title="ارسال‌ها" bgColor="#1E2B4F">
-                        <div className="overflow-y-auto max-h-72">
-                            <table className="w-full text-center border-collapse text-sm">
-                                <thead className="bg-gray-100 sticky top-0 z-10">
-                                <tr>
-                                    <th className="px-4 py-2">نام گروه</th>
-                                    <th className="px-4 py-2">زمان ارسال</th>
-                                    <th className="px-4 py-2">نوع فایل</th>
-                                    <th className="px-4 py-2">نمره استاد</th>
-                                    <th className="px-4 py-2">فایل</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                                    <tr key={i} className="odd:bg-white even:bg-gray-50">
-                                        <td className="px-4 py-2">گروه {i}</td>
-                                        <td className="px-4 py-2">۲۰ اردیبهشت ۱۴۰۴ – ساعت ۱۸:۰۰</td>
-                                        <td className="px-4 py-2">pdf</td>
-                                        <td className="px-4 py-2">
-                                            <div className="flex items-center gap-2 justify-center">
-                                                {submittedGroups[i]?.submitted ? (
-                                                    <button
-                                                        className="text-green-500 hover:text-green-700 font-semibold cursor-pointer underline"
-                                                        title="مشاهده نمرات ثبت شده"
-                                                        onClick={() => handleOpenGradeForm(i)}
-                                                    >
-                                                        ثبت شده
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        className="bg-red-400 hover:bg-red-600 border border-none text-white px-2 py-1 rounded cursor-pointer"
-                                                        title="ثبت نمره"
-                                                        onClick={() => handleOpenGradeForm(i)}
-                                                    >
-                                                        ثبت نشده
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            <button className="text-big-stone-400 hover:text-big-stone-600 text-[1rem] cursor-pointer">
-                                                دانلود
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        {loadingSubmissions ? (
+                            <p className="text-white">در حال بارگذاری ارسال‌ها...</p>
+                        ) : submissionsError ? (
+                            <p className="text-red-500">{submissionsError}</p>
+                        ) : (
+                            <SubmissionTable
+                                submissions={phaseSubmissions}
+                                handleOpenGradeForm={handleOpenGradeForm}
+                                phaseId={phaseId}
+                                handleDownloadAllSubmissionFiles={handleDownloadAllSubmissionFiles}
+                            />
+                        )}
                     </DropdownSection>
 
                     <DropdownSection title="ثبت نمره" bgColor="#5C6BC0">
-                        <GradeUpload />
+                        <GradeSection phaseId={phaseId} />
                     </DropdownSection>
 
-                    {selectedGroup && (
+                    {selectedGroup !== null && (
                         <GradeForm
-                            groupId={selectedGroup}
-                            members={groupMembers[selectedGroup] || []}
+                            groupId={Number(selectedGroup)}
+                            members={groupMembers[Number(selectedGroup)] || []}
                             grades={grades}
                             onChange={handleGradeChange}
                             onSubmit={handleSubmitGrades}
@@ -256,6 +367,7 @@ const PhasePage = () => {
                             readOnly={readOnly}
                             error={error}
                         />
+
                     )}
                 </div>
             )}
