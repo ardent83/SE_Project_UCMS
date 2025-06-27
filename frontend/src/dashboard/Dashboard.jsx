@@ -16,8 +16,7 @@ const Dashboard = () => {
                 <ExerciseList userRoleId={user?.role?.id} />
             </div>
 
-            <div className="w-full max-w-240 flex flex-col justify-start items-center gap-10">
-                <Header />
+            <div className="w-full flex flex-col justify-start items-center gap-10">
                 <ClassList userRoleId={user?.role?.id} userFullName={`${user?.firstName} ${user?.lastName}`} />
                 <ProjectList userRoleId={user?.role?.id} />
                 <ExamList userRoleId={user?.role?.id} />

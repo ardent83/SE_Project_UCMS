@@ -1,117 +1,153 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+    fetchPhaseSubmissionsApi,
+    setFinalSubmission,
+    downloadSubmissionFileApi
+} from "../../utils/PhaseSubmissionForStudentApi.js";
+import { useParams } from "react-router-dom";
+import { ArrowSwapVertical } from "iconsax-react";
 
-const fakeSubmissions = [
-    {
-        id: 1,
-        name: "فاز اول",
-        date: "1403/03/01",
-        time: "14:00",
-        fileName: "phase1_project.pdf",
-        fileFormat:"pdf",
-        fileUrl: "/files/phase1_project.pdf",
-        score: 17.5,
-    },
-    {
-        id: 2,
-        name: "فاز دوم",
-        date: "1403/03/15",
-        time: "12:30",
-        fileName: "phase2_code.zip",
-        fileFormat:"zip",
-        fileUrl: "/files/phase2_code.zip",
-        score: null,
-    },
-    {
-        id: 3,
-        name: "فاز سوم",
-        date: "1403/03/15",
-        time: "12:30",
-        fileName: "phase2_code.zip",
-        fileFormat:"zip",
-        fileUrl: "/files/phase2_code.zip",
-        score: null,
-    },
-    {
-        id: 4,
-        name: "فاز چهارم",
-        date: "1403/03/15",
-        time: "12:30",
-        fileName: "phase2_code.zip",
-        fileFormat:"zip",
-        fileUrl: "/files/phase2_code.zip",
-        score: null,
-    },
-    {
-        id: 5,
-        name: "فاز پنجم",
-        date: "1403/03/15",
-        time: "12:30",
-        fileName: "phase2_code.zip",
-        fileFormat:"zip",
-        fileUrl: "/files/phase2_code.zip",
-        score: null,
-    },
-];
-
-export default function PhaseSubmissionsTab() {
+export default function PhaseSubmissionsTab({ phaseTitle }) {
+    const { phaseId } = useParams();
     const [selectedId, setSelectedId] = useState(null);
+    const [submissions, setSubmissions] = useState([]);
+    const [error, setError] = useState(null);
+    const [sortBy, setSortBy] = useState(null);
+    const [sortOrder, setSortOrder] = useState(null);
 
-    const handleCheckboxChange = (id) => {
-        setSelectedId((prev) => (prev === id ? null : id));
+    const fetchSubmissions = async () => {
+        try {
+            const sortDto = {};
+            if (sortBy !== null && sortOrder !== null) {
+                sortDto.SortBy = sortBy;
+                sortDto.SortOrder = sortOrder;
+            }
+
+            const data = await fetchPhaseSubmissionsApi(phaseId, "Student", sortDto);
+            const items = data.items || [];
+
+            setSubmissions(items);
+
+            const final = items.find((s) => s.isFinal === true);
+            if (final) {
+                setSelectedId(final.id);
+            } else if (items.length > 0) {
+                setSelectedId(items[0].id);
+            } else {
+                setSelectedId(null);
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
+
+    const handleDownload = async (submission) => {
+        try {
+            await downloadSubmissionFileApi(submission.id, "Student", "/" + submission.fileType);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleCheckboxChange = async (id) => {
+        try {
+            await setFinalSubmission(id);
+            await fetchSubmissions();
+        } catch (err) {
+            console.error(err);
+            setError("خطا در ذخیره ارسال نهایی");
+        }
+    };
+
+    const handleSortClick = () => {
+        if (sortBy === null) {
+            setSortBy(1);
+            setSortOrder(1);
+        } else if (sortOrder === 1) {
+            setSortOrder(2);
+        } else {
+            setSortBy(null);
+            setSortOrder(null);
+        }
+    };
+
+    useEffect(() => {
+        fetchSubmissions();
+    }, [phaseId, sortBy, sortOrder]);
 
     return (
         <div className="w-full max-w-[90rem] mx-auto mt-8 px-10 text-bg-blue" dir="rtl">
+            {error && <div className="text-red-500 my-2">{error}</div>}
             <div className="overflow-y-auto max-h-[380px] bg-white rounded-lg shadow-sm">
                 <table className="w-full border-collapse text-center">
                     <thead className="sticky top-0 bg-gray-100 z-10">
                     <tr className="border-b border-gray-300 text-gray-500 text-sm">
-                        <th className="py-3 px-4">انتخاب</th>
+                        <th className="py-3 px-4">ارسال نهایی</th>
                         <th className="py-3 px-4">نام فاز</th>
-                        <th className="py-3 px-4">تاریخ ارسال</th>
-                        <th className="py-3 px-4">ساعت</th>
+                        <th className="py-3 px-4">
+                            <div
+                                className="flex items-center justify-center gap-1 cursor-pointer select-none"
+                                onClick={handleSortClick}
+                                title="مرتب‌سازی بر اساس زمان ارسال"
+                            >
+                                <span>زمان ارسال</span>
+                                <ArrowSwapVertical
+                                    size={16}
+                                    variant="Bulk"
+                                    color={sortBy === 1 ? "#1D4ED8" : "#0C1E33"}
+                                    className={`${sortOrder === 2 ? "rotate-180" : ""} transition-transform duration-200`}
+                                />
+                            </div>
+                        </th>
                         <th className="py-3 px-4">نوع فایل</th>
                         <th className="py-3 px-4">نمره</th>
                         <th className="py-3 px-4">فایل</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {fakeSubmissions.map((submission) => (
-                        <tr
-                            key={submission.id}
-                            className={`border-b border-gray-100 transition ${
-                                selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"
-                            }`}
-                        >
-                            <td className="py-3 px-4">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedId === submission.id}
-                                    onChange={() => handleCheckboxChange(submission.id)}
-                                />
-                            </td>
-                            <td className="py-3 px-4">{submission.name}</td>
-                            <td className="py-3 px-4">{submission.date}</td>
-                            <td className="py-3 px-4">{submission.time}</td>
-                            <td className="py-3 px-4 text-gray-700">{submission.fileFormat}</td>
-                            <td className="py-3 px-4">
-                                {submission.score !== null ? (
-                                    <span className="text-green-700 font-semibold">{submission.score}</span>
-                                ) : (
-                                    <span className="text-gray-400">–</span>
-                                )}
-                            </td>
-                            <td className="py-3 px-4">
-                                <a
-                                    href={submission.fileUrl}
-                                    download
-                                    className="text-blue-700 hover:underline"
-                                >
-                                    دانلود
-                                </a>
+                    {submissions.length === 0 ? (
+                        <tr>
+                            <td colSpan="10" className="py-6 text-gray-400 text-sm">
+                                فایلی آپلود نشده است
                             </td>
                         </tr>
-                    ))}
+                    ) : (
+                        submissions.map((submission) => (
+                            <tr
+                                key={submission.id}
+                                className={`border-b border-gray-100 transition ${selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                            >
+                                <td className="py-3 px-4">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedId === submission.id}
+                                        onChange={() => handleCheckboxChange(submission.id)}
+                                        className="cursor-pointer"
+                                    />
+                                </td>
+                                <td className="py-3 px-4 text-sm text-big-stone-600">{phaseTitle}</td>
+                                <td className="py-3 px-4 text-sm">
+                                    {new Date(submission.submittedAt).toLocaleString("fa-IR")}
+                                </td>
+                                <td className="py-3 px-4 text-gray-700 text-sm">{submission.fileType}</td>
+                                <td className="py-3 px-4 text-sm">
+                                    {submission.score !== null ? (
+                                        <span className="text-green-700 font-semibold">{submission.score}</span>
+                                    ) : (
+                                        <span className="text-gray-400">–</span>
+                                    )}
+                                </td>
+                                <td className="py-3 px-4 text-sm">
+                                    <button
+                                        onClick={() => handleDownload(submission)}
+                                        className="text-big-stone-600 hover:underline cursor-pointer"
+                                    >
+                                        دانلود
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                     </tbody>
                 </table>
             </div>

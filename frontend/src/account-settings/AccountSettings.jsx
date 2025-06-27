@@ -59,6 +59,9 @@ export default function AccountSettings() {
         const educationLevelId = educationLevelRes.data.find(e => e.name === specializedData.educationLevel)?.id ?? null;
         const instructorRankId = instructorRankRes.data.find(r => r.name === specializedData.rank)?.id ?? null;
 
+        const dateOfBirthFromApi = generalData.dateOfBirth;
+        const isDefaultDate = dateOfBirthFromApi === "0001-01-01T00:00:00";
+
         const combinedUserData = {
           ...generalData,
           ...specializedData,
@@ -66,6 +69,7 @@ export default function AccountSettings() {
           university: universityId,
           educationLevel: educationLevelId,
           rank: instructorRankId,
+          dateOfBirth: isDefaultDate ? null : dateOfBirthFromApi,
         };
         setUserData(combinedUserData);
       } catch (err) {
@@ -132,7 +136,7 @@ export default function AccountSettings() {
 
 
   return (
-    <div className="w-full max-w-270 p-6 ">
+    <div className="w-full p-6 ">
       <div className="w-full flex flex-col items-center" style={{ '--max-w-rmdp': "23rem" }}>
         <div className="w-full flex justify-end items-center gap-[2.69rem] px-10 pb-10 border-b border-[#CED8E5F8]">
           <div className="flex flex-col justify-center items-end">

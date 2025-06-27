@@ -1,8 +1,12 @@
 import React from "react";
-import { Calendar2, Profile, Clock } from 'iconsax-react';
+import { Calendar2, Profile, Clock, Chart } from 'iconsax-react';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../auth/context/AuthContext";
 
 export const ClassCard = ({ color, id, title, instructor, days, times }) => {
+    const { user } = useAuth();
+    const userId = user?.role?.id;
+
     const backgroundStyle = {
         backgroundColor: color,
         borderColor: color
@@ -39,6 +43,17 @@ export const ClassCard = ({ color, id, title, instructor, days, times }) => {
             </div>
             <div className="w-[calc(100%-0.25rem)] h-[calc(100%-0.25rem)] absolute top-0 left-0 z-1 rounded-lg" style={backgroundStyle}></div>
             <div className="border border-neutralgray-2 w-[calc(100%-0.25rem)] h-[calc(100%-0.25rem)] absolute top-1 left-1 z-0 rounded-lg"></div>
+            {userId === 1 && (
+                <span
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/grade-reports/${id}`);
+                    }}
+                    className="absolute bottom-3 left-3 z-20 pointer-fine"
+                >
+                    <Chart color={"var(--color-redp)"} variant="Bold" size={"20"} />
+                </span>
+            )}
         </div>
     );
 };

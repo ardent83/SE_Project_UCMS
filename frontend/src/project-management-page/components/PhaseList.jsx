@@ -9,7 +9,9 @@ const PhaseList = ({ phases, projectId, userRole, onAddPhaseClick }) => {
   const navigate = useNavigate();
 
   const handlePhaseClick = (phaseId) => {
-    navigate(`/project/${projectId}/phase/${phaseId}`);
+    console.log(projectId);
+    sessionStorage.setItem("projectId", projectId);
+    navigate(`/phase/${phaseId}`);
   };
 
   return (
@@ -35,21 +37,21 @@ const PhaseList = ({ phases, projectId, userRole, onAddPhaseClick }) => {
             alt="هیچ فازی یافت نشد"
             className="w-32 h-32 mb-4 opacity-70"
           />
-          <p className="text-gray-600 mb-4 font-bold text-lg"  data-testid="no-phases-message"> {/* Added data-testid */}
+          <p className="text-gray-600 mb-4 font-bold text-lg" data-testid="no-phases-message"> {/* Added data-testid */}
             هیچ فازی برای این پروژه تعریف نشده است.
           </p>
           <p className="text-gray-500 mb-6 text-sm">
             برای سازماندهی بهتر پروژه خود، فازهای جدیدی را اضافه کنید.
           </p>
           {userRole === "Instructor" && (
-            <button
+            <Button
+              rightIcon={false}
+              buttonText={"ایجاد فاز جدید"}
               onClick={onAddPhaseClick}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-5 rounded-full flex items-center gap-2 transition-colors duration-200 shadow-md"
+              className="w-35 border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
+              leftIconComponent={<Add size="20" variant="Linear" />}
               data-testid="create-phase-empty-state-button" // Added data-testid
-            >
-              <Add size="20" variant="Outline" />
-              <span>ایجاد فاز جدید</span>
-            </button>
+            />
           )}
         </div>
       ) : (

@@ -59,7 +59,7 @@ const ExerciseSubmitTab = ({
                 />
             )}
 
-            <div className="w-full max-w-[60rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
+            <div className="w-full max-w-[90rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">ارسال پاسخ تمرین</h3>
 
                 {availableFormats.length > 0 ? (
@@ -71,6 +71,7 @@ const ExerciseSubmitTab = ({
                             className="border border-gray-300 rounded-xl text-center px-5 py-1 bg-gray-50 text-gray-800 min-w-[300px] truncate cursor-pointer"
                             disabled={isSubmitting}
                         >
+                            <option value="" disabled>انتخاب فرمت...</option>
                             {availableFormats.map((format, index) => (
                                 <option key={index} value={format}>
                                     {format}
