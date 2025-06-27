@@ -71,6 +71,7 @@ const ExerciseSubmitTab = ({
                             className="border border-gray-300 rounded-xl text-center px-5 py-1 bg-gray-50 text-gray-800 min-w-[300px] truncate cursor-pointer"
                             disabled={isSubmitting}
                         >
+                            <option value="" disabled>انتخاب فرمت...</option>
                             {availableFormats.map((format, index) => (
                                 <option key={index} value={format}>
                                     {format}

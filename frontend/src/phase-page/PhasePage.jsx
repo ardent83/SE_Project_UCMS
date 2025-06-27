@@ -330,7 +330,7 @@ const PhasePage = () => {
                         ))}
                     </div>
 
-                    {activeTab === "ارسال پاسخ" && <PhaseSubmitTab />}
+                    {activeTab === "ارسال پاسخ" && <PhaseSubmitTab phaseFormats={phaseInfo?.fileFormats} />}
                     {activeTab === "ارسال‌ها" && (
                         <PhaseSubmissionsTab phaseTitle={phaseInfo?.title} />
                     )}
