@@ -23,31 +23,35 @@ export const useInstructorGradesData = (classId) => {
 
   const [studentScores, setStudentScores] = useState(null);
 
-  // Load class entries
-  const loadClassEntries = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    setEntrySaveError(null);
-    try {
-      let data = await fetchClassEntries(classId);
+const loadClassEntries = useCallback(async () => {
+  setLoading(true);
+  setError(null);
+  setEntrySaveError(null);
 
-      data = data.map((entry, index) => ({
-        ...entry,
-        entryType:
-          entry.entryType !== undefined && entry.entryType !== null
-            ? entry.entryType
-            : `unknownType-${entry.entryId || index}`,
-      }));
+  try {
+    const { entries, totalScore } = await fetchClassEntries(classId);
 
-      setClassEntries(data);
-      setEditedEntries({});
-    } catch (err) {
-      setError(err.message || "خطا در بارگذاری جزئیات نمره‌دهی.");
-      setClassEntries([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [classId]);
+    const processedEntries = entries.map((entry, index) => ({
+      ...entry,
+      entryType:
+        entry.entryType !== undefined && entry.entryType !== null
+          ? entry.entryType
+          : `unknownType-${entry.entryId || index}`,
+    }));
+
+    setClassEntries(processedEntries);
+    setEditedEntries({});
+    setTotalScore(totalScore);  
+    console.log("مجموع نمرات:", totalScore);
+
+  } catch (err) {
+    setError(err.message || "خطا در بارگذاری جزئیات نمره‌دهی.");
+    setClassEntries([]);
+  } finally {
+    setLoading(false);
+  }
+}, [classId]);
+
 
   // Load student class scores
   const loadStudentClassScores = useCallback(async () => {
