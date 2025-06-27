@@ -224,7 +224,7 @@ const PhasePage = () => {
 
 
     return (
-        <div className="w-full max-w-270 p-6" dir="rtl">
+        <div className="w-full max-w-[90rem] p-6" dir="rtl">
             <div className="w-full flex flex-col items-center">
                 <div
                     className="w-full flex justify-between items-center px-10 pb-10"

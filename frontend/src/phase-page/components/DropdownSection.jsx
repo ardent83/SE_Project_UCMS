@@ -10,7 +10,7 @@ const DropdownSection = ({title, children, bgColor}) => {
 
     return (<div className={`w-full flex flex-col mt-6`}>
             <div
-                className={`w-full max-w-264 h-14.5 rounded-[0.625rem] px-4 flex justify-between items-center cursor-pointer bg-[var(--bg)]`}
+                className={`w-full max-w-[90rem] h-14.5 rounded-[0.625rem] px-4 flex justify-between items-center cursor-pointer bg-[var(--bg)]`}
                 style={{"--bg": `${bgColor}`}}
                 onClick={handleToggle}
             >
