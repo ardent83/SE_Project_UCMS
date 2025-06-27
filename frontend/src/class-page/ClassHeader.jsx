@@ -1,33 +1,24 @@
-import { Calendar2, Edit, More, Clock, Trash } from "iconsax-react";
-import React, { useState } from "react";
+import {Calendar2, Edit, More, Clock, Trash} from "iconsax-react";
+import React, {useCallback, useState} from "react";
 import ClassInfoPop from "./components/ClassInfoPop.jsx";
-import { useNavigate } from "react-router-dom";
-import { deleteClassById , leaveClassById} from "./utils/classPageApi.js";
+import {useNavigate} from "react-router-dom";
+import {deleteClassById, leaveClassById} from "./utils/classPageApi.js";
 import Modal from "../components/Modal.jsx";
 import DeleteConfirmModalContent from "../components/DeleteConfirmPopover.jsx";
-import { useAuth } from "../auth/context/AuthContext.jsx";
+import {useAuth} from "../auth/context/AuthContext.jsx";
 
 export default function ClassHeader({
-                                        id,
-                                        title,
-                                        instructor,
-                                        startDate,
-                                        endDate,
-                                        days,
-                                        times,
-                                        classCode,
+                                        id, title, instructor, startDate, endDate, days, times, classCode,
                                     }) {
     const [showClassInfo, setShowClassInfo] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showLeaveMenu, setShowLeaveMenu] = useState(false);
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const {user} = useAuth();
     const userRole = user?.role?.name || "guest";
 
     const formatter = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric",
+        day: "numeric", month: "numeric", year: "numeric",
     });
 
     const formatPersianDate = (date) => {
@@ -63,12 +54,16 @@ export default function ClassHeader({
             .join(" , ");
     };
 
-    const handleDeleteClass = async () => {
-        const success = await deleteClassById(id);
-        if (success) {
-            navigate("/classes");
+    const handleDeleteClass = useCallback(async () => {
+        try {
+            await deleteClassById(id);
+            console.log(`Class ${id} deleted successfully.`);
+            navigate(`/classes`, {state: {message: "پروژه با موفقیت حذف شد."}});
+        } catch (err) {
+            console.error("Error deleting class:", err);
+            setError("خطایی در حذف کلاس رخ داد!");
         }
-    };
+    }, [id, navigate]);
 
     const handleLeaveClass = async () => {
         const success = await leaveClassById(id);
@@ -77,105 +72,114 @@ export default function ClassHeader({
         }
     };
 
-    return (
-        <>
-            <div className="relative w-full h-48 p-4 pr-6 flex flex-col justify-between items-center self-stretch">
-                <div className="flex items-center gap-[0.625rem] self-stretch z-10 relative min-h-[24px]">
-                    {userRole === "Instructor" ? (
-                        <>
-                            <Trash
-                                color="#082c85"
-                                size={24}
-                                variant="Bulk"
-                                className="cursor-pointer"
-                                onClick={() => setShowDeleteModal(true)}
-                            />
-                            {showDeleteModal && (
-                                <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-                                    <DeleteConfirmModalContent
-                                        message="آیا از حذف این کلاس مطمئن هستید؟"
-                                        onConfirm={handleDeleteClass}
-                                        onCancel={() => setShowDeleteModal(false)}
-                                    />
-                                </Modal>
-                            )}
-                            <Edit
-                                color="#082c85"
-                                size={24}
-                                variant="Bulk"
-                                className="cursor-pointer"
-                                onClick={() => navigate(`/class/edit/${id}`)}
-                            />
-                            <More
-                                color="#082c85"
-                                size={24}
-                                variant="Bulk"
-                                className="cursor-pointer"
-                                onClick={() => setShowClassInfo(true)}
-                            />
-                        </>
-                    ) : (
-                        <div className="relative">
-                            <More
-                                color="#082c85"
-                                size={24}
-                                variant="Linear"
-                                className="cursor-pointer rotate-90 absolute left-5 top-0"
-                                onClick={() => setShowLeaveMenu(!showLeaveMenu)}
-                            />
-                            {showLeaveMenu && (
-                                <div className="absolute left-0 top-8 bg-big-stone-800 hover:bg-big-stone-900 rounded shadow w-20 p-2 z-20">
-                                    <button
-                                        className="text-white text-sm  cursor-pointer"
-                                        onClick={handleLeaveClass}
-                                    >
-                                        ترک کلاس
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                <div className="w-full h-fit flex justify-between items-center self-stretch z-10 relative">
-                    <div className="text-body-03 text-redp flex w-60 flex-col gap-2">
-                        <span className="flex justify-end items-center gap-2 self-stretch">
-                            <span className="flex justify-end items-center">{days}</span>
-                            <Calendar2 color="#082c85" size={24} variant="Bulk" />
-                        </span>
-                        <span className="flex justify-end items-center gap-2 self-stretch">
-                            <span className="flex justify-end items-center">{formatTimeRange(times)}</span>
-                            <Clock color="#082c85" size={24} variant="Bulk" />
-                        </span>
+    return (<>
+        <div className="relative w-full h-48 p-4 pr-6 flex flex-col justify-between items-center self-stretch">
+            <div className="flex items-center gap-[0.625rem] self-stretch z-10 relative min-h-[24px]">
+                {userRole === "Instructor" ? (<>
+                    <div title="حذف کلاس" className="cursor-pointer">
+                        <Trash
+                            size="30"
+                            variant="Bulk"
+                            color="#08146f"
+                            onClick={() => setShowDeleteModal(true)}
+                            style={{cursor: "pointer"}}
+                            data-testid="delete-class-icon" // Added data-testid
+                        />
                     </div>
+                    <div title="ویرایش کلاس" className="cursor-pointer">
 
-                    <div className="w-fit h-[5rem] flex flex-col items-end gap-1">
-                        <span className="text-heading-h5 text-white text-3xl text-right mb-3">{title}</span>
-                        <div className="flex justify-end items-center gap-1 self-stretch">
-                            {instructor && (
-                                <>
-                                    <span className="text-body-03 text-white text-right">{instructor}</span>
-                                    <div className="h-full border-l border-l-white"></div>
-                                </>
-                            )}
-                            <span className="text-body-03 text-white text-right">{formatPersianDate(endDate)}</span>
-                            <div className="h-full border-l border-l-white"></div>
-                            <span className="text-body-03 text-white text-right">{formatPersianDate(startDate)}</span>
-                        </div>
+                        <Edit
+                            color="#082c85"
+                            size={30}
+                            variant="Bulk"
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/class/edit/${id}`)}
+                        />
                     </div>
-                </div>
+                    <div title="اطلاعات کلاس" className="cursor-pointer">
 
-                <div className="bg-[#A3ADB8] border border-big-stone-200 w-[calc(100%-0.5rem)] h-[calc(100%-0.5rem)] absolute top-0 left-0 z-1 rounded-lg"></div>
-                <div className="border border-neutralgray-5 w-[calc(100%-0.5rem)] h-[calc(100%-0.5rem)] absolute top-2 left-2 z-0 rounded-lg"></div>
+                        <More
+                            color="#082c85"
+                            size={30}
+                            variant="Bulk"
+                            className="cursor-pointer"
+                            onClick={() => setShowClassInfo(true)}
+                        />
+                    </div>
+                </>) : (<div className="relative">
+                    <More
+                        color="#082c85"
+                        size={24}
+                        variant="Linear"
+                        className="cursor-pointer rotate-90 absolute left-5 top-0"
+                        onClick={() => setShowLeaveMenu(!showLeaveMenu)}
+                    />
+                    {showLeaveMenu && (<div
+                        className="absolute left-0 top-8 bg-big-stone-800 hover:bg-big-stone-900 rounded shadow w-20 p-2 z-20">
+                        <button
+                            className="text-white text-sm  cursor-pointer"
+                            onClick={handleLeaveClass}
+                        >
+                            ترک کلاس
+                        </button>
+                    </div>)}
+                </div>)}
             </div>
 
-            {showClassInfo && (
-                <ClassInfoPop
-                    show={showClassInfo}
-                    onClose={() => setShowClassInfo(false)}
-                    classCode={classCode}
+            <div className="w-full h-fit flex justify-between items-center self-stretch z-10 relative">
+                <div className="text-body-03 text-redp flex w-60 flex-col gap-2">
+                        <span className="flex justify-end items-center gap-2 self-stretch">
+                            <span className="flex justify-end items-center">{days}</span>
+                            <Calendar2 color="#082c85" size={24} variant="Bulk"/>
+                        </span>
+                    <span className="flex justify-end items-center gap-2 self-stretch">
+                            <span className="flex justify-end items-center">{formatTimeRange(times)}</span>
+                            <Clock color="#082c85" size={24} variant="Bulk"/>
+                        </span>
+                </div>
+
+                <div className="w-fit h-[5rem] flex flex-col items-end gap-1">
+                    <span className="text-heading-h5 text-white text-3xl text-right mb-3">{title}</span>
+                    <div className="flex justify-end items-center gap-1 self-stretch">
+                        {instructor && (<>
+                            <span className="text-body-03 text-white text-right">{instructor}</span>
+                            <div className="h-full border-l border-l-white"></div>
+                        </>)}
+                        <span className="text-body-03 text-white text-right">{formatPersianDate(endDate)}</span>
+                        <div className="h-full border-l border-l-white"></div>
+                        <span className="text-body-03 text-white text-right">{formatPersianDate(startDate)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                className="bg-[#A3ADB8] border border-big-stone-200 w-[calc(100%-0.5rem)] h-[calc(100%-0.5rem)] absolute top-0 left-0 z-1 rounded-lg"></div>
+            <div
+                className="border border-neutralgray-5 w-[calc(100%-0.5rem)] h-[calc(100%-0.5rem)] absolute top-2 left-2 z-0 rounded-lg"></div>
+
+            <Modal
+                show={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                data-testid="delete-phase-modal"
+            >
+                {" "}
+                {/* Added data-testid */}
+                <DeleteConfirmModalContent
+                    onConfirm={() => {
+                        handleDeleteClass();
+                        setShowDeleteModal(false);
+                    }}
+                    onCancel={() => setShowDeleteModal(false)}
+                    message="آیا از حذف این فاز مطمئن هستید؟"
+                    data-testid="delete-phase-confirm-content" // Added data-testid
                 />
-            )}
-        </>
-    );
+            </Modal>
+        </div>
+
+        {showClassInfo && (<ClassInfoPop
+            show={showClassInfo}
+            onClose={() => setShowClassInfo(false)}
+            classCode={classCode}
+        />)}
+    </>);
 }
