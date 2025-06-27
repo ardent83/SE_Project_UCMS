@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {
     Calendar,
     Edit2,
@@ -14,12 +14,15 @@ import PhaseSubmissionsTab from "./components/Tabs/PhaseSubmissionTab.jsx";
 import DropdownSection from "./components/DropdownSection.jsx";
 import GradeSection from "./components/UploadGradeDropdown.jsx";
 import GradeForm from "./components/GradeFormPop.jsx";
+import Modal from "../components/Modal.jsx";
+import DeleteConfirmModalContent from "../components/DeleteConfirmPopover.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
 import { getStudentsOfTeam,setScoreForEachStudent } from "./utils/PhaseSubmissionForInstructorApi.js";
 import {
     getPhaseInformationForInstructor,
     getPhaseInformationForStudent,
     downloadPhaseFileApi,
+    deletePhaseApi
 } from "./utils/PhasePageApi.js";
 import {
     fetchPhaseSubmissionsApi,
@@ -32,7 +35,7 @@ const PhasePage = () => {
     const userRole = user?.role?.name || "guest";
     const { phaseId } = useParams();
     const numericPhaseId = parseInt(phaseId, 10);
-
+    const projectId = sessionStorage.getItem("projectId");
     const [phaseInfo, setPhaseInfo] = useState(null);
     const [activeTab, setActiveTab] = useState("ارسال پاسخ");
     const [selectedGroup, setSelectedGroup] = useState(null);
@@ -43,6 +46,7 @@ const PhasePage = () => {
     const [error, setError] = useState("");
     const [submissionsError, setSubmissionsError] = useState(null);
     const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+    const [showDeletePhaseModal, setShowDeletePhaseModal] = useState(false);
     const [groupMembers, setGroupMembers] = useState({});
     const navigate = useNavigate();
 
@@ -222,6 +226,17 @@ const PhasePage = () => {
         }
     }, []);
 
+    const handleDeletePhase = useCallback(async () => {
+        try {
+            await deletePhaseApi(phaseId);
+            console.log(`Phase ${phaseId} deleted successfully.`);
+            navigate(`/project/${projectId}`, { state: { message: "پروژه با موفقیت حذف شد." } });
+        } catch (err) {
+            console.error("Error deleting project:", err);
+            setError("خطایی در حذف پروژه رخ داد!");
+        } finally {
+        }
+    }, [phaseId,projectId, navigate]);
 
     return (
         <div className="w-full max-w-[90rem] mx-auto px-10 text-bg-blue" dir="rtl">
@@ -244,6 +259,16 @@ const PhasePage = () => {
                             >
                                 <DirectboxNotif size="30" variant="Bulk" color="#08146f" />
                             </div>
+                            <div title="حذف پروژه" className="cursor-pointer">
+                                <Trash
+                                    size="30"
+                                    variant="Bulk"
+                                    color="#08146f"
+                                    onClick={() => setShowDeletePhaseModal(true)}
+                                    style={{ cursor: "pointer" }}
+                                    data-testid="delete-project-icon" // Added data-testid
+                                />
+                            </div>
                             <div
                                 title="ویرایش"
                                 className="cursor-pointer"
@@ -251,9 +276,6 @@ const PhasePage = () => {
                                 data-testid="edit-phase-icon"
                             >
                                 <Edit2 size="30" variant="Bulk" color="#08146f" />
-                            </div>
-                            <div title="حذف" className="cursor-pointer">
-                                <Trash size="30" variant="Bulk" color="#08146f" />
                             </div>
                         </div>
                     )}
@@ -274,7 +296,9 @@ const PhasePage = () => {
 
                 {phaseInfo && (
                     <div
-                        className="w-full pt-4 space-y-4 text-body-01 text-gray-700 mb-5 border-b border-[#CED8E5F8]"
+
+                        className={`w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5 ${
+                            userRole === "Instructor" ? "border-b border-[#CED8E5F8]" : ""
                         dir="rtl"
                     >
                         <div className="text-xl flex items-center gap-2">
@@ -328,7 +352,7 @@ const PhasePage = () => {
                         ))}
                     </div>
 
-                    {activeTab === "ارسال پاسخ" && <PhaseSubmitTab />}
+                    {activeTab === "ارسال پاسخ" && <PhaseSubmitTab phaseFormats={phaseInfo?.fileFormats} />}
                     {activeTab === "ارسال‌ها" && (
                         <PhaseSubmissionsTab phaseTitle={phaseInfo?.title} />
                     )}
@@ -371,6 +395,23 @@ const PhasePage = () => {
                     )}
                 </div>
             )}
+            <Modal
+                show={showDeletePhaseModal}
+                onClose={() => setShowDeletePhaseModal(false)}
+                data-testid="delete-phase-modal"
+            >
+                {" "}
+                {/* Added data-testid */}
+                <DeleteConfirmModalContent
+                    onConfirm={() => {
+                        handleDeletePhase();
+                        setShowDeletePhaseModal(false);
+                    }}
+                    onCancel={() => setShowDeletePhaseModal(false)}
+                    message="آیا از حذف این فاز مطمئن هستید؟"
+                    data-testid="delete-phase-confirm-content" // Added data-testid
+                />
+            </Modal>
         </div>
     );
 };

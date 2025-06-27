@@ -13,7 +13,6 @@ export default function ExamsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    console.log(userRole);
     useEffect(() => {
         async function fetchExams() {
             try {
@@ -52,7 +51,7 @@ export default function ExamsPage() {
     };
 
     const handleDeleteExam = (deletedId) => {
-        setExams((prev) => prev.filter((exam) => exam.examId !== deletedId));
+        setExams((prevExams) => prevExams.filter((exam) => exam.examId !== deletedId));
     };
 
     return (
@@ -64,7 +63,7 @@ export default function ExamsPage() {
                 </div>
             </h2>
 
-            <div className="flex items-start mb-15 mr-10 mt-15 gap-4 z-20 text-right" dir="rtl">
+            <div className="flex flex-wrap justify-between items-center mb-15 gap-4 relative z-20 mr-15" dir="rtl">
                 <SearchBox
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}

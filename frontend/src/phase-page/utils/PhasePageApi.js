@@ -80,3 +80,21 @@ export const downloadPhaseFileApi = async (phaseId,userRole,phaseFileContentType
     a.remove();
     window.URL.revokeObjectURL(url);
 };
+
+/**
+ * Deletes a phase.
+ * @param {string} phaseId - The ID of the phase to delete.
+ * @returns {Promise<void>}
+ */
+export const deletePhaseApi = async (phaseId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Phase/${phaseId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        const error = new Error(`HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
+    }
+};

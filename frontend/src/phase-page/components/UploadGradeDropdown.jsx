@@ -66,7 +66,6 @@ const GradeSection = ({ phaseId }) => {
             console.error("خطا در ارسال فایل:", err);
 
             if (err.data && Array.isArray(err.data.data)) {
-                // اگر خطا داده جزئی داشت، پیام‌ها رو نمایش بده
                 const errorsList = err.data.data
                     .filter(row => !row.isValid)
                     .map(row => `خط ${row.rowNumber}: ${row.errors.join("، ")}`)
