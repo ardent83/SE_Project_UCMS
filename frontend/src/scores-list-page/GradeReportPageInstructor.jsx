@@ -81,8 +81,15 @@ export default function GradeReportPageInstructor() {
       ) : (
         <>
           {classEntries.length === 0 ? (
-            <div className="text-center text-gray-500 py-8 text-lg">
-              هنوز ریز نمراتی برای این درس تعیین نشده است.
+            <div className="flex flex-col items-center justify-center text-center">
+              <img
+                src="/Animation - 1750148058142.gif"
+                alt="No results"
+                className="w-80 h-80 mb-6"
+              />
+              <p className="text-gray-600 mb-4 font-bold text-lg">
+                هنوز ریز نمراتی برای این درس تعیین نشده است.
+              </p>
             </div>
           ) : (
             <>
@@ -277,7 +284,7 @@ export default function GradeReportPageInstructor() {
                               {student.fullName}
                             </td>
                             <td className="py-3 px-4 font-medium text-gray-900">
-                              {formatToPersianNumber(student.studentId)}
+                              {formatToPersianNumber(student.studentNumber)}
                             </td>
                             {classEntries.map((entry) => {
                               const key = `${entry.entryType}-${entry.entryId}`;
