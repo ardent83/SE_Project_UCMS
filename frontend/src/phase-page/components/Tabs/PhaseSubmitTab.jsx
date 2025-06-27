@@ -1,11 +1,44 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { submitStudentSubmissionApi } from "../../utils/PhaseSubmissionForStudentApi.js";
 
 const PhaseSubmitTab = () => {
+    const { phaseId } = useParams();
     const [selectedFile, setSelectedFile] = useState(null);
+    const [statusMessage, setStatusMessage] = useState("");
+    const [isUploaded, setIsUploaded] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (file) setSelectedFile(file);
+        console.log(file);
+        if (file) {
+            setSelectedFile(file);
+            setStatusMessage("");
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedFile) return;
+
+        setIsSubmitting(true);
+        setStatusMessage("");
+
+        try {
+            await submitStudentSubmissionApi(phaseId, selectedFile);
+            setStatusMessage("✅ فایل با موفقیت ارسال شد.");
+            setSelectedFile(null);
+            setIsUploaded(true);
+        } catch (err) {
+            setIsUploaded(false);
+            if (err?.message === "FileIsNeeded") {
+                setStatusMessage("❌ لطفاً یک فایل انتخاب کنید.");
+            } else {
+                setStatusMessage(` خطا در ارسال فایل: ${err.message || "نامشخص"}`);
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -22,28 +55,44 @@ const PhaseSubmitTab = () => {
                     آپلود فایل
                     <input
                         type="file"
-                        accept=".pdf"
+                        accept=".pdf,.zip,.rar,.txt"
                         className="hidden"
                         onChange={handleFileChange}
                     />
                 </label>
             </div>
 
+            {statusMessage && (
+                <div
+                    className={`text-sm text-right px-3 font-medium ${
+                        isUploaded ? 'text-green-600' : 'text-red-600'
+                    }`}
+                >
+                    {statusMessage}
+                </div>
+            )}
+
+
             <div className="flex gap-3 justify-end ml-5 mb-5 mt-10">
                 <button
-                    onClick={() => setSelectedFile(null)}
+                    onClick={() => {
+                        setSelectedFile(null);
+                        setStatusMessage("");
+                    }}
                     className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-1.5 rounded-xl cursor-pointer"
                 >
                     انصراف
                 </button>
                 <button
-                    onClick={() => alert("فایل با موفقیت ارسال شد.")}
-                    disabled={!selectedFile}
-                    className={`px-6 py-1.5 rounded-xl cursor-pointer text-white ${
-                             "bg-big-stone-900 hover:bg-big-stone-900"
+                    onClick={handleSubmit}
+                    disabled={!selectedFile || isSubmitting}
+                    className={`px-6 py-1.5 rounded-xl text-white ${
+                        !selectedFile || isSubmitting
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-big-stone-900 hover:bg-big-stone-800 cursor-pointer"
                     }`}
                 >
-                    ثبت
+                    {isSubmitting ? "در حال ارسال..." : "ثبت"}
                 </button>
             </div>
         </div>

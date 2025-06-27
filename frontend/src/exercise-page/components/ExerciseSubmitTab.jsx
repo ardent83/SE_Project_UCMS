@@ -59,7 +59,7 @@ const ExerciseSubmitTab = ({
                 />
             )}
 
-            <div className="w-full max-w-[60rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
+            <div className="w-full max-w-[90rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-10" dir="rtl">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">ارسال پاسخ تمرین</h3>
 
                 {availableFormats.length > 0 ? (
