@@ -7,7 +7,7 @@ import { fetchProjectsForInstructor, fetchProjectsForStudent } from "./utils/Pro
 import { useNavigate } from "react-router-dom";
 
 const statusColors = {
-    تکمیل: "bg-green-200 text-green-800",
+    "تکمیل": "bg-green-200 text-green-800",
     "در حال انجام": "bg-sky-200 text-sky-700",
     "شروع نشده": "bg-orange-200 text-orange-700",
 };
