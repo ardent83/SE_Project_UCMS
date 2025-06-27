@@ -15,6 +15,7 @@ const AssignmentProject = ({projects, classId}) => {
         navigate(`/project/${projectId}`);
     };
 
+    console.log(projects);
     return (
         <section
             className="flex w-full p-3 gap-2 max-w-88 flex-col items-center flex-[1_0_0] border-[0.8px] border-solid border-neutralgray-2 rounded-lg ">
