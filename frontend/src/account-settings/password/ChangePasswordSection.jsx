@@ -65,36 +65,39 @@ function ChangePasswordSection({
             />
           )}
         </div>
-        <div className="w-full flex flex-row flex-wrap justify-between max-[1192px]:justify-center items-end gap-y-4">
-          <Input
-            form={formik}
-            field={formik.getFieldProps("newPassword")}
-            type="password"
-            dir="ltr"
-            label="رمز عبور جدید"
-            value={formik.values.newPassword}
-            disabled={!isEditing}
-          />
+        <div className="w-full flex flex-col items-end gap-y-4">
+          <div className="w-full flex flex-row-reverse flex-wrap justify-between items-start gap-y-4 max-[1192px]:justify-center">
+            <Input
+              form={formik}
+              field={formik.getFieldProps("oldPassword")}
+              label="رمز عبور فعلی"
+              type="password"
+              dir="ltr"
+              value={formik.values.oldPassword}
+              disabled={!isEditing}
+            />
+            <div className="w-full max-w-92 flex flex-col gap-y-4 max-[1192px]:justify-center">
+              <Input
+                form={formik}
+                field={formik.getFieldProps("newPassword")}
+                type="password"
+                dir="ltr"
+                label="رمز عبور جدید"
+                value={formik.values.newPassword}
+                disabled={!isEditing}
+              />
 
-          <Input
-            form={formik}
-            field={formik.getFieldProps("oldPassword")}
-            label="رمز عبور فعلی"
-            type="password"
-            dir="ltr"
-            value={formik.values.oldPassword}
-            disabled={!isEditing}
-          />
-
-          <Input
-            form={formik}
-            field={formik.getFieldProps("confirmNewPassword")}
-            label="تکرار رمز جدید"
-            type="password"
-            dir="ltr"
-            value={formik.values.confirmNewPassword}
-            disabled={!isEditing}
-          />
+              <Input
+                form={formik}
+                field={formik.getFieldProps("confirmNewPassword")}
+                label="تکرار رمز جدید"
+                type="password"
+                dir="ltr"
+                value={formik.values.confirmNewPassword}
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
 
           {isEditing && (
             <div className="w-full flex justify-start items-center self-start gap-4">
