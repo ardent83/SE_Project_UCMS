@@ -6,6 +6,7 @@ import {
     submitGradeApi, 
     downloadSubmissionFileApi,
     downloadExerciseFileApi,
+    downloadAllExerciseFileApi,
     deleteExerciseApi,
     getExerciseScoreTemplateFileApi,
     updateExerciseSubmissionScoresApi 
@@ -122,6 +123,16 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         } catch (err) {
             console.error("Error downloading exercise file:", err);
             setError(err.message || "خطا در دانلود فایل تمرین.");
+        }
+    }, [userRole]);
+
+    const handleDownloadAllExerciseFile = useCallback(async (exerciseId) => {
+        console.log(exerciseId)
+        try {
+            await downloadAllExerciseFileApi(exerciseId, userRole);
+        } catch (err) {
+            console.error("Error downloading exercise file:", err);
+            setError(err.message || "خطا در دانلود ارسال ها.");
         }
     }, [userRole]);
 
@@ -243,6 +254,7 @@ export const useExerciseDataForInstructor = (exerciseId, userRole) => {
         inlineSavingSubmissionId,
         handleDownloadSubmission: handleDownloadSubmissionFile,
         handleDownloadExerciseFile,
+        handleDownloadAllExerciseFile,
         handleDeleteExerciseRequest,
         handleConfirmDeleteExercise,
         handleEditExerciseClick,
