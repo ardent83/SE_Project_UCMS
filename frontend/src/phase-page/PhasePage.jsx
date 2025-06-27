@@ -239,10 +239,10 @@ const PhasePage = () => {
     }, [phaseId,projectId, navigate]);
 
     return (
-        <div className="w-full max-w-270 p-6" dir="rtl">
+        <div className="w-full max-w-[90rem] mx-auto px-10 text-bg-blue" dir="rtl">
             <div className="w-full flex flex-col items-center">
                 <div
-                    className="w-full flex justify-between items-center px-10 pb-10"
+                    className="w-full flex justify-between items-center pb-10"
                     dir="rtl"
                 >
                     <h2 className="text-3xl text-heading-h4 text-redp font-bold mt-15">
@@ -250,7 +250,7 @@ const PhasePage = () => {
                     </h2>
 
                     {userRole === "Instructor" && (
-                        <div className="flex gap-4 text-gray-600 mt-5">
+                        <div className="flex gap-4 text-gray-600 mt-15">
                             <div
                                 title="دانلود فایل"
                                 className="cursor-pointer"
@@ -281,7 +281,7 @@ const PhasePage = () => {
                     )}
 
                     {userRole === "Student" && (
-                        <div className="flex gap-4 text-gray-600 mt-5">
+                        <div className="flex gap-4 text-gray-600 mt-15">
                             <div
                                 title="دانلود فایل"
                                 className="cursor-pointer"
@@ -296,9 +296,9 @@ const PhasePage = () => {
 
                 {phaseInfo && (
                     <div
+
                         className={`w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5 ${
                             userRole === "Instructor" ? "border-b border-[#CED8E5F8]" : ""
-                        }`}
                         dir="rtl"
                     >
                         <div className="text-xl flex items-center gap-2">
@@ -312,7 +312,7 @@ const PhasePage = () => {
                                 {new Date(phaseInfo.startDate).toLocaleDateString("fa-IR")}
               </span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="text-xl flex items-center gap-2">
                             <PresentionChart size="25" variant="Linear" color="#495D72" />
                             <span>
                 {new Date(phaseInfo.endDate).toLocaleTimeString("fa-IR", {
@@ -322,8 +322,8 @@ const PhasePage = () => {
                                 - {new Date(phaseInfo.endDate).toLocaleDateString("fa-IR")}
               </span>
                         </div>
-                        <div className="flex items-start gap-2 mb-6">
-                            <Information size="25" variant="Linear" color="#495D72" />
+                        <div className="text-xl flex items-start gap-2 mb-10">
+                            <Information size="25" variant="Linear" color="#495D72" className="flex-shrink-0 mt-1"/>
                             <p className="leading-relaxed">
                                 {phaseInfo.description
                                     ? phaseInfo.description

@@ -34,7 +34,7 @@ const GradeUpload = ({
                 />
             )}
 
-            <div className="flex flex-col gap-4 text-sm text-gray-700 mt-5" dir="rtl">
+            <div class="w-full max-w-[80rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-0" dir="rtl">
                 <div className="flex items-center justify-between w-full" dir="rtl">
                     <p className="text-right m-0">
                         لطفا فایل مربوطه را دانلود کرده و پس از تکمیل آن، بارگذاری کنید.
@@ -49,7 +49,7 @@ const GradeUpload = ({
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3 self-end mt-5">
+                <div className="flex items-center gap-3 justify-end mt-5">
                     <div className="border border-gray-300 rounded-xl text-right px-10 py-1 text-gray-600 min-w-[200px]">
                         {fileName}
                     </div>
@@ -65,7 +65,7 @@ const GradeUpload = ({
                     </label>
                 </div>
 
-                <div className="flex gap-3 self-end mt-5">
+                <div className="flex gap-3 justify-end mt-5">
                     <button
                         onClick={onCancel}
                         className="px-6 py-1.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-colors duration-200"

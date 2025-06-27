@@ -25,6 +25,7 @@ export default function Selector({ label, radios, value, onChange, disabled }) {
               onChange={onChange}
               className="peer cursor-pointer disabled:cursor-not-allowed peer w-4 h-4 rounded-full border border-big-stone-900 checked:bg-redp checked:border-big-stone-950 focus:outline-none focus:ring-2 focus:ring-big-stone-50"
               disabled={disabled}
+              data-testid={`selector-${radio.id}`}
             />
             <span className="peer-disabled:cursor-not-allowed text-body-04 peer-checked:text-big-stone-00">{radio.name}</span>
           </label>

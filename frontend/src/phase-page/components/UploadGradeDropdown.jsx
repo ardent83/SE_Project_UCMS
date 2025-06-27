@@ -84,7 +84,7 @@ const GradeSection = ({ phaseId }) => {
 
     return (
         <div
-            className="w-full max-w-[60rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-0"
+            className="w-full max-w-[80rem] mx-auto bg-gray-100 rounded-lg p-6 shadow-sm space-y-6 text-sm text-gray-700 mt-0"
             dir="rtl"
         >
             <div className="flex items-center justify-between w-full" dir="rtl">

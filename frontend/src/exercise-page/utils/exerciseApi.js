@@ -258,6 +258,49 @@ export const downloadExerciseFileApi = async (exerciseId, userRole, fileName) =>
     }
 };
 
+export const downloadAllExerciseFileApi = async (exerciseId, userRole) => {
+    if (!exerciseId) {
+        throw new Error("شناسه تمرین برای دانلود معتبر نیست!");
+    }
+    console.log("Downloading file for exerciseId:", exerciseId);
+
+    const apiEndpoint = `${API_BASE_URL}/api/ExerciseSubmissions/${exerciseId}`;
+
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Content-Type:', response.headers.get('Content-Type'));
+
+        if (!response.ok) {
+            const error = new Error(`HTTP error! Status: ${response.status}`);
+            error.status = response.status;
+            try {
+                const errorData = await response.json();
+                error.message = errorData.message || error.message;
+            } catch {}
+            throw error;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `exercise_${exerciseId}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error("Error downloading exercise file:", err);
+        throw err;
+    }
+};
+
+
 export const deleteExerciseApi = async (exerciseId) => {
     if (!exerciseId) {
         throw new Error("شناسه تمرین برای حذف معتبر نیست!");
