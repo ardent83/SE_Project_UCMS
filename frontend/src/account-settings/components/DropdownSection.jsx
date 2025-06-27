@@ -9,9 +9,9 @@ const DropdownSection = ({ title, children, bgColor }) => {
   };
 
   return (
-    <div className={`w-full flex flex-col mt-6`}>
+    <div className={`w-full flex flex-col justify-start items-center mt-6`}>
       <div
-        className={`w-full max-w-264 h-14.5 rounded-[0.625rem] px-4 flex justify-between items-center cursor-pointer bg-[var(--bg)]`}
+        className={`w-full h-14.5 rounded-[0.625rem] px-4 flex justify-between items-center cursor-pointer bg-[var(--bg)]`}
         style={{"--bg" : `${bgColor}`}}
         onClick={handleToggle}
       >
@@ -27,7 +27,7 @@ const DropdownSection = ({ title, children, bgColor }) => {
         </div>
       </div>
       <div
-        className={`transition-all duration-600 ease-in-out overflow-hidden ${isOpen ? 'max-h-[1000px]' : 'max-h-0'} px-10`}
+        className={`w-full max-w-264 transition-all duration-600 ease-in-out overflow-hidden ${isOpen ? 'max-h-[1000px]' : 'max-h-0'} px-10`}
       >
         <div className="pt-4">
           {children}
