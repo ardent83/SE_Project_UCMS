@@ -55,11 +55,11 @@ const Members = ({ members }) => {
                 ) : (
                     <div className="flex flex-1 flex-col items-center justify-center text-center py-12">
                         <img
-                            src="/student.png"
+                            src="/src/class-page/assets/user-not-found.png"
                             alt="No members"
-                            className="w-18 h-18 mb-5 opacity-70"
+                            className="w-25 h-23"
                         />
-                        <span className="text-caption-03 text-xs text-neutral-400">عضوی وجود ندارد</span>
+                        <span className="text-caption-02 text-[0.7rem] text-neutral-400">!عضوی وجود ندارد</span>
                     </div>
                 )}
             </div>
