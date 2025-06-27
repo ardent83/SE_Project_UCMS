@@ -12,13 +12,11 @@ export const groupFormValidationSchema = (mode, formType) => {
       })
       .test(
         "fileType",
-        `.فرمت فایل نامعتبر است. فقط فایل‌های ${".xlsx, .xls, .csv"} مجاز هستند`,
+        `.فرمت فایل نامعتبر است. فقط فایل‌های ${".xlsx"} مجاز هستند`,
         (value) => {
           if (!value) return true;
           return [
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-            "application/vnd.ms-excel", // .xls
-            "text/csv", // .csv
           ].includes(value.type);
         }
       ),
