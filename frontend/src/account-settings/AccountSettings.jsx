@@ -132,7 +132,7 @@ export default function AccountSettings() {
 
 
   return (
-    <div className="w-full max-w-270 p-6 ">
+    <div className="w-full p-6 ">
       <div className="w-full flex flex-col items-center" style={{ '--max-w-rmdp': "23rem" }}>
         <div className="w-full flex justify-end items-center gap-[2.69rem] px-10 pb-10 border-b border-[#CED8E5F8]">
           <div className="flex flex-col justify-center items-end">
