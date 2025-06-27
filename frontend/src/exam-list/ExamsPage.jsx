@@ -64,7 +64,7 @@ export default function ExamsPage() {
                 </div>
             </h2>
 
-            <div className="flex items-start mb-15 mr-10 mt-15 gap-4 z-20 text-right" dir="rtl">
+            <div className="flex flex-wrap justify-between items-center mb-15 gap-4 relative z-20 mr-15" dir="rtl">
                 <SearchBox
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}

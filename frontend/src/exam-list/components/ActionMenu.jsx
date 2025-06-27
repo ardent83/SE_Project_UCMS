@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Edit2, More, TickCircle, Trash } from "iconsax-react";
 import { deleteExamById } from "../utils/ExamsPageApi.js";
 import { useNavigate } from "react-router-dom";
-import ScoreUpload from "./ScoreUploadPop"; // مسیر را تنظیم کن
+import ScoreUpload from "./ScoreUploadPop";
 
 export default function ActionMenu({ examId, onDeleteSuccess }) {
     const [isOpen, setIsOpen] = useState(false);
