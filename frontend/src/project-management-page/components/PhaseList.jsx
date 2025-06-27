@@ -9,6 +9,8 @@ const PhaseList = ({ phases, projectId, userRole, onAddPhaseClick }) => {
   const navigate = useNavigate();
 
   const handlePhaseClick = (phaseId) => {
+    console.log(projectId);
+    sessionStorage.setItem("projectId", projectId);
     navigate(`/phase/${phaseId}`);
   };
 
