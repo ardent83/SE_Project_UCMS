@@ -107,6 +107,7 @@ export default function ClassPage() {
                 }));
 
                 const assignmentsData = assignments.map(item => ({
+                    id:item.exerciseId,
                     name: item.title,
                     endDate: new Date(item.endDate),
                 }));

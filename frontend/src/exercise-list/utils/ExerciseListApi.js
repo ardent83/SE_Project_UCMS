@@ -5,9 +5,9 @@ const convertStatus = (statusCode) => {
         case 0:
             return "شروع نشده";
         case 1:
-            return "تکمیل";
-        case 2:
             return "در حال انجام";
+        case 2:
+            return "تکمیل";
         default:
             return "نامشخص";
     }
