@@ -76,8 +76,10 @@ export const fetchClassEntries = async (classId) => {
     if (!classId) {
         throw new Error("شناسه کلاس معتبر نیست!");
     }
+
     const apiEndpoint = `${API_BASE_URL}/api/Classes/${classId}/entries`;
     console.log(`Fetching class entries for class ${classId} from: ${apiEndpoint}`);
+
     try {
         const response = await fetch(apiEndpoint, {
             method: "GET",
@@ -90,16 +92,24 @@ export const fetchClassEntries = async (classId) => {
             try {
                 const errorData = await response.json();
                 error.message = errorData.message || error.message;
-            } catch (jsonError) { /* ignore */ }
+            } catch (jsonError) {
+               // json response??
+            }
             throw error;
         }
+
         const result = await response.json();
-        return result.data || []; 
+        const entries = result?.data?.entryDtos || [];
+        const totalScore = result?.data?.sumOfSPartialScores ?? 0;
+
+        return { entries, totalScore }; 
+
     } catch (err) {
         console.error(`Error fetching class entries for class ${classId}:`, err);
         throw err;
     }
 };
+
 
 /**
  * Updates grading entries (quizzes, phases, midterms, etc.) for a specific class.
@@ -184,6 +194,7 @@ export const fetchStudentClassScores = async (classId) => {
         }
 
         const result = await response.json();
+        console.log(result.data)
         return result.data || null; // Assuming response has a 'data' field
     } catch (err) {
         console.error(`Error fetching student class scores for class ${classId}:`, err);

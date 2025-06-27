@@ -185,7 +185,7 @@ export default function GradeReportPageInstructor() {
                       value={
                         editedEntries.totalScore !== undefined
                           ? formatToPersianNumber(editedEntries.totalScore)
-                          : ""
+                          : formatToPersianNumber(totalScore)
                       }
                       onChange={(e) =>
                         setEditedEntries((prev) => ({
