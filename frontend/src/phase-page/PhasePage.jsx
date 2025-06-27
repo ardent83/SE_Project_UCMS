@@ -274,7 +274,9 @@ const PhasePage = () => {
 
                 {phaseInfo && (
                     <div
-                        className="w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5 border-b border-[#CED8E5F8]"
+                        className={`w-full px-5 pt-4 space-y-4 text-body-01 text-gray-700 mb-5 ${
+                            userRole === "Instructor" ? "border-b border-[#CED8E5F8]" : ""
+                        }`}
                         dir="rtl"
                     >
                         <div className="text-xl flex items-center gap-2">
