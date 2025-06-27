@@ -29,6 +29,9 @@ export const useClassList = ({ userRoleId, userFullName, pageSize = 4 }) => {
                         const detail = isInstructor
                             ? await fetchInstructorClassDetailById(cls.id)
                             : await fetchStudentClassDetailById(cls.id);
+                        if (!isInstructor)
+                            detail.instructorFullName = cls.instructorFullName || 'نامشخص';
+                        
                         return formatClassForCard(detail, index, isInstructor, userFullName);
                     })
                 );
