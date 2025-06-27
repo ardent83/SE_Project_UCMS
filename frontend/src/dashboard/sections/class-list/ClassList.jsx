@@ -9,9 +9,9 @@ export const ClassList = ({ userRoleId, userFullName }) => {
     const { classes, loading, error } = useClassList({ userRoleId, userFullName });
     const navigate = useNavigate();
     return (
-        <div className="w-full max-w-240 flex flex-col items-center gap-2">
+        <div className="w-full flex flex-col items-center gap-2">
             <HeadSection
-                onClick={() => { navigate('/classes'); console.log('HeadSection clicked'); }}
+                onClick={() => { navigate('/classes'); }}
                 title="کلاس‌ها"
                 icon={<Book1 variant="Bold" color="var(--color-redp)" size={24} />}
             />

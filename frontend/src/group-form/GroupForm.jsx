@@ -62,11 +62,11 @@ export default function GroupForm({ formType = 'create' }) {
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className="w-full max-w-240 h-fit flex flex-col justify-start items-center p-6 gap-6">
+        <form onSubmit={formik.handleSubmit} className="w-full my-10 px-10 text-bg-blue h-fit flex flex-col justify-start items-center gap-6">
             {showAlert && (
                 <Alert message={alertMessage} type={apiError ? "error" : "success"} onClose={handleCloseAlert} />
             )}
-            <div className="w-full flex justify-end items-center text-heading-h4 text-redp border-b border-b-neutralgray-3 py-4 gap-3 text-shadow-[0px_5.37px_5.37px_rgba(0_0_0_/_0.25)]">
+            <div className="w-full text-3xl font-bold mt-6 mb-10 flex items-center border-b border-gray-300 pb-8 gap-2 justify-end">
                 {formType === 'create' ?
                     (
                         <>
@@ -88,7 +88,7 @@ export default function GroupForm({ formType = 'create' }) {
                 }
             </div>
 
-            <div className="w-full flex flex-col items-end gap-4">
+            <div className="w-full max-w-240 flex flex-col items-end gap-4">
                 {formType === 'create' &&
                     <TabSwitcher mode={mode} setMode={setMode} />
                 }
@@ -154,7 +154,7 @@ export default function GroupForm({ formType = 'create' }) {
             </div>
 
 
-            <div className="w-full flex justify-start items-center gap-4 mt-6">
+            <div className="w-full max-w-240 flex justify-start items-center gap-4 mt-6">
                 <Button
                     buttonText={formType === 'create' ? "ایجاد گروه" : "ذخیره تغییرات"}
                     type="submit"
