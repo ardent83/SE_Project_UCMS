@@ -117,7 +117,7 @@ export default function GroupForm({ formType = 'create' }) {
                             label={"فایل گروه"}
                             form={formik}
                             fieldName={'file'}
-                            accept=".xlsx,.xls,.csv"
+                            accept=".xlsx"
                         />
                     </div>
                 )}
