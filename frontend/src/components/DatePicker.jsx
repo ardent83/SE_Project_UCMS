@@ -47,7 +47,13 @@ export default function MyDatePicker({
                 gregorianDateObject.month.index,
                 gregorianDateObject.day
             ));
-            return utcDate.toISOString();
+
+            if (storageFormat === "isoString") {
+                return utcDate.toISOString();
+            } else {
+                const utcDateObject = new DateObject({ date: utcDate, calendar: gregorian });
+                return utcDateObject.format(storageFormat);
+            }
         }
     };
 
