@@ -39,42 +39,44 @@ export const getPhaseInformationForStudent = async (phaseId) => {
     }
 };
 
-export const downloadFileForStudent = async (phaseId) => {
-    const response = await fetch(`${apiBaseUrl}/api/Phase/${phaseId}/downloadForStudent`, {
+
+/**
+ * Downloads the project file.
+ * @param {string} phaseId - The ID of the project.
+ * @param {string} userRole - The role of the current user.
+ * @param {string} phaseFileContentType - The content type of the file (e.g., 'application/pdf').
+ * @param {string} phaseTitle - The title of the project for naming the downloaded file.
+ * @returns {Promise<void>}
+ */
+export const downloadPhaseFileApi = async (phaseId,userRole,phaseFileContentType,phaseTitle) => {
+    let downloadEndpoint;
+    if (userRole === "Instructor") {
+        downloadEndpoint = `${apiBaseUrl}/api/Phase/${phaseId}/downloadForInstructor`;
+    } else if (userRole === "Student") {
+        downloadEndpoint = `${apiBaseUrl}/api/Phase/${phaseId}/downloadForStudent`;
+    } else {
+        throw new Error("نقش کاربر پشتیبانی نمی‌شود!");
+    }
+
+    const response = await fetch(downloadEndpoint, {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        credentials: "include",
     });
 
-    if (!response.ok) throw new Error("دانلود برای دانشجو ناموفق بود");
+    if (!response.ok) {
+        const error = new Error(`HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
+    }
 
     const blob = await response.blob();
-    const contentDisposition = response.headers.get("Content-Disposition");
-    const filename = contentDisposition?.split("filename=")[1]?.split(";")[0]?.replace(/"/g, "") || "student-file.pdf";
-
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-};
-
-export const downloadFileForInstructor = async (phaseId) => {
-    const response = await fetch(`${apiBaseUrl}/api/Phase/${phaseId}/downloadForInstructor`, {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-    });
-
-    if (!response.ok) throw new Error("دانلود برای استاد ناموفق بود");
-
-    const blob = await response.blob();
-    const contentDisposition = response.headers.get("Content-Disposition");
-    const filename = contentDisposition?.split("filename=")[1]?.split(";")[0]?.replace(/"/g, "") || "instructor-file.pdf";
-
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const fileExtension = phaseFileContentType ? phaseFileContentType.split("/")[1] : "bin";
+    a.download = `${phaseTitle || 'project'}_${phaseId}.${fileExtension}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
 };
