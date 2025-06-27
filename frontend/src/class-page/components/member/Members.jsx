@@ -3,6 +3,7 @@ import React from "react";
 import MemberItem from "./MemberItem.jsx";
 import { useAuth } from "../../../auth/context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Members = ({ members }) => {
     const { user } = useAuth();
@@ -20,7 +21,7 @@ const Members = ({ members }) => {
     };
 
     const handleMemberClick = (memberId) => {
-        navigate(`/api/students/${memberId}/profile`);
+        navigate(`/profile/${memberId}`);
     };
 
     if (userRole !== "Instructor" && userRole !== "Student") return "not supported";
@@ -48,7 +49,7 @@ const Members = ({ members }) => {
                         >
                             <MemberItem
                                 firstLastName={getDisplayName(member)}
-                                image={member.profileImagePath}
+                                image={apiBaseUrl+member.profileImagePath}
                             />
                         </div>
                     ))

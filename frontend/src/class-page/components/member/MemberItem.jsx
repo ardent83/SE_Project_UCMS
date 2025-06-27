@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, {useCallback, useState} from "react";
 import { useAuth } from "../../../auth/context/AuthContext.jsx";
 import { Trash } from "iconsax-react";
+import {leaveClassById} from "../../utils/classPageApi.js";
 
 const MemberItem = ({ firstLastName, image, onDelete }) => {
     const { user } = useAuth();
@@ -17,6 +18,17 @@ const MemberItem = ({ firstLastName, image, onDelete }) => {
     } else {
         firstChar = firstLastName.charAt(0).toUpperCase() || "?";
     }
+
+    const handleRemoveStudentFromClass = useCallback(async () => {
+        try {
+            await leaveClassById(id);
+            console.log(`Class ${id} leaved successfully.`);
+            navigate(`/classes`, {state: {message: " با موفقیت از کلاس خارج شد."}});
+        } catch (err) {
+            console.error("Error leaving class:", err);
+            setError("خطایی در خروح از کلاس رخ داد!");
+        }
+    }, [id, navigate]);
 
     return (
         <div
