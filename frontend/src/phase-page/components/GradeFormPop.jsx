@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { setScoreForEachStudent } from "../utils/PhaseSubmissionForInstructorApi.js"; // مسیر درست رو وارد کن
+import { setScoreForEachStudent } from "../utils/PhaseSubmissionForInstructorApi.js";
 
 const GradeForm = ({
                        groupId,
@@ -73,7 +73,7 @@ const GradeForm = ({
                         {members.map((member) => (
                             <tr key={member.id}>
                                 <td className="px-4 py-2 border-b border-b-gray-600">
-                                    {member.id}
+                                    {member.studentNumber}
                                 </td>
                                 <td className="px-4 py-2 border-b border-b-gray-600">
                                     {member.firstName} {member.lastName}
