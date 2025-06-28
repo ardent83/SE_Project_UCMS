@@ -60,6 +60,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/test" element={<TestPage />} />
 
             {/* --- Resource List Pages --- */}
