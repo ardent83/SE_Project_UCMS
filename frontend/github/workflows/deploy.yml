@@ -1,0 +1,26 @@
+name: Deploy Frontend on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Frontend via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.FRONT_SERVER_HOST }}
+          username: ${{ secrets.FRONT_SERVER_USER }}
+          key: ${{ secrets.FRONT_SSH_KEY }}
+          script: |
+            cd ~/front/SE_Project_UCMS/frontend
+            git reset --hard
+            git checkout main
+            git pull origin main
+            docker stop ucms-frontend || true
+            docker rm ucms-frontend || true
+            docker build -t ucms-frontend .
+            docker run -d --name ucms-frontend -p 81:81 ucms-frontend
