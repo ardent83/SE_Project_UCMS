@@ -6,14 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const MemberItem = ({ firstLastName, image, studentId, classId }) => {
+const MemberItem = ({ firstLastName, image, userId, studentId, classId, onMemberRemoved }) => {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
     const navigate = useNavigate();
 
-    let displayName = firstLastName;
     let firstChar;
-
     if (userRole === "Instructor") {
         const namePart = firstLastName?.split("|")[1]?.trim() || "";
         firstChar = namePart.charAt(0).toUpperCase() || "?";
@@ -24,14 +22,16 @@ const MemberItem = ({ firstLastName, image, studentId, classId }) => {
     const handleRemoveStudentFromClass = async () => {
         try {
             await removeStudentFromClass(classId, studentId);
-            navigate(`/class/${classId}`, { state: { message: " با موفقیت از کلاس خارج شد." } });
+            if (onMemberRemoved) {
+                onMemberRemoved(studentId);
+            }
         } catch (err) {
             console.error("Error removing student from class:", err);
         }
     };
 
     return (
-        <div className="w-full max-w-88 p-4 flex justify-end items-center gap-2 border-b last:border-none border-b-neutralgray-2">
+        <div className="w-full max-w-88 p-4 flex justify-between items-center gap-2 border-b last:border-none border-b-neutralgray-2">
             {userRole === "Instructor" && (
                 <Trash
                     size={20}
@@ -41,25 +41,27 @@ const MemberItem = ({ firstLastName, image, studentId, classId }) => {
                 />
             )}
 
-            <label
-                onClick={() => navigate(`/profile/${studentId}`)}
-                className="flex justify-end items-center text-body-05 text-right text-redp self-stretch cursor-pointer hover:underline"
+            <div
+                onClick={() => navigate(`/profile/${userId}`)}
+                className="flex items-center cursor-pointer gap-2 hover:text-big-stone-600"
             >
-                {displayName}
-            </label>
+                <span className="text-body-05 text-redp hover:text-big-stone-600 cursor-pointer">{firstLastName}</span>
 
-            {image ? (
-                <div
-                    className="w-8 h-8 rounded-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${apiBaseUrl + image})` }}
-                />
-            ) : (
-                <div className="w-8 h-8 rounded-full bg-neutralgray-2 flex items-center justify-center text-xs text-redp font-bold">
-                    {firstChar}
-                </div>
-            )}
+                {image ? (
+                    <div
+                        className="w-8 h-8 rounded-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${apiBaseUrl + image})` }}
+                    />
+                ) : (
+                    <div className="w-8 h-8 rounded-full bg-neutralgray-2 flex items-center justify-center text-xs text-redp font-bold">
+                        {firstChar}
+                    </div>
+                )}
+
+            </div>
         </div>
     );
+
 };
 
 export default MemberItem;
