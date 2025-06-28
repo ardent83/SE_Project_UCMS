@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {ClipboardText} from "iconsax-react";
+import { ClipboardText, ArrowSwapVertical } from "iconsax-react";
 import SearchBox from "./components/SearchBox";
 import ActionMenu from "./components/ActionMenu.jsx";
 import { useAuth } from "../auth/context/AuthContext.jsx";
@@ -12,14 +12,16 @@ export default function ExamsPage() {
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
     useEffect(() => {
         async function fetchExams() {
             try {
                 setLoading(true);
-                const data = userRole === "Student"
-                    ? await getExamsForStudent()
-                    : await getExamsForInstructor();
+                const data =
+                    userRole === "Student"
+                        ? await getExamsForStudent()
+                        : await getExamsForInstructor();
                 setExams(data);
                 setError(null);
             } catch (err) {
@@ -32,7 +34,39 @@ export default function ExamsPage() {
         fetchExams();
     }, [userRole]);
 
-    const filteredExams = exams.filter((exam) => {
+    const handleSort = (key) => {
+        setSortConfig((prev) => {
+            if (prev.key === key) {
+                return {
+                    key,
+                    direction: prev.direction === "asc" ? "desc" : "asc",
+                };
+            }
+            return { key, direction: "asc" };
+        });
+    };
+
+    const sortedExams = [...exams].sort((a, b) => {
+        if (!sortConfig.key) return 0;
+
+        let aValue, bValue;
+        if (sortConfig.key === "dateOnly") {
+            aValue = new Date(a.date).toDateString();
+            bValue = new Date(b.date).toDateString();
+        } else if (sortConfig.key === "timeOnly") {
+            aValue = new Date(a.date).toTimeString();
+            bValue = new Date(b.date).toTimeString();
+        } else {
+            aValue = a[sortConfig.key]?.toString().toLowerCase() || "";
+            bValue = b[sortConfig.key]?.toString().toLowerCase() || "";
+        }
+
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+    });
+
+    const filteredExams = sortedExams.filter((exam) => {
         const lowerSearch = search.trim().toLowerCase();
         return (
             exam.title.toLowerCase().includes(lowerSearch) ||
@@ -83,8 +117,41 @@ export default function ExamsPage() {
                             <tr className="border-b border-gray-300 text-gray-400 text-sm">
                                 <th className="py-3 px-4"></th>
                                 <th className="py-3 px-4">مکان برگزاری</th>
-                                <th className="py-3 px-4">تاریخ برگزاری</th>
-                                <th className="py-3 px-4">زمان برگزاری</th>
+
+                                <th
+                                    className="py-3 px-4 cursor-pointer select-none"
+                                    onClick={() => handleSort("dateOnly")}
+                                >
+                                    <ArrowSwapVertical
+                                        size={16}
+                                        variant="Bulk"
+                                        color="#0C1E33"
+                                        className={`inline-block transition-transform duration-800 ${
+                                            sortConfig.key === "dateOnly" && sortConfig.direction === "desc"
+                                                ? "rotate-180"
+                                                : ""
+                                        }`}
+                                    />
+                                    تاریخ برگزاری
+                                </th>
+
+                                <th
+                                    className="py-3 px-4 cursor-pointer select-none"
+                                    onClick={() => handleSort("timeOnly")}
+                                >
+                                    <ArrowSwapVertical
+                                        size={16}
+                                        variant="Bulk"
+                                        color="#0C1E33"
+                                        className={`inline-block transition-transform duration-800 ${
+                                            sortConfig.key === "timeOnly" && sortConfig.direction === "desc"
+                                                ? "rotate-180"
+                                                : ""
+                                        }`}
+                                    />
+                                    زمان برگزاری
+                                </th>
+
                                 <th className="py-3 px-4">درس</th>
                                 <th className="py-3 px-4">نام امتحان</th>
                             </tr>
@@ -97,7 +164,10 @@ export default function ExamsPage() {
                                 >
                                     <td className="py-3 px-4 cursor-pointer">
                                         {userRole !== "Student" && (
-                                            <ActionMenu examId={exam.examId} onDeleteSuccess={handleDeleteExam} />
+                                            <ActionMenu
+                                                examId={exam.examId}
+                                                onDeleteSuccess={handleDeleteExam}
+                                            />
                                         )}
                                     </td>
                                     <td className="py-3 px-4">{exam.examLocation}</td>
