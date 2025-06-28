@@ -3,12 +3,10 @@ import React from "react";
 import MemberItem from "./MemberItem.jsx";
 import { useAuth } from "../../../auth/context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const Members = ({ members }) => {
+const Members = ({ members, classId }) => {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
-    const navigate = useNavigate();
 
     const getDisplayName = (member) => {
         if (userRole === "Instructor") {
@@ -20,14 +18,11 @@ const Members = ({ members }) => {
         return "";
     };
 
-    const handleMemberClick = (memberId) => {
-        navigate(`/profile/${memberId}`);
-    };
-
     if (userRole !== "Instructor" && userRole !== "Student") return "not supported";
 
     return (
         <section className="flex w-full max-w-88 flex-col items-center flex-[1_0_0] border-[0.8px] border-solid border-neutralgray-2 rounded-lg">
+            {/* Header */}
             <div className="w-full max-w-88 p-4 flex justify-between items-center border-b border-b-neutralgray-2">
                 <div className="text-body-05 text-right text-redp flex gap-1">
                     <span>نفر</span>
@@ -39,17 +34,16 @@ const Members = ({ members }) => {
                 </div>
             </div>
 
+            {/* Members List */}
             <div className="w-full max-h-150 overflow-y-auto flex flex-col flex-1">
                 {members.length > 0 ? (
                     members.map((member, index) => (
-                        <div
-                            key={index}
-                            onClick={() => handleMemberClick(member.userId)}
-                            className="cursor-pointer hover:bg-neutralgray-1 transition-colors"
-                        >
+                        <div key={index}>
                             <MemberItem
                                 firstLastName={getDisplayName(member)}
-                                image={apiBaseUrl+member.profileImagePath}
+                                image={member.profileImagePath}
+                                studentId={member.userId}
+                                classId={classId}
                             />
                         </div>
                     ))
@@ -60,7 +54,9 @@ const Members = ({ members }) => {
                             alt="No members"
                             className="w-25 h-23"
                         />
-                        <span className="text-caption-02 text-[0.7rem] text-neutral-400">!عضوی وجود ندارد</span>
+                        <span className="text-caption-02 text-[0.7rem] text-neutral-400">
+                            !عضوی وجود ندارد
+                        </span>
                     </div>
                 )}
             </div>
