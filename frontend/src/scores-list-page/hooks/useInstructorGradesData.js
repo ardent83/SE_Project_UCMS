@@ -4,7 +4,7 @@ import {
   updateClassEntries,
   fetchStudentClassScores,
   fetchStudentClassScoresExport
-} from "../utils/GradeApi";
+} from "../utils/gradeApi";
 import { formatToPersianNumber } from "../utils/formatters";
 
 export const useInstructorGradesData = (classId) => {
