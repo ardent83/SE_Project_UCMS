@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchStudentOverallScores, fetchStudentDetailedScoresByClassId } from "../utils/GradeApi";
+import { fetchStudentOverallScores, fetchStudentDetailedScoresByClassId } from "../utils/gradeApi";
 import { formatToPersianNumber } from '../utils/formatters';
 
 export const useStudentGradesData = () => {
