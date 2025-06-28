@@ -30,7 +30,6 @@ const Members = ({ members, classId }) => {
 
     return (
         <section className="flex w-full max-w-88 flex-col items-center flex-[1_0_0] border-[0.8px] border-solid border-neutralgray-2 rounded-lg">
-            {/* Header */}
             <div className="w-full max-w-88 p-4 flex justify-between items-center border-b border-b-neutralgray-2">
                 <div className="text-body-05 text-right text-redp flex gap-1">
                     <span>نفر</span>

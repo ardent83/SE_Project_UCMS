@@ -30,8 +30,12 @@ const MemberItem = ({ firstLastName, image, userId, studentId, classId, onMember
         }
     };
 
+    const containerClass = userRole === "Instructor"
+        ? "w-full max-w-88 p-4 flex justify-between items-center gap-2 border-b last:border-none border-b-neutralgray-2"
+        : "w-full max-w-88 p-4 flex justify-between items-center gap-2 border-b last:border-none border-b-neutralgray-2 flex-row-reverse";
+
     return (
-        <div className="w-full max-w-88 p-4 flex justify-between items-center gap-2 border-b last:border-none border-b-neutralgray-2">
+        <div className={containerClass}>
             {userRole === "Instructor" && (
                 <Trash
                     size={20}
@@ -61,7 +65,6 @@ const MemberItem = ({ firstLastName, image, userId, studentId, classId, onMember
             </div>
         </div>
     );
-
 };
 
 export default MemberItem;
