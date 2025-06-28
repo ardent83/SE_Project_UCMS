@@ -1,30 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { handleViewProfileForInstructor, handleViewProfileForStudent } from './utils/ProfileApi.js';
+import {
+    handleViewProfileForInstructor,
+    handleViewProfileForStudent,
+    handleViewProfileForStudentClass
+} from './utils/ProfileApi.js';
 import { useAuth } from "../auth/context/AuthContext.jsx";
+import {useParams} from "react-router-dom";
 
 function ProfilePage() {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
     const userGender = user?.gender;
+    const { userId } = useParams();
     const [profile, setProfile] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const data = userRole === "Student"
-                    ? await handleViewProfileForStudent()
-                    : await handleViewProfileForInstructor();
+                let data;
+                console.log(userId);
+
+                if (userId !== undefined) {
+                    data = await handleViewProfileForStudentClass(userId);
+                } else if (userRole === "Student") {
+                    data = await handleViewProfileForStudent();
+                } else if (userRole === "Instructor") {
+                    data = await handleViewProfileForInstructor();
+                } else {
+                    throw new Error("نقش کاربر ناشناخته است");
+                }
+
                 setProfile(data.data);
             } catch (err) {
                 setError(err.message);
             }
         };
 
-        fetchProfile();
-    }, []);
+        if (user) fetchProfile();
+    }, [user, userId]);
 
-    console.log(user);
+
+
 
     if (error) return <p className="text-black-500 text-center mt-10">{error}</p>;
     if (!profile) return <p className="text-center mt-10 text-gray-600">در حال بارگذاری...</p>;
@@ -72,7 +89,7 @@ function ProfilePage() {
                         <ul className="text-m leading-7 mt-10 ml-6 space-y-5 text-gray-700 ">
                             <li className="object-cover transition-transform duration-300 hover:scale-105">{role}</li>
 
-                            {userRole === "Student" && (
+                            {profile.role?.name === "Student" && (
                                 <>
                                     <li className="object-cover transition-transform duration-300 hover:scale-105">{profile.educationLevel || "-"}</li>
                                     <li className="object-cover transition-transform duration-300 hover:scale-105">{profile.enrollmentYear || "-"}</li>
@@ -81,13 +98,14 @@ function ProfilePage() {
                                 </>
                             )}
 
-                            {userRole === "Instructor" && (
+                            {profile.role?.name === "Instructor" && (
                                 <>
                                     <li className="object-cover transition-transform duration-300 hover:scale-105">{profile.rank || "-"}</li>
                                     <li className="object-cover transition-transform duration-300 hover:scale-105">{profile.department || "-"}</li>
                                     <li className="object-cover transition-transform duration-300 hover:scale-105">{profile.university || "-"}</li>
                                 </>
                             )}
+
                         </ul>
                     </div>
                 </div>
