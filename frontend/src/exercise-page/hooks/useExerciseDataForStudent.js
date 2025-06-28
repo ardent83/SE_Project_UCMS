@@ -60,6 +60,7 @@ export const useExerciseDataForStudent = (exerciseId, userRole) => {
         submissionsFilterDto
       );
       const allRawSubmissions = rawSubmissionsResponse.items || [];
+      console.log(rawSubmissionsResponse.items)
 
       // فیلتر ارسال‌های دانشجو (شخصی یا گروهی)
       const allStudentOwnSubmissions = allRawSubmissions.filter(

@@ -185,6 +185,8 @@ export default function GradeReportPageStudent() {
                     >
                       {formatToPersianNumber(
                         currentSelectedClassOverallScore.score
+                      )} از {formatToPersianNumber(
+                        currentSelectedClassOverallScore.totalScore
                       )}
                     </span>
                     <span

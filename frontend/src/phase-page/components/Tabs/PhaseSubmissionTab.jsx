@@ -25,7 +25,6 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
 
             const data = await fetchPhaseSubmissionsApi(phaseId, "Student", sortDto);
             const items = data.items || [];
-
             setSubmissions(items);
 
             const final = items.find((s) => s.isFinal === true);
@@ -40,6 +39,9 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
             console.error(err);
         }
     };
+
+    const toPersianNumber = (number) =>
+        number.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
 
     const handleDownload = async (submission) => {
         try {
@@ -76,81 +78,88 @@ export default function PhaseSubmissionsTab({ phaseTitle }) {
     }, [phaseId, sortBy, sortOrder]);
 
     return (
-        <div className="w-full max-w-[90rem] mx-auto mt-8 px-10 text-bg-blue" dir="rtl">
+        <div className="w-full max-w-[80rem] mx-auto mt-8 px-10 text-bg-blue" dir="rtl">
             {error && <div className="text-red-500 my-2">{error}</div>}
-            <div className="overflow-y-auto max-h-[380px] bg-white rounded-lg shadow-sm">
-                <table className="w-full border-collapse text-center">
-                    <thead className="sticky top-0 bg-gray-100 z-10">
-                    <tr className="border-b border-gray-300 text-gray-500 text-sm">
-                        <th className="py-3 px-4">ارسال نهایی</th>
-                        <th className="py-3 px-4">نام فاز</th>
-                        <th className="py-3 px-4">
-                            <div
-                                className="flex items-center justify-center gap-1 cursor-pointer select-none"
+
+            {submissions.length === 0 ? (
+                <div className="text-center py-6 text-gray-500">هنوز پاسخی ارسال نکرده‌اید.</div>
+            ) : (
+                <div className="w-full overflow-x-auto bg-white rounded-lg shadow-sm">
+                    <table className="w-full text-center border-collapse text-sm" dir="ltr">
+                        <thead className="bg-gray-100 sticky top-0 z-10">
+                        <tr className="text-gray-700 text-sm">
+                            <th className="px-4 py-2">فایل</th>
+                            <th className="px-4 py-2">نمره</th>
+                            <th className="px-4 py-2">نوع فایل</th>
+                            <th
+                                className="px-4 py-2 cursor-pointer select-none"
                                 onClick={handleSortClick}
-                                title="مرتب‌سازی بر اساس زمان ارسال"
                             >
-                                <span>زمان ارسال</span>
-                                <ArrowSwapVertical
-                                    size={16}
-                                    variant="Bulk"
-                                    color={sortBy === 1 ? "#1D4ED8" : "#0C1E33"}
-                                    className={`${sortOrder === 2 ? "rotate-180" : ""} transition-transform duration-200`}
-                                />
-                            </div>
-                        </th>
-                        <th className="py-3 px-4">نوع فایل</th>
-                        <th className="py-3 px-4">نمره</th>
-                        <th className="py-3 px-4">فایل</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {submissions.length === 0 ? (
-                        <tr>
-                            <td colSpan="10" className="py-6 text-gray-400 text-sm">
-                                فایلی آپلود نشده است
-                            </td>
+                                <div className="flex items-center justify-center gap-1">
+                                    <ArrowSwapVertical
+                                        size={16}
+                                        variant="Bulk"
+                                        color={sortBy === 1 ? "#1D4ED8" : "#0C1E33"}
+                                        className={`${sortOrder === 2 ? "rotate-180" : ""} transition-transform duration-200`}
+                                    />
+                                    تاریخ و ساعت ارسال
+                                </div>
+                            </th>
+                            <th className="px-4 py-2">ارسال نهایی</th>
                         </tr>
-                    ) : (
-                        submissions.map((submission) => (
+                        </thead>
+                        <tbody>
+                        {submissions.map((submission) => (
                             <tr
                                 key={submission.id}
-                                className={`border-b border-gray-100 transition ${selectedId === submission.id ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                                className={`border-b border-gray-100 transition ${
+                                    selectedId === submission.id
+                                        ? "bg-blue-50"
+                                        : "hover:bg-gray-50"
+                                }`}
                             >
                                 <td className="py-3 px-4">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedId === submission.id}
-                                        onChange={() => handleCheckboxChange(submission.id)}
-                                        className="cursor-pointer"
-                                    />
-                                </td>
-                                <td className="py-3 px-4 text-sm text-big-stone-600">{phaseTitle}</td>
-                                <td className="py-3 px-4 text-sm">
-                                    {new Date(submission.submittedAt).toLocaleString("fa-IR")}
-                                </td>
-                                <td className="py-3 px-4 text-gray-700 text-sm">{submission.fileType}</td>
-                                <td className="py-3 px-4 text-sm">
-                                    {submission.score !== null ? (
-                                        <span className="text-green-700 font-semibold">{submission.score}</span>
-                                    ) : (
-                                        <span className="text-gray-400">–</span>
-                                    )}
-                                </td>
-                                <td className="py-3 px-4 text-sm">
                                     <button
+                                        className="text-big-stone-400 hover:text-big-stone-600 text-[1rem] cursor-pointer"
                                         onClick={() => handleDownload(submission)}
-                                        className="text-big-stone-600 hover:underline cursor-pointer"
                                     >
                                         دانلود
                                     </button>
                                 </td>
+                                <td className="py-3 px-4">
+                                    {submission.score != null ? (
+                                        <span className="text-green-700 font-semibold">
+                        {toPersianNumber(submission.score)}
+                      </span>
+                                    ) : (
+                                        <span className="text-gray-400">ثبت نشده</span>
+                                    )}
+                                </td>
+                                <td className="py-3 px-4 text-gray-700">{submission.fileType || "نامشخص"}</td>
+                                <td className="py-3 px-4" dir="rtl">
+                                    {new Date(submission.submittedAt).toLocaleDateString("fa-IR")} -{" "}
+                                    {new Date(submission.submittedAt).toLocaleTimeString("fa-IR", {
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </td>
+                                <td className="py-3 px-4 flex justify-center items-center">
+                                    <label className="inline-flex items-center cursor-pointer flex-row-reverse gap-1">
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                            checked={selectedId === submission.id}
+                                            onChange={() => handleCheckboxChange(submission.id)}
+                                            aria-label="ارسال نهایی"
+                                        />
+                                    </label>
+                                </td>
                             </tr>
-                        ))
-                    )}
-                    </tbody>
-                </table>
-            </div>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 }

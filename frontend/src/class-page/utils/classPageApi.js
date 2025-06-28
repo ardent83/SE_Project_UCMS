@@ -129,24 +129,21 @@ export const getProjectsForStudent = async (classId) => {
     return response.json();
 };
 
+/**
+ * Deletes a class.
+ * @param {string} classId - The ID of the class to delete.
+ * @returns {Promise<void>}
+ */
+export const deleteClassById = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/Classes/${classId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    });
 
-export const deleteClassById = async (id) => {
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/Classes/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to delete class");
-        }
-
-        return true;
-    } catch (error) {
-        console.error("Error deleting class:", error);
-        return false;
+    if (!response.ok) {
+        const error = new Error(`HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
     }
 };
 
@@ -183,52 +180,39 @@ export const getExamsForStudent = async (classId) => {
     return response.json();
 };
 
+/**
+ * leave a class.
+ * @param {string} classId - The ID of the class to leave.
+ * @returns {Promise<void>}
+ */
+export const leaveClassById = async (classId) => {
+    const response = await fetch(`${apiBaseUrl}/api/StudentClass/${classId}/Leave`, {
+        method: 'DELETE',
+        credentials: 'include',
+    });
 
-export const leaveClassById = async (classId, token) => {
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/StudentClass/${classId}/Leave`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error("API Error Response:", errorText);
-            throw new Error("Failed to leave class");
-        }
-
-        return true;
-    } catch (error) {
-        console.error("Error leaving class:", error);
-        return false;
+    if (!response.ok) {
+        const error = new Error(`HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
     }
 };
 
+/**
+ * remove student from a class.
+ * @param {string} classId  - The ID of the class to remove.
+ * @param {string} studentId  - The ID of the student to remove.
+ * @returns {Promise<void>}
+ */
+export const removeStudentFromClass = async (classId, studentId) => {
+    const response = await fetch(`${apiBaseUrl}/api/StudentClass/${classId}/Students/remove/${studentId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    });
 
-export const removeStudentFromClass = async (classId, studentId, signal) => {
-    try {
-        const response = await fetch(
-            `${apiBaseUrl}/api/StudentClass/${classId}/Students/remove/${studentId}`,
-            {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                signal,
-            }
-        );
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Server response:", errorText);
-            throw new Error("Failed to remove student from class");
-        }
-
-        return true;
-    } catch (error) {
-        console.error("Error removing student from class:", error);
-        return false;
+    if (!response.ok) {
+        const error = new Error(`HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
     }
 };
-

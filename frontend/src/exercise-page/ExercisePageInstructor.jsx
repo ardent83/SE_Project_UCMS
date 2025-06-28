@@ -175,7 +175,7 @@ const ExercisePageForInstructor = () => {
           <DropdownSection title="ارسال‌ها" bgColor="#1E2B4F">
             <div className="overflow-y-auto max-h-72">
               <div className="flex gap-4 relative z-20 mb-2">
-                <Button
+                {/* <Button
                   leftIcon={false}
                   buttonText={"دانلود همه‌ی ارسال‌ها"}
                   onClick={() =>
@@ -191,7 +191,17 @@ const ExercisePageForInstructor = () => {
                       color="#ffffff"
                     />
                   }
-                />
+                /> */}
+                <DocumentDownload
+                size="30"
+                variant="Bulk"
+                color="#08146f"
+                onClick={() =>
+                    handleDownloadAllExerciseFile(
+                      currentExercise.exerciseId
+                  )
+                }
+              />
               </div>
               <table
                 className="w-full text-center border-collapse text-sm"

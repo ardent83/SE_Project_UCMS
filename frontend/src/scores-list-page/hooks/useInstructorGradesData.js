@@ -23,35 +23,33 @@ export const useInstructorGradesData = (classId) => {
 
   const [studentScores, setStudentScores] = useState(null);
 
-const loadClassEntries = useCallback(async () => {
-  setLoading(true);
-  setError(null);
-  setEntrySaveError(null);
+  const loadClassEntries = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setEntrySaveError(null);
 
-  try {
-    const { entries, totalScore } = await fetchClassEntries(classId);
+    try {
+      const { entries, totalScore } = await fetchClassEntries(classId);
 
-    const processedEntries = entries.map((entry, index) => ({
-      ...entry,
-      entryType:
-        entry.entryType !== undefined && entry.entryType !== null
-          ? entry.entryType
-          : `unknownType-${entry.entryId || index}`,
-    }));
+      const processedEntries = entries.map((entry, index) => ({
+        ...entry,
+        entryType:
+          entry.entryType !== undefined && entry.entryType !== null
+            ? entry.entryType
+            : `unknownType-${entry.entryId || index}`,
+      }));
 
-    setClassEntries(processedEntries);
-    setEditedEntries({});
-    setTotalScore(totalScore);  
-    console.log("مجموع نمرات:", totalScore);
-
-  } catch (err) {
-    setError(err.message || "خطا در بارگذاری جزئیات نمره‌دهی.");
-    setClassEntries([]);
-  } finally {
-    setLoading(false);
-  }
-}, [classId]);
-
+      setClassEntries(processedEntries);
+      setEditedEntries({});
+      setTotalScore(totalScore);
+      console.log("مجموع نمرات:", totalScore);
+    } catch (err) {
+      setError(err.message || "خطا در بارگذاری جزئیات نمره‌دهی.");
+      setClassEntries([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [classId]);
 
   // Load student class scores
   const loadStudentClassScores = useCallback(async () => {
@@ -79,8 +77,9 @@ const loadClassEntries = useCallback(async () => {
 
       setStudentsGradesData(formattedStudents);
     } catch (err) {
-      setError(err.message || "خطا در بارگذاری نمرات دانشجویان کلاس");
       setStudentScores(null);
+      setStudentsGradesData([]);
+      console.warn("خطا در بارگذاری نمرات دانشجویان:", err.message || err);
     }
   }, [classId]);
 
@@ -91,7 +90,6 @@ const loadClassEntries = useCallback(async () => {
       const a = document.createElement('a');
       a.href = url;
 
-      // نام فایل مناسب با فرمت واقعی
       a.download = `Scores_Report_Class_${classId}.xlsx`;
 
       document.body.appendChild(a);
@@ -103,7 +101,6 @@ const loadClassEntries = useCallback(async () => {
       alert('خطا در دانلود فایل گزارش');
     }
   };
-
 
   // Handle input changes in table
   const handleEntryChange = useCallback((entryType, entryId, field, value) => {
@@ -229,27 +226,27 @@ const loadClassEntries = useCallback(async () => {
   }, []);
 
   // Filtered and sorted student grades
-const finalFilteredAndSortedGrades = [...studentsGradesData]
-  .filter((grade) => {
-    const lowerSearch = searchQuery.trim().toLowerCase();
-    return (
-      grade.fullName?.toLowerCase().includes(lowerSearch) ||
-      String(grade.studentId).toLowerCase().includes(lowerSearch)
-    );
-  })
-  .sort((a, b) => {
-    if (!sortConfig.key) return 0;
-    const aValue = a[sortConfig.key] || "";
-    const bValue = b[sortConfig.key] || "";
-    return sortConfig.direction === "asc"
-      ? aValue > bValue
+  const finalFilteredAndSortedGrades = [...studentsGradesData]
+    .filter((grade) => {
+      const lowerSearch = searchQuery.trim().toLowerCase();
+      console.log("grade.studentId");
+      return (
+        grade.fullName?.toLowerCase().includes(lowerSearch) ||
+        String(grade.studentNumber).toLowerCase().includes(lowerSearch)
+      );
+    })
+    .sort((a, b) => {
+      if (!sortConfig.key) return 0;
+      const aValue = a[sortConfig.key] || "";
+      const bValue = b[sortConfig.key] || "";
+      return sortConfig.direction === "asc"
+        ? aValue > bValue
+          ? 1
+          : -1
+        : aValue < bValue
         ? 1
-        : -1
-      : aValue < bValue
-      ? 1
-      : -1;
-  });
-
+        : -1;
+    });
 
   // Optional fixed labels for displaying headers
   const fixedDetailedGradesLabels = [

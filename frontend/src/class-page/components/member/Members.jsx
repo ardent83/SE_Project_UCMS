@@ -1,13 +1,16 @@
-import { Profile2User } from "iconsax-react";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {useAuth} from "../../../auth/context/AuthContext.jsx";
+import {Profile2User} from "iconsax-react";
 import MemberItem from "./MemberItem.jsx";
-import { useAuth } from "../../../auth/context/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
 
-const Members = ({ members }) => {
+const Members = ({ members, classId }) => {
     const { user } = useAuth();
     const userRole = user?.role?.name || "guest";
-    const navigate = useNavigate();
+
+    const [memberList, setMemberList] = useState(members);
+    useEffect(() => {
+        setMemberList(members);
+    }, [members]);
 
     const getDisplayName = (member) => {
         if (userRole === "Instructor") {
@@ -19,18 +22,18 @@ const Members = ({ members }) => {
         return "";
     };
 
-    const handleMemberClick = (memberId) => {
-        navigate(`/api/students/${memberId}/profile`);
-    };
-
     if (userRole !== "Instructor" && userRole !== "Student") return "not supported";
+
+    const handleMemberRemoved = (removedStudentId) => {
+        setMemberList((prev) => prev.filter((m) => m.studentId !== removedStudentId));
+    };
 
     return (
         <section className="flex w-full max-w-88 flex-col items-center flex-[1_0_0] border-[0.8px] border-solid border-neutralgray-2 rounded-lg">
             <div className="w-full max-w-88 p-4 flex justify-between items-center border-b border-b-neutralgray-2">
                 <div className="text-body-05 text-right text-redp flex gap-1">
                     <span>نفر</span>
-                    <span>{members.length.toLocaleString("fa-IR")}</span>
+                    <span>{memberList.length.toLocaleString("fa-IR")}</span>
                 </div>
                 <div className="w-fit flex justify-between items-center gap-1">
                     <span className="text-caption-02 text-sm text-right text-[#292D32]">اعضای کلاس</span>
@@ -39,16 +42,16 @@ const Members = ({ members }) => {
             </div>
 
             <div className="w-full max-h-150 overflow-y-auto flex flex-col flex-1">
-                {members.length > 0 ? (
-                    members.map((member, index) => (
-                        <div
-                            key={index}
-                            onClick={() => handleMemberClick(member.userId)}
-                            className="cursor-pointer hover:bg-neutralgray-1 transition-colors"
-                        >
+                {memberList.length > 0 ? (
+                    memberList.map((member, index) => (
+                        <div key={index}>
                             <MemberItem
                                 firstLastName={getDisplayName(member)}
                                 image={member.profileImagePath}
+                                userId={member.userId}
+                                studentId={member.studentId}
+                                classId={classId}
+                                onMemberRemoved={handleMemberRemoved}
                             />
                         </div>
                     ))
@@ -59,7 +62,9 @@ const Members = ({ members }) => {
                             alt="No members"
                             className="w-25 h-23"
                         />
-                        <span className="text-caption-02 text-[0.7rem] text-neutral-400">!عضوی وجود ندارد</span>
+                        <span className="text-caption-02 text-[0.7rem] text-neutral-400">
+                            !عضوی وجود ندارد
+                        </span>
                     </div>
                 )}
             </div>
