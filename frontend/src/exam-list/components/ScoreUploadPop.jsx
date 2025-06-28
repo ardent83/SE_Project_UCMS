@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Modal from '../../components/Modal';
 import { Folder } from 'iconsax-react';
 import { uploadGradesFile, downloadScoreTemplateFileApi } from "../utils/ExamsPageApi";
@@ -6,50 +6,85 @@ import { uploadGradesFile, downloadScoreTemplateFileApi } from "../utils/ExamsPa
 const ScoreUpload = ({ show, onClose, examId }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [errorMsg, setErrorMsg] = useState("");
-    const [successMsg, setSuccessMsg] = useState("");
+    const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
 
     const handleFileChange = (e) => {
-        setSelectedFile(e.target.files[0]);
-        setErrorMsg("");
-        setSuccessMsg("");
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+            setMessage("");
+            setIsError(false);
+        }
     };
 
-    const handleDownloadTemplate = async () => {
+    const handleDownloadTemplate = useCallback(async () => {
         try {
             setLoading(true);
             await downloadScoreTemplateFileApi(examId);
         } catch (error) {
-            setErrorMsg("خطا در دانلود فایل قالب");
+            setMessage("خطا در دانلود فایل قالب");
+            setIsError(true);
         } finally {
             setLoading(false);
         }
-    };
+    }, [examId]);
 
     const handleSubmit = async () => {
         if (!selectedFile) {
-            setErrorMsg("لطفاً یک فایل انتخاب کنید.");
+            setMessage("لطفاً یک فایل انتخاب کنید.");
+            setIsError(true);
             return;
         }
 
+        setLoading(true);
         try {
-            setLoading(true);
-            await uploadGradesFile(examId, selectedFile);
-            setSuccessMsg("فایل با موفقیت ثبت شد.");
-            setErrorMsg("");
+            const result = await uploadGradesFile(examId, selectedFile);
             setSelectedFile(null);
-            setTimeout(() => {
-                onClose();
-            }, 2000);
+
+            if (result.success) {
+                setMessage("فایل با موفقیت ثبت شد.");
+                setIsError(false);
+                setTimeout(() => {
+                    handleClose();
+                }, 2000);
+            } else if (Array.isArray(result.data)) {
+                const errorsList = result.data
+                    .filter(row => !row.isValid)
+                    .map(row => `خط ${row.rowNumber}: ${row.errors.join("، ")}`)
+                    .join(" | ");
+                setMessage(errorsList || result.message || "خطایی رخ داده است.");
+                setIsError(true);
+            } else {
+                setMessage(result.message || "خطایی رخ داده است.");
+                setIsError(true);
+            }
         } catch (error) {
-            setErrorMsg("خطا در ارسال فایل: " + (error.message || "نامشخص"));
+            console.error("خطا در ارسال فایل:", error);
+            if (error.data && Array.isArray(error.data.data)) {
+                const errorsList = error.data.data
+                    .filter(row => !row.isValid)
+                    .map(row => `خط ${row.rowNumber}: ${row.errors.join("، ")}`)
+                    .join("\n");
+                setMessage(errorsList || error.message || "خطا در ارسال فایل");
+            } else {
+                setMessage(error.message || "خطا در ارسال فایل");
+            }
+            setIsError(true);
         } finally {
             setLoading(false);
         }
     };
 
+    const handleClose = () => {
+        setSelectedFile(null);
+        setMessage("");
+        setIsError(false);
+        onClose();
+    };
+
     return (
-        <Modal show={show} onClose={onClose}>
+        <Modal show={show} onClose={handleClose}>
             <div className="text-right text-white relative" dir="rtl">
                 <div className="absolute top-5 left-0 p-2 cursor-pointer" title="دانلود قالب نمره">
                     <Folder color="#fff" size="30" variant="Bulk" onClick={handleDownloadTemplate}/>
@@ -74,16 +109,19 @@ const ScoreUpload = ({ show, onClose, examId }) => {
                         htmlFor="fileUpload"
                         className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-2xl cursor-pointer"
                     >
-                        آپلود فایل
+                        انتخاب فایل
                     </label>
                 </div>
 
-                {errorMsg && <p className="text-red-400 text-sm mb-4">{errorMsg}</p>}
-                {successMsg && <p className="text-green-400 text-sm mb-4">{successMsg}</p>}
+                {message && (
+                    <p className={`${isError ? "text-red-400" : "text-green-400"} text-sm mb-4`}>
+                        {message}
+                    </p>
+                )}
 
                 <div className="flex justify-end gap-3">
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 cursor-pointer"
                         disabled={loading}
                     >
